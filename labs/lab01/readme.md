@@ -30,7 +30,7 @@
 
 Шаг 1. Создание в Cisco Packet Tracer сети, согласно топологии, состоящей из Switch (Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4) и PC.
 Устройства соединены консольным кабелем (Console; Switch [Console] --> PC [RS-232]) и кабелем Ethernet (Cooper Straight-Throught; Switch [FastEthernet0/5] --> PC [FastEthernet0).
-![](Топология_выполнение.png)
+[]()
 
 
 
