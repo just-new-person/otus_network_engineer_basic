@@ -49,8 +49,9 @@ Switch#
 Ввод команды - Результат
 ```
 Switch#show running-config
+```
 <details>
-  <summary>Нажми, чтобы раскрыть</summary>
+  <summary>Результат команды show running-config</summary>
 Building configuration...
 
 Current configuration : 1080 bytes
@@ -141,7 +142,6 @@ line vty 5 15
 !
 end
 </details>
-```
 
 
 
