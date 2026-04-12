@@ -38,8 +38,11 @@ CPT --> PC --> вкладка Desctop --> Terminal
 ```
 Switch>
 ```
-
-
+Ввод команды - Результат
+```
+Switch>enable
+Switch#
+```
 
 
 
