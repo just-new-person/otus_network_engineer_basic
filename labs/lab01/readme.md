@@ -159,21 +159,62 @@ end
 Шаг 1. Настройте базовые параметры коммутатора.
 
 #### a
-Отключаем функцию поиска по DNS<br>
-Изменяем имя с Swith на S1<br>
-Включаем шифрование паролей (визуальное отображение)<br>
-Назначаем на вход в привелигированный режим (enable) пароль "class". Пароль в show running-config будет отображаться не в открытом виде<br>
-Назначаем банер motd ("сообщение дня") с разделителем #. Текст "Unauthorized access is strictly prohibited."<br>
+Настойка даты и времени
 ```
-ip domain-lookup
-hostname S1
-service password-encryption
-enable secret class
-banner motd #
-Unauthorized access is strictly prohibited. #
+S1#clock ?
+  set  Set the time and date
+S1#clock set ?
+  hh:mm:ss  Current Time
+S1#clock set 21:12:00 ?
+  <1-31>  Day of the month
+  MONTH   Month of the year
+S1#clock set 21:12:00 13 apr 2026
+S1#
+```
+Переход в режим конфигурации сетевого устройства
+```
+Switch#
+Switch#conf t
+```
+Отключение функцию поиска по DNS<br>
+Изменение имени с Swith на S1<br>
+Включение шифрование паролей (визуальное отображение)<br>
+Назначание на вход в привелигированный режим (enable) пароль "class". Пароль в show running-config будет отображаться не в открытом виде<br>
+Назначение банера motd ("сообщение дня") с разделителем #. Текст "Unauthorized access is strictly prohibited."<br>
+```
+Switch>
+Switch>enable
+Switch#
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#
+Switch(config)#no ip domain ?
+  lookup  Enable IP Domain Name System hostname translation
+  name    Define the default domain name
+Switch(config)#no ip domain loo
+Switch(config)#no ip domain lookup 
+Switch(config)#
+Switch(config)#hostn S`
+S`(config)#hostn S1
+S1(config)#
+S1(config)#service pas
+S1(config)#service password-encryption 
+S1(config)#
+S1(config)#enab
+S1(config)#enable secret class
+S1(config)#
+S1(config)#
+S1(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
+
+S1(config)#
+```
+#### b.
+Назначение IP-адрес интерфейсу SVI (switch virtual intarface) на коммутаторе. 'Благодаря этому получаем  возможность удаленного управления коммутатором.
 ```
 
-b.	Назначьте IP-адрес интерфейсу SVI на коммутаторе. Благодаря этому вы получите возможность удаленного управления коммутатором.
+
 Прежде чем вы сможете управлять коммутатором S1 удаленно с компьютера PC-A, коммутатору нужно назначить IP-адрес. Согласно конфигурации по умолчанию коммутатором можно управлять через VLAN 1.
 c.	Доступ через порт консоли также следует ограничить  с помощью пароля. Используйте cisco в качестве пароля для входа в консоль в этом задании. Конфигурация по умолчанию разрешает все консольные подключения без пароля. Чтобы консольные сообщения не прерывали выполнение команд, используйте параметр logging synchronous.
 S1(config)# line con 0
