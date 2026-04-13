@@ -288,16 +288,6 @@ S1(config-line)#password cisco
 S1(config-line)#login
 S1(config-line)#
 ```
-#### e
-Сохранение текущей конфигурации настроек из действующего конфига в стартовый
-```
-S1(config-line)#^Z
-S1#copy running-config startup-config
-Destination filename [startup-config]? 
-Building configuration...
-[OK]
-S1#
-```
 
 ### Шаг 2. Настройка IP-адреса на компьютере PC-A.
 
@@ -472,7 +462,50 @@ C:\>
 ```
 
 ### Шаг 3. Проверка удаленного управления коммутатором S1
+#### a
 Подключение к коммутатору S1 через Telnet c PC
 ![](Подключение_Telnet.png)
 
+#### b
+Подключение через Telnet к коммутатору S1
+```
+Trying 192.168.1.2 ...Open
+UnauUnauthorized access is stricly phohibited. 
 
+
+User Access Verification
+
+Password: 
+
+S1>
+```
+#### c
+Вход в исполнительский режим EXEC
+```
+Trying 192.168.1.2 ...Open
+UnauUnauthorized access is stricly phohibited. 
+
+
+User Access Verification
+
+Password: 
+
+S1>enable
+Password: 
+S1#
+```
+#### d
+Сохранение текущей конфигурации настроек из действующего конфига в стартовый
+```
+S1(config-line)#^Z
+S1#copy running-config startup-config
+Destination filename [startup-config]? 
+Building configuration...
+[OK]
+S1#
+```
+#### e
+Завершение сеанса TElnet через команду exit
+```
+
+```
