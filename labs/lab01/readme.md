@@ -471,4 +471,7 @@ Approximate round trip times in milli-seconds:
 C:\>
 ```
 
+### Шаг 3. Проверка удаленного управления коммутатором S1
+
+
 
