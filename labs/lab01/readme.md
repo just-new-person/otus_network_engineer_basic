@@ -30,11 +30,14 @@
 
 ## Часть 1. Создание сети и проверка настроек коммутатора по умолчанию
 
-Шаг 1. Создание в Cisco Packet Tracer (далее CPT) сети, согласно топологии, состоящей из Switch (Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4) и PC.
+### Шаг 1.
+Создание в Cisco Packet Tracer (далее CPT) сети, согласно топологии, состоящей из Switch (Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4) и PC.
 Устройства соединены консольным кабелем (Console; Switch [Console] --> PC [RS-232]) и кабелем Ethernet (Cooper Straight-Throught; Switch [FastEthernet0/5] --> PC [FastEthernet0).
 ![](Топология_вып.png)
 
-Шаг 2. Настройка коммутатора по умолчанию.
+### Шаг 2.
+Настройка коммутатора по умолчанию.
+
 CPT --> PC --> вкладка Desctop --> Terminal
 
 ```
@@ -156,7 +159,8 @@ end
 
 ## Часть 2. Настройка базовых параметров сетевых устройств
 
-Шаг 1. Настрока базовых параметров коммутатора.
+### Шаг 1.
+Настрока базовых параметров коммутатора.
 
 #### a
 Настойка даты и времени
@@ -297,12 +301,16 @@ Building configuration...
 S1#
 ```
 
-Шаг 2. Настройка IP-адреса на компьютере PC-A.
+### Шаг 2.
+Настройка IP-адреса на компьютере PC-A.
 
 Назначение компьютеру IP-адреса и маски подсети в соответствии с таблицей адресации.
 ![](Настройка_IP_компа.png)
 
 ## Часть 3. Проверка сетевых подключений
+
+### Шаг 1.
+Отображение конфигурации комутатора.
 
 Вход в консольнное подключение
 ```
@@ -423,4 +431,49 @@ login<br>
 !<br>
 end
 <details>
+
+### Шаг 2.
+Тестирование сквозного соединения, отправкой эхо-запроса
+
+#### a
+В командной строке компьютера PC-A с помощью утилиты ping проверка связи сначала с адресом PC-A
+```
+C:\>
+C:\>ping 192.168.1.10
+
+Pinging 192.168.1.10 with 32 bytes of data:
+
+Reply from 192.168.1.10: bytes=32 time=4ms TTL=128
+Reply from 192.168.1.10: bytes=32 time<1ms TTL=128
+Reply from 192.168.1.10: bytes=32 time=2ms TTL=128
+Reply from 192.168.1.10: bytes=32 time<1ms TTL=128
+
+Ping statistics for 192.168.1.10:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 4ms, Average = 1ms
+
+C:\>
+```
+
+#### b
+В командной строки компьютера PC-A отправка эхо-запрос на административный адрес интерфейса SVI коммутатора S1
+```
+C:\>ping 192.168.1.2
+
+Pinging 192.168.1.2 with 32 bytes of data:
+
+Request timed out.
+Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.2: bytes=32 time<1ms TTL=255
+
+Ping statistics for 192.168.1.2:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>
+```
+
 
