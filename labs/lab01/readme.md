@@ -211,15 +211,63 @@ Unauthorized access is stricly phohibited. #
 S1(config)#
 ```
 #### b.
-Назначение IP-адрес интерфейсу SVI (switch virtual intarface) на коммутаторе. 'Благодаря этому получаем  возможность удаленного управления коммутатором.
+Назначение IP-адрес интерфейсу SVI (switch virtual intarface) на коммутаторе. Благодаря этому получаем  возможность удаленного управления коммутатором.
 ```
+S1(config)#
+S1(config)#interface vlan1
+S1(config-if)#?
+Interface configuration commands:
+  arp          Set arp type (arpa, probe, snap) or timeout
+  description  Interface specific description
+  exit         Exit from interface configuration mode
+  ip           Interface Internet Protocol config commands
+  no           Negate a command or set its defaults
+  shutdown     Shutdown the selected interface
+  standby      HSRP interface configuration commands
+S1(config-if)#ip 192.168.1.2 ?
+% Unrecognized command
+S1(config-if)#ip?
+ip  
+S1(config-if)#ip ?
+  address         Set the IP address of an interface
+  helper-address  Specify a destination address for UDP broadcasts
+S1(config-if)#ip address ?
+  A.B.C.D  IP address
+  dhcp     IP Address negotiated via DHCP
+S1(config-if)#ip address 192.168.1.2 255.255.255.0
+S1(config-if)#
+```
+Включение виртуальной сетевой карты SVI
+```
+S1(config)#int vlan 1
+S1(config-if)#no sh
+S1(config-if)#no shutdown 
 
+S1(config-if)#
+%LINK-5-CHANGED: Interface Vlan1, changed state to up
 
-Прежде чем вы сможете управлять коммутатором S1 удаленно с компьютера PC-A, коммутатору нужно назначить IP-адрес. Согласно конфигурации по умолчанию коммутатором можно управлять через VLAN 1.
-c.	Доступ через порт консоли также следует ограничить  с помощью пароля. Используйте cisco в качестве пароля для входа в консоль в этом задании. Конфигурация по умолчанию разрешает все консольные подключения без пароля. Чтобы консольные сообщения не прерывали выполнение команд, используйте параметр logging synchronous.
-S1(config)# line con 0
-S1(config-line)# logging synchronous 
-d.	Настройте каналы виртуального соединения для удаленного управления (vty), чтобы коммутатор разрешил доступ через Telnet. Если не настроить пароль VTY, будет невозможно подключиться к коммутатору по протоколу Telnet.
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to up
+
+S1(config-if)#
+```
+#### c
+Вход на консольный порт<br>
+Использование параметра logging synchronous, чтобы консольные сообщения не прерывали выполнение команд.<br>
+Установка на линию консольного порта пароля "cisco" и включении приглашения для аутентификации командой "login"<br>
+```
+S1(config)#line console 0
+S1(config-line)#
+S1(config-line)#logging sunch
+S1(config-line)#logging synch
+S1(config-line)#logging synchronous 
+S1(config-line)#
+S1(config-line)#password cisco
+S1(config-line)#
+S1(config-line)#login
+S1(config-line)#
+```
+#### d
+Настройка каналов виртуального соединения для удаленного управления (vty), чтобы коммутатор разрешил доступ через Telnet. Если не настроить пароль VTY, будет невозможно подключиться к коммутатору по протоколу Telnet.
 Вопрос:
 Для чего нужна команда login?
 
