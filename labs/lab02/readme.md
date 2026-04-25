@@ -283,11 +283,10 @@ FastEthernet0/1 is up, line protocol is up (connected)
 ```
 
 Значит адрес оборудования во второй строке выходных данных команды и зашитый адрес — bia:<br>
-PC-A - 0002.4a0d.6901 (bia 0002.4a0d.6901)<br>
-PC-B - 00e0.f9c6.3101 (bia 00e0.f9c6.3101)<br>
+для PC-A МАС-адрес коммутатора S1 Fast Ethernet 0/1: 0002.4a0d.6901 (bia 0002.4a0d.6901)<br>
+для PC-B МАС-адрес коммутатора S2 Fast Ethernet 0/1: 00e0.f9c6.3101 (bia 00e0.f9c6.3101)<br>
 
-МАС-адрес коммутатора S1 Fast Ethernet 0/1:
-МАС-адрес коммутатора S2 Fast Ethernet 0/1:
+
 
 
 
