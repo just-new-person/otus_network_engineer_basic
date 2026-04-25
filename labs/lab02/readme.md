@@ -23,14 +23,18 @@
 ### Шаг 1. Создание в CPT сети, согласно топологии
 
 Сеть состоит из двух Switch (Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4) и двух PC.<br>
-Устройства соединены:<br>
-  кабелем Ethernet (Cooper Straight-Throught)<br>
-  PC0 [FastEthernet0) --> Switch1 [FastEthernet0/6]
-  Switch1 [FastEthernet0/1] --> Switch2 [FastEthernet0/1]
-  Switch2 [FastEthernet0/18] --> PC0 [FastEthernet0)
- --> 
-
-консольным кабелем (Console; Switch [Console] --> PC [RS-232]) и кабелем Ethernet (Cooper Straight-Throught; Switch [FastEthernet0/5] --> PC [FastEthernet0). 
-
+Устройства соединены кабелем Ethernet (Cooper Straight-Throught)<br>
+  PC0 [FastEthernet0) --> Switch1 [FastEthernet0/6]<br>
+  Switch1 [FastEthernet0/1] --> Switch2 [FastEthernet0/1]<br>
+  Switch2 [FastEthernet0/18] --> PC0 [FastEthernet0)<br>
+  
 ![](Топология_2_вып.png)
 
+### Шаг 2. Настройка узлов ПК
+В соответствии с таблицей адресации:
+
+![]
+
+### Шаг 3. Выполните инициализацию и перезагрузку коммутаторов.
+
+### Шаг 4. Настройте базовые параметры каждого коммутатора.
