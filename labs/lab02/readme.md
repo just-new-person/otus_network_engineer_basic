@@ -77,6 +77,7 @@ Switch#
 
 #### a. Настройте имена устройств в соответствии с топологией.
 Изменение имени с Swith на S1 и S2<br>
+
 PC-A
 ```
 Switch(config)#hostname S1
@@ -92,7 +93,7 @@ Switch(config)#hostname S2
 S2(config)#
 ```
 #### b.	Настройте IP-адреса, как указано в таблице адресации.
-Также после настройки IP адреса включаем сетевую карту<br>
+Также после настройки IP адреса включаем виртуальную сетевую карту<br>
 
 PC-A
 ```
@@ -119,11 +120,58 @@ S2(config-if)#
 %LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to up
 ```
 #### c.	Назначьте cisco в качестве паролей консоли и VTY.
-Настраиваем в консоле PC-A. На PC-B настройка аналогична.
+Настройка каналов виртуального соединения для удаленного управления (vty), чтобы коммутатор разрешил доступ через Telnet. Установка пароля "cisco" на консоль и линии vty с 0 по 15. Если не настроить пароль VTY, будет невозможно подключиться к коммутатору по протоколу Telnet.<br>
+
+PC-A
+```
+S1(config-if)#
+S1(config-if)#exit
+S1(config)#line console 0
+S1(config-line)#logging sync
+S1(config-line)#logging synchronous 
+S1(config-line)#pass
+S1(config-line)#password cisco
+S1(config-line)#
+S1(config-line)#exit
+S1(config)#line vty ?
+  <0-15>  First Line number
+S1(config)#line vty 0-15
+                    ^
+% Invalid input detected at '^' marker.
+	
+S1(config)#line vty 0 ?
+  <1-15>  Last Line number
+  <cr>
+S1(config)#line vty 0 15
+S1(config-line)#password cisco
+S1(config-line)#
+```
+PC-B
+```
+S2(config-if)#
+S2(config-if)#exit
+S2(config)#line con 0
+S2(config-line)#logg
+S2(config-line)#logging sync
+S2(config-line)#logging synchronous 
+S2(config-line)#password cisco
+S2(config-line)#exit
+S2(config)#line vty 0 15
+S2(config-line)#password cisco
+S2(config-line)#
+```
+#### d.	Назначьте class в качестве пароля доступа к привилегированному режиму EXEC.
+
+PC-A
+```
+S1(config)#enable secret class
 ```
 
-
-d.	Назначьте class в качестве пароля доступа к привилегированному режиму EXEC.
+PC-B
+```
+S2(config)#enable secret class
+```
+## Часть 2. Изучение таблицы МАС-адресов коммутатора.
 
 
 
