@@ -50,25 +50,40 @@ Proceed with reload? [confirm]yC2960
 
 ### Шаг 4. Настройка базовых параметров каждого коммутатора.
 Создание соединения консольным кабелем (Console; S1 [Console] --> PC-A [RS-232])<br>
-CPT --> PC-A/PC-B --> вкладка Desktop --> Terminal
-
-#### a. Настройте имена устройств в соответствии с топологией.
-PC-A
+CPT --> PC-A/PC-B --> вкладка Desktop --> Terminal<br>
+Базовые настройки<br>
+Отключение функции поиска по DNS<br>
+Включение шифрование паролей (визуальное отображение)<br>
+Назначение банера motd ("сообщение дня") с разделителем #. Текст "GO AWAY! Unauthorized access is strictly prohibited."<br>
 ```
 Switch>enable
 Switch#no ip dom
 Switch#conf t
 Enter configuration commands, one per line.  End with CNTL/Z.
 Switch(config)#no ip domain-lookup
+Switch(config)#service password-encryption 
+Switch(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+GO AWAY! Unauthorized access is strictly prohibited.#
+
+Switch(config)#exit
+Switch#
+%SYS-5-CONFIG_I: Configured from console by console
+
+Switch#clock set 16:47:00 25 apr 2026
+Switch#
+```
+Далее
+
+#### a. Настройте имена устройств в соответствии с топологией.
+Изменение имени с Swith на S1 и S2<br>
+PC-A
+```
 Switch(config)#hostname S1
 S1(config)#
 ```
 PC-B
 ```
-Switch>enable
-Switch#conf t
-Enter configuration commands, one per line.  End with CNTL/Z.
-Switch(config)#no ip domain-lookup
 Switch(config)#host name S2
                          ^
 % Invalid input detected at '^' marker.
@@ -77,7 +92,37 @@ Switch(config)#hostname S2
 S2(config)#
 ```
 #### b.	Настройте IP-адреса, как указано в таблице адресации.
-c.	Назначьте cisco в качестве паролей консоли и VTY.
+Также после настройки IP адреса включаем сетевую карту<br>
+
+PC-A
+```
+S1(config)#
+S1(config)#interface vlan 1
+S1(config-if)#ip address 192.168.1.11 255.255.255.0
+S1(config-if)#
+S1(config-if)#no shutdown 
+
+S1(config-if)#
+%LINK-5-CHANGED: Interface Vlan1, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to up
+```
+PC-B
+```
+S2(config)#interface vlan 1
+S2(config-if)#ip address 192.168.1.12 255.255.255.0
+S2(config-if)#no shutdown
+
+S2(config-if)#
+%LINK-5-CHANGED: Interface Vlan1, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to up
+```
+#### c.	Назначьте cisco в качестве паролей консоли и VTY.
+Настраиваем в консоле PC-A. На PC-B настройка аналогична.
+```
+
+
 d.	Назначьте class в качестве пароля доступа к привилегированному режиму EXEC.
 
 
