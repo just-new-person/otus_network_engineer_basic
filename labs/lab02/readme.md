@@ -53,12 +53,30 @@ Proceed with reload? [confirm]yC2960
 CPT --> PC-A/PC-B --> вкладка Desktop --> Terminal
 
 #### a. Настройте имена устройств в соответствии с топологией.
+PC-A
 ```
-
-
-
-
-b.	Настройте IP-адреса, как указано в таблице адресации.
+Switch>enable
+Switch#no ip dom
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#no ip domain-lookup
+Switch(config)#hostname S1
+S1(config)#
+```
+PC-B
+```
+Switch>enable
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#no ip domain-lookup
+Switch(config)#host name S2
+                         ^
+% Invalid input detected at '^' marker.
+	
+Switch(config)#hostname S2
+S2(config)#
+```
+#### b.	Настройте IP-адреса, как указано в таблице адресации.
 c.	Назначьте cisco в качестве паролей консоли и VTY.
 d.	Назначьте class в качестве пароля доступа к привилегированному режиму EXEC.
 
