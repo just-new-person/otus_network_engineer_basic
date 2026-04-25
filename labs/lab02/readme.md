@@ -1,4 +1,3 @@
-
 # Лабораторная работа. Просмотр таблицы MAC-адресов коммутатора.
 ###  Топология
 ![](Топология_2.png)
@@ -173,8 +172,122 @@ S2(config)#enable secret class
 ```
 ## Часть 2. Изучение таблицы МАС-адресов коммутатора.
 
+### Шаг 1. Запишите МАС-адреса сетевых устройств.
 
+#### a.	Откройте командную строку на PC-A и PC-B и введите команду ipconfig /all.
+CPT --> PC-A/PC-B --> вкладка Desktop --> Command Promt<br>
 
+PC-A
+<details>
+  <summary>Результат выполнения команды ipconfig /all в командной строке PC-A</summary>
+C:\>ipconfig /all<br>
+<br>
+FastEthernet0 Connection:(default port)<br>
+<br>
+Connection-specific DNS Suffix..:<br>
+Physical Address................: 0004.9AE9.C3AD<br>
+Link-local IPv6 Address.........: FE80::204:9AFF:FEE9:C3AD<br>
+IPv6 Address....................: ::<br>
+IPv4 Address....................: 192.168.1.1<br>
+Subnet Mask.....................: 255.255.255.0<br>
+Default Gateway.................: ::<br>
+0.0.0.0<br>
+DHCP Servers....................: 0.0.0.0<br>
+DHCPv6 IAID.....................:<br>
+DHCPv6 Client DUID..............: 00-01-00-01-39-68-1D-BE-00-04-9A-E9-C3-AD<br>
+DNS Servers.....................: ::<br>
+0.0.0.0<br>
+<br>
+Bluetooth Connection:<br>
+<br>
+Connection-specific DNS Suffix..:<br>
+Physical Address................: 0003.E44E.15CB<br>
+Link-local IPv6 Address.........: ::<br>
+IPv6 Address....................: ::<br>
+IPv4 Address....................: 0.0.0.0<br>
+Subnet Mask.....................: 0.0.0.0<br>
+Default Gateway.................: ::<br>
+0.0.0.0<br>
+DHCP Servers....................: 0.0.0.0<br>
+DHCPv6 IAID.....................:<br>
+DHCPv6 Client DUID..............: 00-01-00-01-39-68-1D-BE-00-04-9A-E9-C3-AD<br>
+DNS Servers.....................: ::<br>
+0.0.0.0
+</details>
+
+PC-B
+<details>
+  <summary>Результат выполнения команды ipconfig /all в командной строке PC-B</summary>
+C:\>ipconfig /all<br>
+<br>
+FastEthernet0 Connection:(default port)<br>
+<br>
+Connection-specific DNS Suffix..:<br>
+Physical Address................: 0030.A3B1.07EE<br>
+Link-local IPv6 Address.........: FE80::230:A3FF:FEB1:7EE<br>
+IPv6 Address....................: ::<br>
+IPv4 Address....................: 192.168.1.2<br>
+Subnet Mask.....................: 255.255.255.0<br>
+Default Gateway.................: ::<br>
+0.0.0.0<br>
+DHCP Servers....................: 0.0.0.0<br>
+DHCPv6 IAID.....................:<br>
+DHCPv6 Client DUID..............: 00-01-00-01-30-57-91-C1-00-30-A3-B1-07-EE<br>
+DNS Servers.....................: ::<br>
+0.0.0.0<br>
+<br>
+Bluetooth Connection:<br>
+<br>
+Connection-specific DNS Suffix..:<br>
+Physical Address................: 0040.0B39.14C5<br>
+Link-local IPv6 Address.........: ::<br>
+IPv6 Address....................: ::<br>
+IPv4 Address....................: 0.0.0.0<br>
+Subnet Mask.....................: 0.0.0.0<br>
+Default Gateway.................: ::<br>
+0.0.0.0<br>
+DHCP Servers....................: 0.0.0.0<br>
+DHCPv6 IAID.....................:<br>
+DHCPv6 Client DUID..............: 00-01-00-01-30-57-91-C1-00-30-A3-B1-07-EE<br>
+DNS Servers.....................: ::<br>
+0.0.0.0
+</details>
+
+Физический адрес адаптера Ethernet (то же что и MAC адрес):
+PC-A - 0004.9AE9.C3AD
+PC-B - 0030.A3B1.07EE
+
+#### b.	Подключитесь к коммутаторам S1 и S2 через консоль и введите команду show interface F0/1 на каждом коммутаторе.
+Закрываем командную сторку и заходим в консоль<br>
+CPT --> PC-A/PC-B --> вкладка Desktop --> Command Promt<br>
+Идет запрос пароля на вход в EXEC. Согласно методичке пароль "class"<br>
+
+PC-A
+```
+GO AWAY! Unauthorized access is strictly prohibited.
+
+S1>enable
+Password: 
+S1#show interface F0/1
+FastEthernet0/1 is up, line protocol is up (connected)
+  Hardware is Lance, address is 0002.4a0d.6901 (bia 0002.4a0d.6901)
+```
+
+PC-B
+```
+S2>enable
+Password: 
+S2#show interface F0/1
+FastEthernet0/1 is up, line protocol is up (connected)
+  Hardware is Lance, address is 00e0.f9c6.3101 (bia 00e0.f9c6.3101)
+```
+
+Значит адрес оборудования во второй строке выходных данных команды и зашитый адрес — bia:<br>
+PC-A - 0002.4a0d.6901 (bia 0002.4a0d.6901)<br>
+PC-B - 00e0.f9c6.3101 (bia 00e0.f9c6.3101)<br>
+
+МАС-адрес коммутатора S1 Fast Ethernet 0/1:
+МАС-адрес коммутатора S2 Fast Ethernet 0/1:
 
 
 
