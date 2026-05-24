@@ -288,6 +288,7 @@ FastEthernet0/1 is up, line protocol is up (connected)
 
 ### Шаг 2. Просмотрите таблицу МАС-адресов коммутатора.
 Подключитесь к коммутатору S2 через консоль и просмотрите таблицу МАС-адресов до и после тестирования сетевой связи с помощью эхо-запросов.<br>
+#### b. привилегированном режиме EXEC введите команду show mac address-table
 ```
 S2#show mac address table
                     ^
@@ -304,13 +305,15 @@ Vlan    Mac Address       Type        Ports
 S2#
 ```
 В полученной таблице указан один MAC адрес 0002.4a0d.6901, принадлежащий порту №1 Fast Ethernet. В надписи "Fa0/1", 0/1 – 1 – порядковый номер порта; 0 – номер Vlan (виртуальной) сети.<br>
-<b>Далее есть вопросы на которые я не нашел ответ:<b><br>
-1. ...и каким устройствам принадлежат?<br>
-2. Если вы не записали МАС-адреса сетевых устройств в шаге 1, как можно определить, каким устройствам принадлежат МАС-адреса, используя только выходные данные команды show mac address-table? Работает ли это решение в любой ситуации?
 
-На шаге 3 предлагается стереть таблицу mac адресов и быстро посмотреть что будет. У меня - ничего. пустая таблица, потом в ней сновая появляется адрес 0002.4a0d.6901.
+### Шаг 3. Очистите таблицу МАС-адресов коммутатора S2 и снова отобразите таблицу МАС-адресов.
+#### a.	В привилегированном режиме EXEC введите команду clear mac address-table dynamic.
+S2# clear mac address-table dynamic
+#### b.	Снова быстро введите команду show mac address-table.
 ```
-S2#show mac address-table
+S2#sh
+S2#show mac ad
+S2#show mac address-table 
           Mac Address Table
 -------------------------------------------
 
@@ -318,15 +321,12 @@ Vlan    Mac Address       Type        Ports
 ----    -----------       --------    -----
 
    1    0002.4a0d.6901    DYNAMIC     Fa0/1
-S2#clear mac address-table dynamic 
-S2#show mac address-table
-          Mac Address Table
--------------------------------------------
-
-Vlan    Mac Address       Type        Ports
-----    -----------       --------    -----
-
-S2#show mac address-table
+S2#
+S2#cl
+S2#clear
+S2#clear mac add
+S2#clear mac address-table 
+S2#show mac address-table 
           Mac Address Table
 -------------------------------------------
 
@@ -336,6 +336,69 @@ Vlan    Mac Address       Type        Ports
    1    0002.4a0d.6901    DYNAMIC     Fa0/1
 S2#
 ```
+### Шаг 4. С компьютера PC-B отправьте эхо-запросы устройствам в сети и просмотрите таблицу МАС-адресов коммутатора.
+#### a.	На компьютере PC-B откройте командную строку и еще раз введите команду arp -a.
+Откройте командную строку.
+CPT --> PC-B --> вкладка Desktop --> Command Promt<br>
+```
+C:\>arp -a
+  Internet Address      Physical Address      Type
+  192.168.1.12          00e0.8f2b.d1b3        dynamic
+```
+Вопрос:
+Не считая адресов многоадресной и широковещательной рассылки, сколько пар IP- и МАС-адресов устройств было получено через протокол ARP?
+Ответ:
+Одна пара
+#### b.	Из командной строки PC-B отправьте эхо-запросы на компьютер PC-A, а также коммутаторы S1 и S2.
+Вопрос:
+От всех ли устройств получены ответы? Если нет, проверьте кабели и IP-конфигурации.
+Закройте командную строку.
+Ответ:
+нет. Пока я прошел пинг до S1 и PC-A иных записей в талбице не было. После пинга появились
+```
+C:\>ping 192.168.1.11
+
+Pinging 192.168.1.11 with 32 bytes of data:
+
+Request timed out.
+Reply from 192.168.1.11: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.11: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.11: bytes=32 time<1ms TTL=255
+
+Ping statistics for 192.168.1.11:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>ping 192.168.1.1
+
+Pinging 192.168.1.1 with 32 bytes of data:
+
+Reply from 192.168.1.1: bytes=32 time=8ms TTL=128
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=128
+Reply from 192.168.1.1: bytes=32 time=6ms TTL=128
+Reply from 192.168.1.1: bytes=32 time=5ms TTL=128
+
+Ping statistics for 192.168.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 8ms, Average = 4ms
+
+C:\>arp -a
+  Internet Address      Physical Address      Type
+  192.168.1.1           0004.9ae9.c3ad        dynamic
+  192.168.1.11          00d0.5808.0343        dynamic
+  192.168.1.12          00e0.8f2b.d1b3        dynamic
+
+C:\>
+```
+#### c.	Подключившись через консоль к коммутатору S2, введите команду show mac address-table.
+Откройте окно конфигурации
+Вопрос:
+Добавил ли коммутатор в таблицу МАС-адресов дополнительные МАС-адреса? Если да, то какие адреса и устройства?
+На компьютере PC-B откройте командную строку и еще раз введите команду arp -a.
+Вопрос:
+Появились ли в ARP-кэше компьютера PC-B дополнительные записи для всех сетевых устройств, которым были отправлены эхо-запросы?
 
 
 
