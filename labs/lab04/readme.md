@@ -38,7 +38,7 @@ S1(config)#enable secret class
 S1(config)#banner motd #
 Enter TEXT message.  End with the character '#'.
 Unauthorized access is stricly phohibited. #
-
+```
 #### Шаг 2. Настройте коммутатор.
 Назначьте имя хоста и настройте основные параметры устройства.
 ```
@@ -53,7 +53,7 @@ R1(config)#enable secret class
 R1(config)#banner motd #
 Enter TEXT message.  End with the character '#'.
 Unauthorized access is stricly phohibited. #
-
+```
 ## Часть 2. Ручная настройка IPv6-адресов
 
 #### Шаг 1. Назначьте IPv6-адреса интерфейсам Ethernet на R1.
