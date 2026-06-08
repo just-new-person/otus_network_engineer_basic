@@ -352,7 +352,7 @@ Ping statistics for FE80::1:
 Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 0ms, Average = 0ms
 ```
-Отправьте эхо-запрос на интерфейс управления S1 с PC-A.
+Отправьте эхо-запрос на интерфейс управления S1 с PC-A.<br>
 Не пингует. Show running-config показывает, что я его не включил. 
 ```
 R1#sh run
@@ -379,8 +379,69 @@ R1(config-if)#
 R1#
 %SYS-5-CONFIG_I: Configured from console by console
 ```
+Теперь эхо-запрос на интерфейс управления S1 с PC-A доходит, т.к. интерфейс VLAN 1 включился.<br>
+```
+C:\>ping 2001:db8:acad:1::b
+
+Pinging 2001:db8:acad:1::b with 32 bytes of data:
+
+Reply from 2001:DB8:ACAD:1::B: bytes=32 time<1ms TTL=255
+Reply from 2001:DB8:ACAD:1::B: bytes=32 time<1ms TTL=255
+Reply from 2001:DB8:ACAD:1::B: bytes=32 time<1ms TTL=255
+Reply from 2001:DB8:ACAD:1::B: bytes=32 time<1ms TTL=255
+
+Ping statistics for 2001:DB8:ACAD:1::B:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
 Введите команду tracert на PC-A, чтобы проверить наличие сквозного подключения к PC-B.
+```
+C:\>tracert
+Cisco Packet Tracer PC Tracert
+
+Usage: tracert target
+
+C:\>tracert 2001:db8:acad:a::3
+
+Tracing route to 2001:db8:acad:a::3 over a maximum of 30 hops: 
+
+  1   0 ms      0 ms      0 ms      2001:DB8:ACAD:1::1
+  2   0 ms      0 ms      0 ms      2001:DB8:ACAD:A::3
+
+Trace complete.
+```
 С PC-B отправьте эхо-запрос на PC-A.
+```
+C:\>ping 2001:db8:acad:1::3
+
+Pinging 2001:db8:acad:1::3 with 32 bytes of data:
+
+Reply from 2001:DB8:ACAD:1::3: bytes=32 time<1ms TTL=127
+Reply from 2001:DB8:ACAD:1::3: bytes=32 time<1ms TTL=127
+Reply from 2001:DB8:ACAD:1::3: bytes=32 time<1ms TTL=127
+Reply from 2001:DB8:ACAD:1::3: bytes=32 time<1ms TTL=127
+
+Ping statistics for 2001:DB8:ACAD:1::3:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
 С PC-B отправьте эхо-запрос на локальный адрес канала G0/0 на R1.
+```
+C:\>ping fe80::1
+
+Pinging fe80::1 with 32 bytes of data:
+
+Reply from FE80::1: bytes=32 time<1ms TTL=255
+Reply from FE80::1: bytes=32 time<1ms TTL=255
+Reply from FE80::1: bytes=32 time<1ms TTL=255
+Reply from FE80::1: bytes=32 time<1ms TTL=255
+
+Ping statistics for FE80::1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
 Примечание.  В случае отсутствия сквозного подключения проверьте, правильно ли указаны IPv6-адреса на всех устройствах.
 
