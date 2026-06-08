@@ -279,15 +279,52 @@ Bluetooth Connection:
 ![](PC-B_настройки_сети_стат.png)<br>
 
 Меняем на динамику - тогда появляются настройки
-1[](PC-B_настройки_сети_динам.png)<br>
+![](PC-B_настройки_сети_динам.png)<br>
 
 #### Шаг 3. Назначьте IPv6-адреса интерфейсу управления (SVI) на S1.
-
-
 ##### a.	Назначьте адрес IPv6 для S1. Также назначьте этому интерфейсу локальный адрес канала fe80::b.
+```
+R1>en
+Password: 
+R1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+R1(config)#int vlan1
+R1(config-if)#ipv6 address 2001:db8:acad:1::b/64
+R1(config-if)#ipv6 address fe80::b link-local
+R1(config-if)#
+```
 ##### b.	Проверьте правильность назначения IPv6-адресов интерфейсу управления с помощью команды show ipv6 interface vlan1.
+```
+R1(config-if)#
+R1#
+%SYS-5-CONFIG_I: Configured from console by console
+
+R1#
+R1#show ipv6 int
+R1#show ipv6 interface vlan1
+                           ^
+% Invalid input detected at '^' marker.
+	
+R1#show ipv6 interface vlan 1
+Vlan1 is administratively down, line protocol is down
+  IPv6 is tentative, link-local address is FE80::B [TEN]
+  No Virtual link-local address(es):
+  Global unicast address(es):
+    2001:DB8:ACAD:1::B, subnet is 2001:DB8:ACAD:1::/64 [TEN]
+  Joined group address(es):
+    FF02::1
+  MTU is 1500 bytes
+  ICMP error messages limited to one every 100 milliseconds
+  ICMP redirects are enabled
+  ICMP unreachables are sent
+  Output features: Check hwidb
+  ND DAD is enabled, number of DAD attempts: 1
+  ND reachable time is 30000 milliseconds
+R1#
+```
 Закройте окно настройки.
 #### Шаг 4. Назначьте компьютерам статические IPv6-адреса.
+На PC-A уже статика по дефолту. На PC-B поменял.
 ##### a.	Откройте окно Свойства Ethernet для каждого ПК и назначьте адресацию IPv6.
 Убедитесь, что оба компьютера имеют правильную информацию адреса IPv6
 Примечание. При выполнении работы в среде Cisco Packet Tracer установите статический и SLACC адреса на компьютеры последовательно, отразив результаты в отчете
