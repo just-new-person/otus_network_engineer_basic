@@ -58,7 +58,30 @@ Unauthorized access is stricly phohibited. #
 
 #### Шаг 1. Назначьте IPv6-адреса интерфейсам Ethernet на R1.
 a.	Назначьте глобальные индивидуальные IPv6-адреса, указанные в таблице адресации обоим интерфейсам Ethernet на R1.
+```
+S1(config)#int g0/0/0
+S1(config-if)#piv6 address 2001:db8:acad:a::1 /64
+               ^
+% Invalid input detected at '^' marker.
+	
+S1(config-if)#ipv6 address 2001:db8:acad:a::1 /64
+                                              ^
+% Invalid input detected at '^' marker.
+	
+S1(config-if)#ipv6 address 2001:db8:acad:a::1 ?
+  link-local  Use link-local address
+S1(config-if)#ipv6 address 2001:db8:acad:a::1 
+% Incomplete command.
+S1(config-if)#ipv6 address 2001:db8:acad:a::1/64
+S1(config-if)#
+S1(config-if)#
+S1(config-if)#int g0/0/1
+S1(config-if)#ipv6 address 2001:db8:acad:1::1/64
+S1(config-if)#
+```
 Откройте окно конфигурации
+
+
 b.	Введите команду show ipv6 interface brief, чтобы проверить, назначен ли каждому интерфейсу корректный индивидуальный IPv6-адрес.
 Примечание. Отображаемый локальный адрес канала основан на адресации EUI-64, которая автоматически использует MAC-адрес интерфейса для создания 128-битного локального IPv6-адреса канала.
 c.	Чтобы обеспечить соответствие локальных адресов канала индивидуальному адресу, вручную введите локальные адреса канала на каждом интерфейсе Ethernet на R1.
