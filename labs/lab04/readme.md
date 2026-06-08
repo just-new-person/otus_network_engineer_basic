@@ -27,10 +27,32 @@
 #### Шаг 1. Настройте маршрутизатор.
 Назначьте имя хоста и настройте основные параметры устройства.
 ```
-
+Router>enable
+Router#clock set 21:27:00 08 jun 2026
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#no ip domain-lookup 
+Router(config)#hostname S1
+S1(config)#service password-encryption 
+S1(config)#enable secret class
+S1(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
 
 #### Шаг 2. Настройте коммутатор.
 Назначьте имя хоста и настройте основные параметры устройства.
+```
+Switch>enable
+Switch#clock set 21:25:00 08 jun 2026
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#no ip domain-lookup 
+Switch(config)#hostname R1
+R1(config)#service password-encryption 
+R1(config)#enable secret class
+R1(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
 
 ## Часть 2. Ручная настройка IPv6-адресов
 
