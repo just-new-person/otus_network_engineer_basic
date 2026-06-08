@@ -39,6 +39,21 @@ S1(config)#banner motd #
 Enter TEXT message.  End with the character '#'.
 Unauthorized access is stricly phohibited. #
 ```
++
+```
+R1(config)#sdm prefer dual-ipv4-and-ipv6 default
+Changes to the running SDM preferences have been stored, but cannot take effect until the next reload.
+Use 'show sdm prefer' to see what SDM preference is currently active.
+R1(config)#end
+R1#
+%SYS-5-CONFIG_I: Configured from console by console
+
+R1#reload
+System configuration has been modified. Save? [yes/no]:y
+Building configuration...
+[OK]
+Proceed with reload? [confirm]
+```
 #### Шаг 2. Настройте коммутатор.
 Назначьте имя хоста и настройте основные параметры устройства.
 ```
@@ -57,7 +72,7 @@ Unauthorized access is stricly phohibited. #
 ## Часть 2. Ручная настройка IPv6-адресов
 
 #### Шаг 1. Назначьте IPv6-адреса интерфейсам Ethernet на R1.
-a.	Назначьте глобальные индивидуальные IPv6-адреса, указанные в таблице адресации обоим интерфейсам Ethernet на R1.
+##### a.	Назначьте глобальные индивидуальные IPv6-адреса, указанные в таблице адресации обоим интерфейсам Ethernet на R1.
 ```
 S1(config)#int g0/0/0
 S1(config-if)#piv6 address 2001:db8:acad:a::1 /64
@@ -79,35 +94,79 @@ S1(config-if)#int g0/0/1
 S1(config-if)#ipv6 address 2001:db8:acad:1::1/64
 S1(config-if)#
 ```
-Откройте окно конфигурации
-![](Окно_конфигурации_1_(G0-0-0).png)<br>
-![](Окно_конфигурации_2_(G0-0-1).png)<br>
+##### b.	Введите команду show ipv6 interface brief, чтобы проверить, назначен ли каждому интерфейсу корректный индивидуальный IPv6-адрес.
+```
+S1(config-if)#
+S1#
+%SYS-5-CONFIG_I: Configured from console by console
 
-b.	Введите команду show ipv6 interface brief, чтобы проверить, назначен ли каждому интерфейсу корректный индивидуальный IPv6-адрес.
+S1#show ipv6 interface brief
+GigabitEthernet0/0/0       [administratively down/down]
+    FE80::290:21FF:FEDE:A401
+    2001:DB8:ACAD:A::1
+GigabitEthernet0/0/1       [administratively down/down]
+    FE80::290:21FF:FEDE:A402
+    2001:DB8:ACAD:1::1
+Vlan1                      [administratively down/down]
+    unassigned
+S1#
+```
 Примечание. Отображаемый локальный адрес канала основан на адресации EUI-64, которая автоматически использует MAC-адрес интерфейса для создания 128-битного локального IPv6-адреса канала.
-c.	Чтобы обеспечить соответствие локальных адресов канала индивидуальному адресу, вручную введите локальные адреса канала на каждом интерфейсе Ethernet на R1.
+##### c.	Чтобы обеспечить соответствие локальных адресов канала индивидуальному адресу, вручную введите локальные адреса канала на каждом интерфейсе Ethernet на R1.
+```
+S1(config)#int g0/0/0
+S1(config-if)#ipv6 address fe::80
+S1(config-if)#ipv6 address fe::80:1 link-local
+% Invalid link-local address
+S1(config-if)#ipv6 address fe80:1 link-local
+                                  ^
+% Invalid input detected at '^' marker.
+	
+S1(config-if)#ipv6 address fe80:1 ?
+  X:X:X:X::X/<0-128>  IPv6 prefix
+S1(config-if)#ipv6 address fe80:1/64 link-local
+                                     ^
+% Invalid input detected at '^' marker.
+	
+S1(config-if)#ipv6 address fe80:1/64 ?
+  X:X:X:X::X/<0-128>  IPv6 prefix
+S1(config-if)#ipv6 address fe80::1/64 link-local
+                                      ^
+% Invalid input detected at '^' marker.
+	
+S1(config-if)#ipv6 address fe80::1 link-local
+S1(config-if)#
+S1(config-if)#no sh
+S1(config-if)#no shutdown 
+```
+```
+S1(config-if)#int g0/0/1
+S1(config-if)#ipv6 address fe80::1 link-local
+S1(config-if)#no sh
+S1(config-if)#no shutdown
+```
 Примечание. Каждый интерфейс маршрутизатора относится к отдельной сети. Пакеты с локальным адресом канала никогда не выходят за пределы локальной сети, а значит, для обоих интерфейсов можно указывать один и тот же локальный адрес канала.
-d.	Используйте выбранную команду, чтобы убедиться, что локальный адрес связи изменен на fe80::1.  
+##### d.	Используйте выбранную команду, чтобы убедиться, что локальный адрес связи изменен на fe80::1.  
 
 Закройте окно настройки.
 Вопрос:
 Какие группы многоадресной рассылки назначены интерфейсу G0/0?
 #### Шаг 2. Активируйте IPv6-маршрутизацию на R1.
-a.	В командной строке на PC-B введите команду ipconfig, чтобы получить данные IPv6-адреса, назначенного интерфейсу ПК.
+##### a.	В командной строке на PC-B введите команду ipconfig, чтобы получить данные IPv6-адреса, назначенного интерфейсу ПК.
 Вопрос:
 Назначен ли индивидуальный IPv6-адрес сетевой интерфейсной карте (NIC) на PC-B?
-b.	Активируйте IPv6-маршрутизацию на R1 с помощью команды IPv6 unicast-routing.
+##### b.	Активируйте IPv6-маршрутизацию на R1 с помощью команды IPv6 unicast-routing.
 , чтобы убедиться, что новая многоадресная группа назначена интерфейсу G0/0/0. Обратите внимание, что в списке групп для интерфейса G0/0 отображается группа многоадресной рассылки всех маршрутизаторов (FF02::2).
 Примечание. Это позволит компьютерам получать IP-адреса и данные шлюза по умолчанию с помощью функции SLAAC (Stateless Address Autoconfiguration (Автоконфигурация без сохранения состояния адреса)).
-c.	Теперь, когда R1 входит в группу многоадресной рассылки всех маршрутизаторов, еще раз введите команду ipconfig на PC-B. Проверьте данные IPv6-адреса.
+##### c.	Теперь, когда R1 входит в группу многоадресной рассылки всех маршрутизаторов, еще раз введите команду ipconfig на PC-B. Проверьте данные IPv6-адреса.
 Вопрос:
 Почему PC-B получил глобальный префикс маршрутизации и идентификатор подсети, которые вы настроили на R1?
 #### Шаг 3. Назначьте IPv6-адреса интерфейсу управления (SVI) на S1.
-a.	Назначьте адрес IPv6 для S1. Также назначьте этому интерфейсу локальный адрес канала fe80::b.
-b.	Проверьте правильность назначения IPv6-адресов интерфейсу управления с помощью команды show ipv6 interface vlan1.
+##### a.	Назначьте адрес IPv6 для S1. Также назначьте этому интерфейсу локальный адрес канала fe80::b.
+##### b.	Проверьте правильность назначения IPv6-адресов интерфейсу управления с помощью команды show ipv6 interface vlan1.
 Закройте окно настройки.
 #### Шаг 4. Назначьте компьютерам статические IPv6-адреса.
-a.	Откройте окно Свойства Ethernet для каждого ПК и назначьте адресацию IPv6.
+##### a.	Откройте окно Свойства Ethernet для каждого ПК и назначьте адресацию IPv6.
 Убедитесь, что оба компьютера имеют правильную информацию адреса IPv6
 Примечание. При выполнении работы в среде Cisco Packet Tracer установите статический и SLACC адреса на компьютеры последовательно, отразив результаты в отчете
 
