@@ -19,6 +19,9 @@
 
 ### Решение
 
+Сеть состоит из Switch (C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4), Router (ISR Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 15.5(3)S5) и два компьютера PC-А и PC-B.<br>
+Устройства соединены кабелем Ethernet (Cooper Straight-Throught) PC-А [FastEthernet0] --> [FastEthernet0/6] Switch [FastEthernet0/5] --> [GigabitEyhernet0/0/1] Router [GigabitEyhernet0/0/0] --> [FastEthernet0] PC-B<br>
+
 ## Часть 1. Настройка топологии и конфигурация основных параметров маршрутизатора и коммутатора.
 
 #### Шаг 1. Настройте маршрутизатор.
