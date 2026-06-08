@@ -337,7 +337,48 @@ PC-B<br>
 ## Часть 3. Проверка сквозного подключения
 
 С PC-A отправьте эхо-запрос на FE80::1. Это локальный адрес канала, назначенный G0/1 на R1.
+```
+C:\>ping fe80::1
+
+Pinging fe80::1 with 32 bytes of data:
+
+Reply from FE80::1: bytes=32 time<1ms TTL=255
+Reply from FE80::1: bytes=32 time<1ms TTL=255
+Reply from FE80::1: bytes=32 time<1ms TTL=255
+Reply from FE80::1: bytes=32 time<1ms TTL=255
+
+Ping statistics for FE80::1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
 Отправьте эхо-запрос на интерфейс управления S1 с PC-A.
+Не пингует. Show running-config показывает, что я его не включил. 
+```
+R1#sh run
+Building configuration...
+...
+interface Vlan1
+ no ip address
+ ipv6 address FE80::B link-local
+ ipv6 address 2001:DB8:ACAD:1::B/64
+ shutdown
+```
+Включаем
+```
+R1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+R1(config)#int vlan 1
+R1(config-if)#no sh
+
+R1(config-if)#
+%LINK-3-UPDOWN: Interface Vlan1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to up
+
+R1#
+%SYS-5-CONFIG_I: Configured from console by console
+```
 Введите команду tracert на PC-A, чтобы проверить наличие сквозного подключения к PC-B.
 С PC-B отправьте эхо-запрос на PC-A.
 С PC-B отправьте эхо-запрос на локальный адрес канала G0/0 на R1.
