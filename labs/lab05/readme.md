@@ -167,14 +167,10 @@ R1(config)#ip ssh version 2
 R1(config)#username admin privilege 15 secret Adm1nP@55
 ```
 ### Шаг 4. Активируйте протокол SSH на линиях VTY.
+#### a.	Активируйте протоколы Telnet и SSH на входящих линиях VTY с помощью команды transport input.
 Команда login local для использования локальной базы пользователей на выбранной линии (в данном случае будут линии vty 0 4)
 ```
 R1(config)#line vty 0 4
-R1(config-line)#login local
-R1(config-line)#
-```
-#### a.	Активируйте протоколы Telnet и SSH на входящих линиях VTY с помощью команды transport input.
-```
 R1(config-line)#trns
 R1(config-line)#transp
 R1(config-line)#transport ssh
@@ -186,18 +182,21 @@ R1(config-line)#transport input ssh
 R1(config-line)#
 ```
 #### b.	Измените способ входа в систему таким образом, чтобы использовалась проверка пользователей по локальной базе учетных записей.
+Команда login local для использования локальной базы пользователей на выбранной линии (в данном случае будут линии vty 0 4)
 ```
-
+R1(config)#line vty 0 4
+R1(config-line)#login local
 ```
 ### Шаг 5. Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 ```
-
+R1# copy running-config startup-config 
+Destination filename [startup-config]? 
+Building configuration...
+[OK]
 ```
 ### Шаг 6. Установите соединение с маршрутизатором по протоколу SSH.
-```
-
-```
 #### a.	Запустите Tera Term с PC-A.
+Странная история, но у меня не получается подключиться по заданному имени 
 ```
 
 ```
