@@ -84,11 +84,30 @@ R1(config)#
 ```
 i.	Настройте и активируйте на маршрутизаторе интерфейс G0/0/1, используя информацию, приведенную в таблице адресации.
 ```
+R1(config)#int g0/0/1
+R1(config-if)#ip address 192.168.1.1 255.255.255.0
+R1(config-if)#no sh
 
+R1(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/1, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1, changed state to up
 ```
 j.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 ```
-
+R1#copy running-config startup-config 
+Destination filename [startup-config]? 
+Building configuration...
+[OK]
+R1#
+```
+или
+```
+R1#
+R1#wr me
+Building configuration...
+[OK]
+R1#
 ```
 Шаг 4. Настройте компьютер PC-A.
 a.	Настройте для PC-A IP-адрес и маску подсети.
