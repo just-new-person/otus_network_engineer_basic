@@ -314,27 +314,49 @@ Building configuration...
 Для настройки протокола SSH на коммутаторе используйте те же команды, которые применялись для аналогичной настройки маршрутизатора в части 2.
 #### a.	Настройте имя устройства, как указано в таблице адресации.
 ```
-
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#hostname S1
+S1(config)#
 ```
 #### b.	Задайте домен для устройства.
 ```
-
+S1(config)#ip domain-name air.ru
 ```
 #### c.	Создайте ключ шифрования с указанием его длины.
 ```
+S1(config)#crypto key generate rsa 
+The name for the keys will be: S1.air.ru
+Choose the size of the key modulus in the range of 360 to 4096 for your
+  General Purpose Keys. Choosing a key modulus greater than 512 may take
+  a few minutes.
 
+How many bits in the modulus [512]: 2048
+% Generating 2048 bit RSA keys, keys will be non-exportable...[OK]
 ```
 #### d.	Создайте имя пользователя в локальной базе учетных записей.
+в методичке не указано на необходимость выдать права админа или установить на учтеку пароль
 ```
-
+S1(config)#username PiloT
 ```
 #### e.	Активируйте протоколы Telnet и SSH на линиях VTY.
 ```
-
+S1(config)#line vty 0 4
+S1(config-line)#trans
+S1(config-line)#transport ?
+  input   Define which protocols to use when connecting to the terminal server
+  output  Define which protocols to use for outgoing connections
+S1(config-line)#transport in
+S1(config-line)#transport input ?
+  all     All protocols
+  none    No protocols
+  ssh     TCP/IP SSH protocol
+  telnet  TCP/IP Telnet protocol
+S1(config-line)#transport input all
 ```
 #### f.	Измените способ входа в систему таким образом, чтобы использовалась проверка пользователей по локальной базе учетных записей.
 ```
-
+S1(config-line)#login local 
 ```
 ### Шаг 3. Установите соединение с коммутатором по протоколу SSH.
 Запустите программу Tera Term на PC-A, затем установите подключение по протоколу SSH к интерфейсу SVI коммутатора S1.
