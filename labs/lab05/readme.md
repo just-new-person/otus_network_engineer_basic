@@ -386,9 +386,9 @@ S1(config-line)#login local
 ![](SSH_S1_2_2.png)
 
 Закройте окно настройки.
+
 ## Часть 4. Настройка протокола SSH с использованием интерфейса командной строки (CLI) коммутатора
 Клиент SSH встроен в операционную систему Cisco IOS и может запускаться из интерфейса командной строки. В части 4 вам предстоит установить соединение с маршрутизатором по протоколу SSH, используя интерфейс командной строки коммутатора.
-
 ### Шаг 1. Посмотрите доступные параметры для клиента SSH в Cisco IOS.
 Откройте окно конфигурации
 Используйте вопросительный знак (?), чтобы отобразить варианты параметров для команды ssh.
@@ -403,25 +403,77 @@ S1# ssh?
   WORD IP-адрес или имя хоста удаленной системы
 ### Шаг 2. Установите с коммутатора S1 соединение с маршрутизатором R1 по протоколу SSH.
 #### a.	Чтобы подключиться к маршрутизатору R1 по протоколу SSH, введите команду –l admin. Это позволит вам войти в систему под именем admin. При появлении приглашения введите в качестве пароля Adm1nP@55
-S1# ssh -l admin 192.168.1.1
+S1# ssh -l admin 192.168.1.1<br>
+Password: <br>
+Authorized Users Only!<br>
+R1><br>
+```
+Press RETURN to get started!
+
+
+Unauthorized access is stricly phohibited. 
+
+User Access Verification
 Password: 
-Authorized Users Only!
-R1>
+
+S1>en
+Password: 
+S1#ssh ?
+  -l  Log in using this user name
+  -v  Specify SSH Protocol Version
+S1#ssh -l admin
+% Incomplete command.
+S1#ssh -l admin ?
+  -v    Specify SSH Protocol Version
+  WORD  IP address or hostname of a remote system
+S1#ssh -l admin rocket.ru
+Translating "rocket.ru"
+% Unknown command or computer name, or unable to find computer address
+
+S1#ssh -l admin 192.168.1.1
+
+Password: 
+
+
+Unauthorized access is stricly phohibited. 
+
+R1#
+```
+
 #### b.	Чтобы вернуться к коммутатору S1, не закрывая сеанс SSH с маршрутизатором R1, нажмите комбинацию клавиш Ctrl+Shift+6. Отпустите клавиши Ctrl+Shift+6 и нажмите x. Отображается приглашение привилегированного режима EXEC коммутатора.
-R1>
+R1><br>
+S1#<br>
+Верно. Сработало.
+```
+R1#
 S1#
+```
 #### c.	Чтобы вернуться к сеансу SSH на R1, нажмите клавишу Enter в пустой строке интерфейса командной строки. Чтобы увидеть окно командной строки маршрутизатора, нажмите клавишу Enter еще раз.
+S1#<br>
+[Resuming connection 1 to 192.168.1.1 ... ]<br>
+R1><br>
+Верно. Сработало, только R1 в режиме EXEC
+```
 S1#
 [Resuming connection 1 to 192.168.1.1 ... ]
 
-R1>
+R1#
+```
 #### d.	Чтобы завершить сеанс SSH на маршрутизаторе R1, введите в командной строке маршрутизатора команду exit.
-R1# exit
+R1# exit<br>
+[Connection to 192.168.1.1 closed by foreign host]<br>
+S1#<br>
+```
+R1#exit
 
 [Connection to 192.168.1.1 closed by foreign host]
 S1#
+```
+
 Вопрос:
-Какие версии протокола SSH поддерживаются при использовании интерфейса командной строки?
+Какие версии протокола SSH поддерживаются при использовании интерфейса командной строки?<br>
+
+
 Закройте окно настройки.
 	Вопрос для повторения
 Как предоставить доступ к сетевому устройству нескольким пользователям, у каждого из которых есть собственное имя пользователя?
