@@ -212,43 +212,103 @@ Building configuration...
 Откройте окно конфигурации
 #### a.	Подключитесь к коммутатору с помощью консольного подключения и активируйте привилегированный режим EXEC.
 ```
-
+Switch>enable
 ```
 #### b.	Войдите в режим конфигурации.
 ```
-
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
 ```
 #### c.	Отключите поиск DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
 ```
-
+Switch(config)#no ip damain0look
+Switch(config)#no ip damain
+Switch(config)#no ip damain-
+Switch(config)#no ip damain-l
+Switch(config)#no ip damain-loo
+Switch(config)#no ip domain-loo
+Switch(config)#no ip domain-lookup
 ```
 #### d.	Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.
 ```
-
+Switch(config)#enable secret class
 ```
 #### e.	Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.
 ```
-
+Switch(config)#line console 0
+Switch(config-line)# password cisco
+Switch(config-line)#login
 ```
 #### f.	Назначьте cisco в качестве пароля VTY и включите вход в систему по паролю.
 ```
-
+Switch(config)#line vty 0 4
+Switch(config-line)#?
+Virtual Line configuration commands:
+  access-class  Filter connections based on an IP access list
+  accounting    Accounting parameters
+  databits      Set number of data bits per character
+  exec-timeout  Set the EXEC timeout
+  exit          Exit from line configuration mode
+  flowcontrol   Set the flow control
+  history       Enable and control the command history function
+  logging       Modify message logging facilities
+  login         Enable password checking
+  motd-banner   Enable the display of the MOTD banner
+  no            Negate a command or set its defaults
+  parity        Set terminal parity
+  password      Set a password
+  privilege     Change privilege level for line
+  speed         Set the transmit and receive speeds
+  stopbits      Set async line stop bits
+  transport     Define transport protocols for line
+Switch(config-line)#pass
+Switch(config-line)#password ?
+  7     Specifies a HIDDEN password will follow
+  LINE  The UNENCRYPTED (cleartext) line password
+Switch(config-line)#password cisco
+Switch(config-line)#login
 ```
 #### g.	Зашифруйте открытые пароли.
 ```
-
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#servi
+Switch(config)#service pas
+Switch(config)#service password-encryption 
 ```
 #### h.	Создайте баннер, который предупреждает о запрете несанкционированного доступа.
 ```
-
+Switch(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
 ```
 #### i.	Настройте и активируйте на коммутаторе интерфейс VLAN 1, используя информацию, приведенную в таблице адресации.
 ```
-
+Switch(config)#int vlan 1
+Switch(config-if)#ip address 192.168.1.11 255.255.255.0
+Switch(config-if)#ex
+Switch(config)#ip ?
+  access-list      Named access-list
+  arp              IP ARP global configuration
+  default-gateway  Specify default gateway (if not routing IP)
+  dhcp             Configure DHCP server and relay parameters
+  domain           IP DNS Resolver
+  domain-lookup    Enable IP Domain Name System hostname translation
+  domain-name      Define the default domain name
+  ftp              FTP configuration commands
+  host             Add an entry to the ip hostname table
+  name-server      Specify address of name server to use
+  scp              Scp commands
+  ssh              Configure ssh options
+Switch(config)#ip def
+Switch(config)#ip default-gateway 192.168.1.1
 ```
 #### j.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 ```
-
+Switch#copy running-config startup-config 
+Destination filename [startup-config]? 
+Building configuration...
+[OK]
 ```
 ### Шаг 2. Настройте коммутатор для соединения по протоколу SSH.
 Для настройки протокола SSH на коммутаторе используйте те же команды, которые применялись для аналогичной настройки маршрутизатора в части 2.
