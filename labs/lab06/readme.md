@@ -134,47 +134,116 @@ Switch(config)#hostname S1
 ```
 Маршрутизатор S2
 ```
-
+Switch>en
+Switch>enable 
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#hostname S2
 ```
 #### b.	Отключите поиск DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
+Маршрутизатор S1
 ```
 S1(config)#no ip domain-lookup
 ```
+Маршрутизатор S2
+```
+S2(config)#no ip damin-lookup
+                  ^
+% Invalid input detected at '^' marker.
+	
+S2(config)#no ip domain-lookup
+```
 #### c.	Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.
+Маршрутизатор S1
 ```
 S1(config)#enable secret class
 ```
+Маршрутизатор S2
+```
+S2(config)#enable secret class
+```
 #### d.	Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.
+Маршрутизатор S1
 ```
 S1(config)#line console 0
 S1(config-line)#password cisco
 S1(config-line)#login
 ```
+Маршрутизатор S2
+```
+S2(config)#libe console 0
+             ^
+% Invalid input detected at '^' marker.
+	
+S2(config)#line console 0
+S2(config-line)#password cisco
+S2(config-line)#login
+```
 #### e.	Установите cisco в качестве пароля виртуального терминала и активируйте вход.
+Маршрутизатор S1
 ```
 S1(config-line)#line vty 0 4
 S1(config-line)#pas
 S1(config-line)#password cisco
 S1(config-line)#login
 ```
+Маршрутизатор S2
+```
+S2(config-line)#line vty 0 4
+S2(config-line)#password cisco
+S2(config-line)#login
+```
 #### f.	Зашифруйте открытые пароли.
+Маршрутизатор S1
 ```
 S1(config-line)#exit
 S1(config)#service password-encryption 
 ```
+Маршрутизатор S2
+```
+S2(config-line)#exit
+S2(config)#service pass
+S2(config)#service password-encryption 
+```
 #### g.	Создайте баннер с предупреждением о запрете несанкционированного доступа к устройству.
+Маршрутизатор S1
 ```
 S1(config)#banner motd #
 Enter TEXT message.  End with the character '#'.
 Unauthorized access is stricly phohibited. #
+
+S1(config)#exit
+```
+Маршрутизатор S2
+```
+S2(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
 ```
 #### h.	Настройте на коммутаторах время.
+Маршрутизатор S1
 ```
 S1#clock set 15:14:00 12 jun 2026
 ```
+Маршрутизатор S2
+```
+S2(config)#exit
+S2#
+%SYS-5-CONFIG_I: Configured from console by console
+
+S2#clock set 15:26:00 12 jun 2026
+```
 #### i.	Сохранение текущей конфигурации в качестве начальной.
+Маршрутизатор S1
 ```
 S1#copy  running-config startup-config 
+Destination filename [startup-config]? 
+Building configuration...
+[OK]
+```
+Маршрутизатор S2
+```
+S2#copy running-config startup-config 
 Destination filename [startup-config]? 
 Building configuration...
 [OK]
