@@ -56,7 +56,7 @@
 
 Сеть состоит из Router (ISR Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 15.5(3)S5), двух Switch (C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4) и двух компьютеров PC-А и PC-B.<br>
 Устройства соединены кабелем Ethernet (Cooper Straight-Throught) Router [GigabitEyhernet0/0/1] -->  [FastEthernet0/5] Switch [FastEthernet0/6] --> [FastEthernet0] PC-A; [FastEthernet0/1] --> [FastEthernet0/1] Switch [FastEthernet0/18] --> [FastEthernet0] PC-B 
-![](Топология_15_вып.png)
+![]
 
 ### Шаг 2. Настройте базовые параметры для маршрутизатора.
 #### a.	Подключитесь к маршрутизатору с помощью консоли и активируйте привилегированный режим EXE#### c.
