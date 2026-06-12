@@ -491,7 +491,36 @@ VLAN Name                             Status    Ports
 1005 trnet-default                    active    
 S1(config-if-range)#
 %CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on FastEthernet0/1 (10), with S2 FastEthernet0/1 (1).
+S1(config-if-range)#do sh int stat
+Port      Name               Status       Vlan       Duplex  Speed Type
+Fa0/1                        connected    10         a-full  a-100 10/100BaseTX
+Fa0/2                        disabled 99         auto    auto  10/100BaseTX
+Fa0/3                        disabled 99         auto    auto  10/100BaseTX
+Fa0/4                        disabled 99         auto    auto  10/100BaseTX
+Fa0/5                        notconnect   10         auto    auto  10/100BaseTX
+Fa0/6                        connected    10         a-full  a-100 10/100BaseTX
+Fa0/7                        disabled 99         auto    auto  10/100BaseTX
+Fa0/8                        disabled 99         auto    auto  10/100BaseTX
+Fa0/9                        disabled 99         auto    auto  10/100BaseTX
+Fa0/10                       disabled 99         auto    auto  10/100BaseTX
+Fa0/11                       disabled 99         auto    auto  10/100BaseTX
+Fa0/12                       disabled 99         auto    auto  10/100BaseTX
+Fa0/13                       disabled 99         auto    auto  10/100BaseTX
+Fa0/14                       disabled 99         auto    auto  10/100BaseTX
+Fa0/15                       disabled 99         auto    auto  10/100BaseTX
+Fa0/16                       disabled 99         auto    auto  10/100BaseTX
+Fa0/17                       disabled 99         auto    auto  10/100BaseTX
+Fa0/18                       disabled 99         auto    auto  10/100BaseTX
+Fa0/19                       disabled 99         auto    auto  10/100BaseTX
+Fa0/20                       disabled 99         auto    auto  10/100BaseTX
+Fa0/21                       disabled 99         auto    auto  10/100BaseTX
+Fa0/22                       disabled 99         auto    auto  10/100BaseTX
+Fa0/23                       disabled 99         auto    auto  10/100BaseTX
+Fa0/24                       disabled 99         auto    auto  10/100BaseTX
+Gig0/1                       disabled 99         auto    auto  10/100/1000BaseTX
+Gig0/2                       disabled 99         auto    auto  10/100/1000BaseTX
 
+S1#
 ```
 Маршрутизатор S2
 ```
@@ -510,7 +539,35 @@ VLAN Name                             Status    Ports
 1002 fddi-default                     active    
 1003 token-ring-default               active    
 1004 fddinet-default                  active    
-1005 trnet-default                    active    
+1005 trnet-default                    active
+S2(config-if-range)#do sh int stat
+Port      Name               Status       Vlan       Duplex  Speed Type
+Fa0/1                        connected    10         a-full  a-100 10/100BaseTX
+Fa0/2                        disabled 99         auto    auto  10/100BaseTX
+Fa0/3                        disabled 99         auto    auto  10/100BaseTX
+Fa0/4                        disabled 99         auto    auto  10/100BaseTX
+Fa0/5                        disabled 99         auto    auto  10/100BaseTX
+Fa0/6                        disabled 99         auto    auto  10/100BaseTX
+Fa0/7                        disabled 99         auto    auto  10/100BaseTX
+Fa0/8                        disabled 99         auto    auto  10/100BaseTX
+Fa0/9                        disabled 99         auto    auto  10/100BaseTX
+Fa0/10                       disabled 99         auto    auto  10/100BaseTX
+Fa0/11                       disabled 99         auto    auto  10/100BaseTX
+Fa0/12                       disabled 99         auto    auto  10/100BaseTX
+Fa0/13                       disabled 99         auto    auto  10/100BaseTX
+Fa0/14                       disabled 99         auto    auto  10/100BaseTX
+Fa0/15                       disabled 99         auto    auto  10/100BaseTX
+Fa0/16                       disabled 99         auto    auto  10/100BaseTX
+Fa0/17                       disabled 99         auto    auto  10/100BaseTX
+Fa0/18                       connected    10         a-full  a-100 10/100BaseTX
+Fa0/19                       disabled 99         auto    auto  10/100BaseTX
+Fa0/20                       disabled 99         auto    auto  10/100BaseTX
+Fa0/21                       disabled 99         auto    auto  10/100BaseTX
+Fa0/22                       disabled 99         auto    auto  10/100BaseTX
+Fa0/23                       disabled 99         auto    auto  10/100BaseTX
+Fa0/24                       disabled 99         auto    auto  10/100BaseTX
+Gig0/1                       disabled 99         auto    auto  10/100/1000BaseTX
+Gig0/2                       disabled 99         auto    auto  10/100/1000BaseTX
 ```
 Закройте окно настройки.
 ## Часть 3. Конфигурация магистрального канала стандарта 802.1Q между коммутаторами
