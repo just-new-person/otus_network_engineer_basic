@@ -263,28 +263,195 @@ PC-B<br>
 ### Шаг 1. Создайте сети VLAN на коммутаторах.
 #### a.	Создайте и назовите необходимые VLAN на каждом коммутаторе из таблицы выше.
 Откройте окно конфигурации
+Маршрутизатор S1
+```
+S1(config)#vlan 10
+S1(config-vlan)#name VLAN10
+```
+Маршрутизатор S2
 ```
 
 ```
 #### b.	Настройте интерфейс управления и шлюз по умолчанию на каждом коммутаторе, используя информацию об IP-адресе в таблице адресации. 
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 #### c.	Назначьте все неиспользуемые порты коммутатора VLAN Parking_Lot, настройте их для статического режима доступа и административно деактивируйте их.
 Примечание. Команда interface range полезна для выполнения этой задачи с минимальным количеством команд.
+Маршрутизатор S1
+```
+S1(config)#vlan 99
+S1(config-vlan)#name Parking_Lot
+S1(config-vlan)#exit
+S1(config)#int
+S1(config)#interface fa0/2-4, fa0/7-24, g0/1-2
+                         ^
+% Invalid input detected at '^' marker.
+	
+S1(config)#interface fa0/2-4, fa0/7-24, g0/1-2
+                         ^
+% Invalid input detected at '^' marker.
+	
+S1(config)#interface range fa0/2-4, fa0/7-24, g0/1-2
+S1(config-if-range)#swi
+S1(config-if-range)#switchport mode
+S1(config-if-range)#switchport mode access
+S1(config-if-range)#switchport access vlan 99
+S1(config-if-range)#end
+S1#
+%SYS-5-CONFIG_I: Configured from console by console
+
+S1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S1(config)#interface range fa0/2-4, fa0/7-24, g0/1-2
+S1(config-if-range)#shutdown
+```
+<details>
+  <summary>результат команды shutdown</summary>
+%LINK-5-CHANGED: Interface FastEthernet0/2, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/3, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/4, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/7, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/8, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/9, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/10, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/11, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/12, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/13, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/14, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/15, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/16, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/17, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/18, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/19, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/20, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/21, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/22, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/23, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/24, changed state to administratively down
+
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to administratively down
+
+%LINK-5-CHANGED: Interface GigabitEthernet0/2, changed state to administratively down
+</details>
+
+Маршрутизатор S2
+```
+
+```
 ### Шаг 2. Назначьте сети VLAN соответствующим интерфейсам коммутатора.
 #### a.	Назначьте используемые порты соответствующей VLAN (указанной в таблице VLAN выше) и настройте их для режима статического доступа.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 #### b.	Убедитесь, что VLAN назначены на правильные интерфейсы.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 Закройте окно настройки.
 ## Часть 3. Конфигурация магистрального канала стандарта 802.1Q между коммутаторами
 В части 3 вы вручную настроите интерфейс F0/1 как транк.
 ### Шаг 1. Вручную настройте магистральный интерфейс F0/1 на коммутаторах S1 и S2.
 #### a.	Настройка статического транкинга на интерфейсе F0/1 для обоих коммутаторов.
 Откройте окно конфигурации
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 #### b.	Установите native VLAN 1000 на обоих коммутаторах.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 #### c.	Укажите, что VLAN 10, 20, 30 и 1000 могут проходить по транку.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 #### d.	Проверьте транки, native VLAN и разрешенные VLAN через транк.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 ### Шаг 2. Вручную настройте магистральный интерфейс F0/5 на коммутаторе S1.
 #### a.	Настройте интерфейс S1 F0/5 с теми же параметрами транка, что и F0/1. Это транк до маршрутизатора.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 #### b.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 #### c.	Проверка транкинга.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 Вопрос:
 Что произойдет, если G0/0/1 на R1 будет отключен?
 Закройте окно настройки.
@@ -292,15 +459,71 @@ PC-B<br>
 ### Шаг 1. Настройте маршрутизатор.
 Откройте окно конфигурации
 #### a.	При необходимости активируйте интерфейс G0/0/1 на маршрутизаторе.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 #### b.	Настройте подинтерфейсы для каждой VLAN, как указано в таблице IP-адресации. Все подинтерфейсы используют инкапсуляцию 802.1Q. Убедитесь, что подинтерфейсу для native VLAN не назначен IP-адрес. Включите описание для каждого подинтерфейса.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 #### c.	Убедитесь, что вспомогательные интерфейсы работают
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 Закройте окно настройки.
 ## Часть 5. Проверьте, работает ли маршрутизация между VLAN
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 ### ### Шаг 1. Выполните следующие тесты с PC-#### a. Все должно быть успешно.
 Примечание. Возможно, вам придется отключить брандмауэр ПК для работы ping
 #### a.	Отправьте эхо-запрос с PC-A на шлюз по умолчанию.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 #### b.	Отправьте эхо-запрос с PC-A на PC-#### b.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 #### c.	Отправьте команду ping с компьютера PC-A на коммутатор S2.
+Маршрутизатор S1
+```
+
+```
+Маршрутизатор S2
+```
+
+```
 ### ### Шаг 2. Пройдите следующий тест с PC-B
 В окне командной строки на PC-B выполните команду tracert на адрес PC-#### a.
 Вопрос:
