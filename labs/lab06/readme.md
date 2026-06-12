@@ -375,8 +375,71 @@ S1(config-if-range)#shutdown
 
 Маршрутизатор S2
 ```
-
+S2(config)#vlan 99
+S2(config-vlan)#na
+%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on FastEthernet0/1 (1), with S1 FastEthernet0/1 (10).
+% Ambiguous command: "n"
+S2(config-vlan)#name Parking_Lot
+S2(config-vlan)#int range fa0/2-17, fa0/19-24, g0/1-2
+S2(config-if-range)#sw
+S2(config-if-range)#switchport mode access
+S2(config-if-range)#sw
+S2(config-if-range)#switchport ass
+S2(config-if-range)#switchport acc
+S2(config-if-range)#switchport access vlan 99
+S2(config-if-range)#sh
 ```
+<details>
+  <summary>результат команды shutdown</summary>
+	%LINK-5-CHANGED: Interface FastEthernet0/2, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/3, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/4, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/5, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/6, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/7, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/8, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/9, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/10, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/11, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/12, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/13, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/14, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/15, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/16, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/17, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/19, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/20, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/21, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/22, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/23, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/24, changed state to administratively down
+
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to administratively down
+
+%LINK-5-CHANGED: Interface GigabitEthernet0/2, changed state to administratively down
+</details>
+
 ### Шаг 2. Назначьте сети VLAN соответствующим интерфейсам коммутатора.
 #### a.	Назначьте используемые порты соответствующей VLAN (указанной в таблице VLAN выше) и настройте их для режима статического доступа.
 Маршрутизатор S1
@@ -394,7 +457,18 @@ S1(config-if-range)#no sh
 ```
 Маршрутизатор S2
 ```
-
+S2#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S2(config)#int
+S2(config)#interface range fa0/1, fa0/18
+S2(config-if-range)#sw
+S2(config-if-range)#switchport ac
+S2(config-if-range)#switchport mode acc
+S2(config-if-range)#switchport mode access 
+S2(config-if-range)#sw
+S2(config-if-range)#switchport ac
+S2(config-if-range)#switchport access vlan 10
+S2(config-if-range)#no sh
 ```
 #### b.	Убедитесь, что VLAN назначены на правильные интерфейсы.
 Маршрутизатор S1
@@ -421,7 +495,22 @@ S1(config-if-range)#
 ```
 Маршрутизатор S2
 ```
+S2(config-if-range)#do sh vlan br
 
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    
+10   VLAN10                           active    Fa0/1, Fa0/18
+99   Parking_Lot                      active    Fa0/2, Fa0/3, Fa0/4, Fa0/5
+                                                Fa0/6, Fa0/7, Fa0/8, Fa0/9
+                                                Fa0/10, Fa0/11, Fa0/12, Fa0/13
+                                                Fa0/14, Fa0/15, Fa0/16, Fa0/17
+                                                Fa0/19, Fa0/20, Fa0/21, Fa0/22
+                                                Fa0/23, Fa0/24, Gig0/1, Gig0/2
+1002 fddi-default                     active    
+1003 token-ring-default               active    
+1004 fddinet-default                  active    
+1005 trnet-default                    active    
 ```
 Закройте окно настройки.
 ## Часть 3. Конфигурация магистрального канала стандарта 802.1Q между коммутаторами
