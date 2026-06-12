@@ -106,21 +106,81 @@ Unauthorized access is stricly phohibited. #
 ```
 #### j.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 ```
+R1(config)#ex
+R1#
+%SYS-5-CONFIG_I: Configured from console by console
 
+R1#copy run
+R1#copy running-config sta
+R1#copy running-config startup-config 
+Destination filename [startup-config]? 
+Building configuration...
+[OK]
 ```
 #### k.	Настройте на маршрутизаторе время.
+```
+R1#clock set 15:07:00 12 jun 2026
+```
 Закройте окно настройки.
+
 ### Шаг 3. Настройте базовые параметры каждого коммутатора.
 #### a.	Присвойте коммутатору имя устройства.
+Маршрутизатор S1
+```
+Switch>en
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#hostname S1
+```
+Маршрутизатор S2
+```
+
+```
 #### b.	Отключите поиск DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
+```
+S1(config)#no ip domain-lookup
+```
 #### c.	Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.
+```
+S1(config)#enable secret class
+```
 #### d.	Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.
+```
+S1(config)#line console 0
+S1(config-line)#password cisco
+S1(config-line)#login
+```
 #### e.	Установите cisco в качестве пароля виртуального терминала и активируйте вход.
+```
+S1(config-line)#line vty 0 4
+S1(config-line)#pas
+S1(config-line)#password cisco
+S1(config-line)#login
+```
 #### f.	Зашифруйте открытые пароли.
+```
+S1(config-line)#exit
+S1(config)#service password-encryption 
+```
 #### g.	Создайте баннер с предупреждением о запрете несанкционированного доступа к устройству.
+```
+S1(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
+```
 #### h.	Настройте на коммутаторах время.
+```
+S1#clock set 15:14:00 12 jun 2026
+```
 #### i.	Сохранение текущей конфигурации в качестве начальной.
+```
+S1#copy  running-config startup-config 
+Destination filename [startup-config]? 
+Building configuration...
+[OK]
+```
 Закройте окно настройки.
+
 ### Шаг 4. Настройте узлы ПК.
 Адреса ПК можно посмотреть в таблице адресации.
 ## Часть 2. Создание сетей VLAN и назначение портов коммутатора
