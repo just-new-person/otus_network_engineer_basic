@@ -270,16 +270,29 @@ S1(config-vlan)#name VLAN10
 ```
 Маршрутизатор S2
 ```
-
+S2(config)#vlan 10
+S2(config-vlan)#name VLAN10
 ```
 #### b.	Настройте интерфейс управления и шлюз по умолчанию на каждом коммутаторе, используя информацию об IP-адресе в таблице адресации. 
 Маршрутизатор S1
 ```
-
+S1(config-vlan)#exit
+S1(config)#int vlan 1
+S1(config-if)#ip address 192.168.10.11 255.255.255.0
+S1(config-if)#exit
+S1(config)#ip def
+S1(config)#ip default-gateway 192.168.10.1
 ```
 Маршрутизатор S2
 ```
-
+S2(config-vlan)#exit
+S2(config)#int vlan 1
+S2(config-if)#ip address 192.168.10.12 255.255.255.0
+S2(config-if)#exit
+S2(config)#ip d
+%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on FastEthernet0/1 (1), with S1 FastEthernet0/1 (1
+S2(config)#ip def
+S2(config)#ip default-gateway 192.168.10.1
 ```
 #### c.	Назначьте все неиспользуемые порты коммутатора VLAN Parking_Lot, настройте их для статического режима доступа и административно деактивируйте их.
 Примечание. Команда interface range полезна для выполнения этой задачи с минимальным количеством команд.
@@ -368,7 +381,16 @@ S1(config-if-range)#shutdown
 #### a.	Назначьте используемые порты соответствующей VLAN (указанной в таблице VLAN выше) и настройте их для режима статического доступа.
 Маршрутизатор S1
 ```
-
+S1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S1(config)#int
+S1(config)#interface ran
+S1(config)#interface range fa0/1, fa0/5-6
+S1(config-if-range)#sw
+S1(config-if-range)#switchport mode access
+S1(config-if-range)#sw
+S1(config-if-range)#switchport access VLAN 10
+S1(config-if-range)#no sh
 ```
 Маршрутизатор S2
 ```
@@ -377,6 +399,24 @@ S1(config-if-range)#shutdown
 #### b.	Убедитесь, что VLAN назначены на правильные интерфейсы.
 Маршрутизатор S1
 ```
+S1(config-if-range)#do sh vlan br
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    
+10   VLAN10                           active    Fa0/1, Fa0/5, Fa0/6
+99   Parking_Lot                      active    Fa0/2, Fa0/3, Fa0/4, Fa0/7
+                                                Fa0/8, Fa0/9, Fa0/10, Fa0/11
+                                                Fa0/12, Fa0/13, Fa0/14, Fa0/15
+                                                Fa0/16, Fa0/17, Fa0/18, Fa0/19
+                                                Fa0/20, Fa0/21, Fa0/22, Fa0/23
+                                                Fa0/24, Gig0/1, Gig0/2
+1002 fddi-default                     active    
+1003 token-ring-default               active    
+1004 fddinet-default                  active    
+1005 trnet-default                    active    
+S1(config-if-range)#
+%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on FastEthernet0/1 (10), with S2 FastEthernet0/1 (1).
 
 ```
 Маршрутизатор S2
