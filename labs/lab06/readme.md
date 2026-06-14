@@ -599,7 +599,27 @@ S1(config-if)#
 ```
 Маршрутизатор S2
 ```
+User Access Verification
 
+Password: 
+
+S2>
+S2>enable
+Password: 
+S2#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S2(config)#int fa0/1
+S2(config-if)#sw
+S2(config-if)#switchport mode
+S2(config-if)#switchport mode trunk
+
+S2(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to up
+
+S2(config-if)#
+%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on FastEthernet0/1 (1), with S1 FastEthernet0/1 (1000).
 ```
 #### b.	Установите native VLAN 1000 на обоих коммутаторах.
 Маршрутизатор S1
@@ -608,7 +628,7 @@ S1(config-if)#switchport trunk native vlan 1000
 ```
 Маршрутизатор S2
 ```
-
+S2(config-if)#switchport trunk native vlan 1000
 ```
 #### c.	Укажите, что VLAN 10, 20, 30 и 1000 могут проходить по транку.
 Маршрутизатор S1
@@ -617,7 +637,10 @@ S1(config-if)#switchport trunk allowed vlan 10,20,30,1000
 ```
 Маршрутизатор S2
 ```
-
+S2(config-if)#sw
+S2(config-if)#switchport trunk
+S2(config-if)#switchport trunk all
+S2(config-if)#switchport trunk allowed vlan 10,20,30,1000
 ```
 #### d.	Проверьте транки, native VLAN и разрешенные VLAN через транк.
 Маршрутизатор S1
@@ -651,7 +674,32 @@ Appliance trust: none
 ```
 Маршрутизатор S2
 ```
-
+S2(config-if)#do sh int fa0/1 sw
+Name: Fa0/1
+Switchport: Enabled
+Administrative Mode: trunk
+Operational Mode: trunk
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: dot1q
+Negotiation of Trunking: On
+Access Mode VLAN: 10 (VLAN10)
+Trunking Native Mode VLAN: 1000 (Inactive)
+Voice VLAN: none
+Administrative private-vlan host-association: none
+Administrative private-vlan mapping: none
+Administrative private-vlan trunk native VLAN: none
+Administrative private-vlan trunk encapsulation: dot1q
+Administrative private-vlan trunk normal VLANs: none
+Administrative private-vlan trunk private VLANs: none
+Operational private-vlan: none
+Trunking VLANs Enabled: 10,20,30,1000
+Pruning VLANs Enabled: 2-1001
+Capture Mode Disabled
+Capture VLANs Allowed: ALL
+Protected: false
+Unknown unicast blocked: disabled
+Unknown multicast blocked: disabled
+Appliance trust: none
 ```
 ### Шаг 2. Вручную настройте магистральный интерфейс F0/5 на коммутаторе S1.
 #### a.	Настройте интерфейс S1 F0/5 с теми же параметрами транка, что и F0/1. Это транк до маршрутизатора.
