@@ -577,6 +577,24 @@ Gig0/2                       disabled 99         auto    auto  10/100/1000BaseTX
 Откройте окно конфигурации
 Маршрутизатор S1
 ```
+S1>en
+S1>enable 
+Password: 
+S1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S1(config)#int fa0/1
+S1(config-if)#sw
+S1(config-if)#switchport mode trunk
+
+S1(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to up
+
+%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on FastEthernet0/1 (1), with S2 FastEthernet0/1 (10).
+
+S1(config-if)#
+%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on FastEthernet0/1 (1), with S2 FastEthernet0/1 (10).
 
 ```
 Маршрутизатор S2
@@ -586,7 +604,7 @@ Gig0/2                       disabled 99         auto    auto  10/100/1000BaseTX
 #### b.	Установите native VLAN 1000 на обоих коммутаторах.
 Маршрутизатор S1
 ```
-
+S1(config-if)#switchport trunk native vlan 1000
 ```
 Маршрутизатор S2
 ```
@@ -595,7 +613,7 @@ Gig0/2                       disabled 99         auto    auto  10/100/1000BaseTX
 #### c.	Укажите, что VLAN 10, 20, 30 и 1000 могут проходить по транку.
 Маршрутизатор S1
 ```
-
+S1(config-if)#switchport trunk allowed vlan 10,20,30,1000
 ```
 Маршрутизатор S2
 ```
@@ -604,7 +622,32 @@ Gig0/2                       disabled 99         auto    auto  10/100/1000BaseTX
 #### d.	Проверьте транки, native VLAN и разрешенные VLAN через транк.
 Маршрутизатор S1
 ```
-
+S1#show interfaces fa0/1 switchport 
+Name: Fa0/1
+Switchport: Enabled
+Administrative Mode: trunk
+Operational Mode: trunk
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: dot1q
+Negotiation of Trunking: On
+Access Mode VLAN: 10 (VLAN10)
+Trunking Native Mode VLAN: 1000 (Inactive)
+Voice VLAN: none
+Administrative private-vlan host-association: none
+Administrative private-vlan mapping: none
+Administrative private-vlan trunk native VLAN: none
+Administrative private-vlan trunk encapsulation: dot1q
+Administrative private-vlan trunk normal VLANs: none
+Administrative private-vlan trunk private VLANs: none
+Operational private-vlan: none
+Trunking VLANs Enabled: 10,20,30,1000
+Pruning VLANs Enabled: 2-1001
+Capture Mode Disabled
+Capture VLANs Allowed: ALL
+Protected: false
+Unknown unicast blocked: disabled
+Unknown multicast blocked: disabled
+Appliance trust: none
 ```
 Маршрутизатор S2
 ```
