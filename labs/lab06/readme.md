@@ -705,32 +705,62 @@ Appliance trust: none
 #### a.	Настройте интерфейс S1 F0/5 с теми же параметрами транка, что и F0/1. Это транк до маршрутизатора.
 Маршрутизатор S1
 ```
-
-```
-Маршрутизатор S2
-```
-
+S1(config)#int fa0/5
+S1(config-if)#sw
+S1(config-if)#switchport mode
+S1(config-if)#switchport mode trunk
+S1(config-if)#sw
+S1(config-if)#switchport trunk
+S1(config-if)#switchport trunk acc
+S1(config-if)#switchport trunk ?
+  allowed  Set allowed VLAN characteristics when interface is in trunking mode
+  native   Set trunking native characteristics when interface is in trunking
+           mode
+S1(config-if)#switchport trunk all
+S1(config-if)#switchport trunk allowed vlan 10,20,30,1000
 ```
 #### b.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 Маршрутизатор S1
 ```
-
-```
-Маршрутизатор S2
-```
-
+S1(config-if)#do wr me
+Building configuration...
+[OK]
 ```
 #### c.	Проверка транкинга.
 Маршрутизатор S1
 ```
+S1#sh int fa0/5 sw
+Name: Fa0/5
+Switchport: Enabled
+Administrative Mode: trunk
+Operational Mode: down
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: dot1q
+Negotiation of Trunking: On
+Access Mode VLAN: 10 (VLAN10)
+Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none
+Administrative private-vlan host-association: none
+Administrative private-vlan mapping: none
+Administrative private-vlan trunk native VLAN: none
+Administrative private-vlan trunk encapsulation: dot1q
+Administrative private-vlan trunk normal VLANs: none
+Administrative private-vlan trunk private VLANs: none
+Operational private-vlan: none
+Trunking VLANs Enabled: 10,20,30,1000
+Pruning VLANs Enabled: 2-1001
+Capture Mode Disabled
+Capture VLANs Allowed: ALL
+Protected: false
+Unknown unicast blocked: disabled
+Unknown multicast blocked: disabled
+Appliance trust: none
+```
 
-```
-Маршрутизатор S2
-```
-
-```
 Вопрос:
-Что произойдет, если G0/0/1 на R1 будет отключен?
+Что произойдет, если G0/0/1 на R1 будет отключен?<br>
+Не будет связи, т.к. для работы trunk-линии надо чтобы оба интефейса были включены и настроено однообразно.
+
 Закройте окно настройки.
 ## Часть 4. Настройка маршрутизации между сетями VLAN
 ### Шаг 1. Настройте маршрутизатор.
