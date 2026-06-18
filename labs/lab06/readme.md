@@ -794,6 +794,28 @@ R1(config-subif)#encapsulation d
 R1(config-subif)#encapsulation dot1Q 1000 native
 R1(config-subif)#
 ```
+```
+R1(config-subif)#ex
+R1(config)#do sh run
+Building configuration...
+...
+!
+interface GigabitEthernet0/0/1.1000
+ encapsulation dot1Q 1000 native
+ no ip address
+!
+```
+```
+R1(config-subif)#int g0/0/1.10
+R1(config-subif)#des
+R1(config-subif)#description ?
+  LINE  Up to 240 characters describing this interface
+R1(config-subif)#description Default Gateway for VLAN 10
+R1(config-subif)#int g0/0/1.20
+R1(config-subif)#description Default Gateway for VLAN 20
+R1(config-subif)#int g0/0/1.30
+R1(config-subif)#description Default Gateway for VLAN 30
+```
 #### c.	Убедитесь, что вспомогательные интерфейсы работают
 
 
