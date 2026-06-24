@@ -830,13 +830,49 @@ R1(config-subif)#int g0/0/1.30
 R1(config-subif)#description Default Gateway for VLAN 30
 ```
 #### c.	Убедитесь, что вспомогательные интерфейсы работают
+```
+R1#sh in g0/0/1.10 
+GigabitEthernet0/0/1.10 is up, line protocol is up (connected)
+  Hardware is PQUICC_FEC, address is 00d0.5835.6d02 (bia 00d0.5835.6d02)
+  Internet address is 192.168.10.1/24
+  MTU 1500 bytes, BW 100000 Kbit, DLY 100 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation 802.1Q Virtual LAN, Vlan ID 10
+  ARP type: ARPA, ARP Timeout 04:00:00, 
+  Last clearing of "show interface" counters never
 
+R1#sh in g0/0/1.20 
+GigabitEthernet0/0/1.20 is up, line protocol is up (connected)
+  Hardware is PQUICC_FEC, address is 00d0.5835.6d02 (bia 00d0.5835.6d02)
+  Internet address is 192.168.20.1/24
+  MTU 1500 bytes, BW 100000 Kbit, DLY 100 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation 802.1Q Virtual LAN, Vlan ID 20
+  ARP type: ARPA, ARP Timeout 04:00:00, 
+  Last clearing of "show interface" counters never
 
+R1#sh in g0/0/1.30 
+GigabitEthernet0/0/1.30 is up, line protocol is up (connected)
+  Hardware is PQUICC_FEC, address is 00d0.5835.6d02 (bia 00d0.5835.6d02)
+  Internet address is 192.168.30.1/24
+  MTU 1500 bytes, BW 100000 Kbit, DLY 100 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation 802.1Q Virtual LAN, Vlan ID 30
+  ARP type: ARPA, ARP Timeout 04:00:00, 
+  Last clearing of "show interface" counters never
+
+R1#sh in g0/0/1.1000 
+GigabitEthernet0/0/1.1000 is up, line protocol is up (connected)
+  Hardware is PQUICC_FEC, address is 00d0.5835.6d02 (bia 00d0.5835.6d02)
+  MTU 1500 bytes, BW 100000 Kbit, DLY 100 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation 802.1Q Virtual LAN, Vlan ID 1000
+  ARP type: ARPA, ARP Timeout 04:00:00, 
+  Last clearing of "show interface" counters never
+```
 Закройте окно настройки.
 ## Часть 5. Проверьте, работает ли маршрутизация между VLAN
-
-
-### ### Шаг 1. Выполните следующие тесты с PC-#### a. Все должно быть успешно.
+### ### Шаг 1. Выполните следующие тесты с PC-A. Все должно быть успешно.
 Примечание. Возможно, вам придется отключить брандмауэр ПК для работы ping
 #### a.	Отправьте эхо-запрос с PC-A на шлюз по умолчанию.
 
@@ -847,7 +883,7 @@ R1(config-subif)#description Default Gateway for VLAN 30
 #### c.	Отправьте команду ping с компьютера PC-A на коммутатор S2.
 
 
-### ### Шаг 2. Пройдите следующий тест с PC-B
+### ### Шаг 2. Пройдите следующий тест с PC-B.
 В окне командной строки на PC-B выполните команду tracert на адрес PC-#### a.
 Вопрос:
 Какие промежуточные IP-адреса отображаются в результатах?
