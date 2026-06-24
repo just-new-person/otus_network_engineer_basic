@@ -582,7 +582,7 @@ Gig0/2                       disabled 999        auto    auto  10/100/1000BaseTX
 #### a.	Настройка статического транкинга на интерфейсе F0/1 для обоих коммутаторов.
 Тут у меня был вопрос почему я не могу выбрать инкапсуляцию dot1q при настройке trunk.<br>
 Интернет сказал, что такая ситуация встречается при переходе от старых к новым платформам Cisco.<br>
-Мол старое оборудование поддерживало два типа инкапсуляции: isl и dot1q, и выбор надо было делать, а обновленное поддвеживает только dot1q. На CPT v.8, по-моему, на лекции, когда я в парралель делал, там я мог выбирать метод инкапсуляции.<br>
+Мол старое оборудование поддерживало два типа инкапсуляции: isl и dot1q, и выбор надо было делать, а обновленное поддеживает только dot1q. На CPT v.8, по-моему, на лекции, когда я параллельно делал, там я мог выбирать метод инкапсуляции, в v.9 уже, похоже, нет.<br>
 
 Откройте окно конфигурации
 Маршрутизатор S1
@@ -692,8 +692,8 @@ Administrative Mode: trunk
 Operational Mode: trunk
 Administrative Trunking Encapsulation: dot1q
 Operational Trunking Encapsulation: dot1q
-Negotiation of Trunking: On
-Access Mode VLAN: 10 (VLAN10)
+Negotiation of Trunking: Off
+Access Mode VLAN: 10 (Upravlenie)
 Trunking Native Mode VLAN: 1000 (Inactive)
 Voice VLAN: none
 Administrative private-vlan host-association: none
