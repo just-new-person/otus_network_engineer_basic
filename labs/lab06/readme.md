@@ -720,6 +720,8 @@ S1(config)#int fa0/5
 S1(config-if)#sw
 S1(config-if)#switchport mode
 S1(config-if)#switchport mode trunk
+S1(config-if)#switchport non
+S1(config-if)#switchport nonegotiate 
 S1(config-if)#sw
 S1(config-if)#switchport trunk
 S1(config-if)#switchport trunk acc
@@ -744,11 +746,11 @@ S1#sh int fa0/5 sw
 Name: Fa0/5
 Switchport: Enabled
 Administrative Mode: trunk
-Operational Mode: down
+Operational Mode: trunk
 Administrative Trunking Encapsulation: dot1q
 Operational Trunking Encapsulation: dot1q
-Negotiation of Trunking: On
-Access Mode VLAN: 10 (VLAN10)
+Negotiation of Trunking: Off
+Access Mode VLAN: 10 (Upravlenie)
 Trunking Native Mode VLAN: 1 (default)
 Voice VLAN: none
 Administrative private-vlan host-association: none
