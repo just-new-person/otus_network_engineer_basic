@@ -471,8 +471,8 @@ S2(config-if-range)#switchport access vlan 10
 S2(config-if-range)#no sh
 ```
 #### b.	Убедитесь, что VLAN назначены на правильные интерфейсы.
-Сдесь скорее всего будет мелькать упоминание trunk, которого на текущий момент быть не должно.<br>
-Просто сперва я неправильно создал vlan по маршрутизаторам, полез настроивать trunk? а потом вернулся чтобы исправить группы vlan<br>
+*Сдесь скорее всего будет мелькать упоминание trunk, которого на текущий момент быть не должно.<br>
+Просто сперва я неправильно создал vlan по маршрутизаторам, полез настроивать trunk, а потом вернулся чтобы исправить группы vlan.*<br>
 
 Маршрутизатор S1
 ```
@@ -580,6 +580,10 @@ Gig0/2                       disabled 999        auto    auto  10/100/1000BaseTX
 В части 3 вы вручную настроите интерфейс F0/1 как транк.
 ### Шаг 1. Вручную настройте магистральный интерфейс F0/1 на коммутаторах S1 и S2.
 #### a.	Настройка статического транкинга на интерфейсе F0/1 для обоих коммутаторов.
+Тут у меня был вопрос почему я не могу выбрать инкапсуляцию dot1q при настройке trunk.<br>
+Интернет сказал, что такая ситуация встречается при переходе от старых к новым платформам Cisco.<br>
+Мол старое оборудование поддерживало два типа инкапсуляции: isl и dot1q, и выбор надо было делать, а обновленное поддвеживает только dot1q. На CPT v.8, по-моему, на лекции, когда я в парралель делал, там я мог выбирать метод инкапсуляции.<br>
+
 Откройте окно конфигурации
 Маршрутизатор S1
 ```
@@ -601,6 +605,7 @@ S1(config-if)#
 
 S1(config-if)#
 %CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on FastEthernet0/1 (1), with S2 FastEthernet0/1 (10).
+S1(config-if)#switchport nonegotiate
 
 ```
 Маршрутизатор S2
@@ -658,8 +663,8 @@ Administrative Mode: trunk
 Operational Mode: trunk
 Administrative Trunking Encapsulation: dot1q
 Operational Trunking Encapsulation: dot1q
-Negotiation of Trunking: On
-Access Mode VLAN: 10 (VLAN10)
+Negotiation of Trunking: Off
+Access Mode VLAN: 10 (Upravlenie)
 Trunking Native Mode VLAN: 1000 (Inactive)
 Voice VLAN: none
 Administrative private-vlan host-association: none
