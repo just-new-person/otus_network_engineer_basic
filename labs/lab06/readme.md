@@ -267,11 +267,20 @@ PC-B<br>
 ```
 S1(config)#vlan 10
 S1(config-vlan)#name Upravlenie
+S1(config)#vlan 20
+S1(config-vlan)#name Sales
+S1(config)#vlan 30
+S1(config-vlan)#name Operations
+
 ```
 Маршрутизатор S2
 ```
 S2(config)#vlan 10
 S2(config-vlan)#name Upravlenie
+S2(config)#vlan 20
+S2(config-vlan)#name Sales
+S2(config)#vlan 30
+S2(config-vlan)#name Operations
 ```
 #### b.	Настройте интерфейс управления и шлюз по умолчанию на каждом коммутаторе, используя информацию об IP-адресе в таблице адресации. 
 Маршрутизатор S1
