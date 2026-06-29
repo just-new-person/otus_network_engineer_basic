@@ -271,7 +271,8 @@ S1(config)#vlan 20
 S1(config-vlan)#name Sales
 S1(config)#vlan 30
 S1(config-vlan)#name Operations
-
+S1(config)#vlan 1000
+S1(config-vlan)#name Native
 ```
 Маршрутизатор S2
 ```
@@ -455,13 +456,12 @@ S2(config-if-range)#sh
 ```
 S1#conf t
 Enter configuration commands, one per line.  End with CNTL/Z.
-S1(config)#int
-S1(config)#interface ran
-S1(config)#interface range fa0/1, fa0/5-6
-S1(config-if-range)#sw
-S1(config-if-range)#switchport mode access
-S1(config-if-range)#sw
-S1(config-if-range)#switchport access VLAN 10
+S1(config)#int f0/6
+S1(config-if)#sw
+S1(config-if)#switchport mode
+S1(config-if)#switchport mode ac
+S1(config-if)#switchport ac
+S1(config-if)#switchport access vlan 20
 S1(config-if-range)#no sh
 ```
 Маршрутизатор S2
@@ -485,13 +485,13 @@ S2(config-if-range)#no sh
 
 Маршрутизатор S1
 ```
-S1(config-if-range)#do sh vlan br
+S1(config-if)#do sh vlan br
 
 VLAN Name                             Status    Ports
 ---- -------------------------------- --------- -------------------------------
 1    default                          active    
-10   Upravlenie                       active    Fa0/6
-20   Sales                            active    
+10   Upravlenie                       active    
+20   Sales                            active    Fa0/6
 30   Operations                       active    
 999  Parking_Lot                      active    Fa0/2, Fa0/3, Fa0/4, Fa0/7
                                                 Fa0/8, Fa0/9, Fa0/10, Fa0/11
@@ -499,20 +499,20 @@ VLAN Name                             Status    Ports
                                                 Fa0/16, Fa0/17, Fa0/18, Fa0/19
                                                 Fa0/20, Fa0/21, Fa0/22, Fa0/23
                                                 Fa0/24, Gig0/1, Gig0/2
+1000 Native                           active    
 1002 fddi-default                     active    
 1003 token-ring-default               active    
 1004 fddinet-default                  active    
-1005 trnet-default                    active   
-S1(config-if-range)#
-%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on FastEthernet0/1 (10), with S2 FastEthernet0/1 (1).
-S1(config-if-range)#do sh interfaces stat
+1005 trnet-default                    active    
+S1(config-if)#
+S1(config-if)#do sh int stat
 Port      Name               Status       Vlan       Duplex  Speed Type
 Fa0/1                        connected    trunk      a-full  a-100 10/100BaseTX
 Fa0/2                        disabled 999        auto    auto  10/100BaseTX
 Fa0/3                        disabled 999        auto    auto  10/100BaseTX
 Fa0/4                        disabled 999        auto    auto  10/100BaseTX
 Fa0/5                        connected    trunk      a-full  a-100 10/100BaseTX
-Fa0/6                        connected    10         a-full  a-100 10/100BaseTX
+Fa0/6                        connected    20         a-full  a-100 10/100BaseTX
 Fa0/7                        disabled 999        auto    auto  10/100BaseTX
 Fa0/8                        disabled 999        auto    auto  10/100BaseTX
 Fa0/9                        disabled 999        auto    auto  10/100BaseTX
@@ -537,15 +537,14 @@ S1#
 ```
 Маршрутизатор S2
 ```
-S2(config-if-range)#do sh vl br
+S2(config)#do sh vl br
 
 VLAN Name                             Status    Ports
 ---- -------------------------------- --------- -------------------------------
 1    default                          active    
-10   Upravlenie                       active    Fa0/18
+10   Upravlenie                       active    
 20   Sales                            active    
-30   Operations                       active    
-99   123                              active    
+30   Operations                       active    Fa0/18
 999  Parking_Lot                      active    Fa0/2, Fa0/3, Fa0/4, Fa0/5
                                                 Fa0/6, Fa0/7, Fa0/8, Fa0/9
                                                 Fa0/10, Fa0/11, Fa0/12, Fa0/13
@@ -556,7 +555,8 @@ VLAN Name                             Status    Ports
 1003 token-ring-default               active    
 1004 fddinet-default                  active    
 1005 trnet-default                    active    
-S2(config-if-range)#do sh int stat
+S2(config)#
+S2#sh int stat
 Port      Name               Status       Vlan       Duplex  Speed Type
 Fa0/1                        connected    trunk      a-full  a-100 10/100BaseTX
 Fa0/2                        disabled 999        auto    auto  10/100BaseTX
@@ -575,7 +575,7 @@ Fa0/14                       disabled 999        auto    auto  10/100BaseTX
 Fa0/15                       disabled 999        auto    auto  10/100BaseTX
 Fa0/16                       disabled 999        auto    auto  10/100BaseTX
 Fa0/17                       disabled 999        auto    auto  10/100BaseTX
-Fa0/18                       connected    10         a-full  a-100 10/100BaseTX
+Fa0/18                       connected    30         a-full  a-100 10/100BaseTX
 Fa0/19                       disabled 999        auto    auto  10/100BaseTX
 Fa0/20                       disabled 999        auto    auto  10/100BaseTX
 Fa0/21                       disabled 999        auto    auto  10/100BaseTX
@@ -674,7 +674,7 @@ Operational Mode: trunk
 Administrative Trunking Encapsulation: dot1q
 Operational Trunking Encapsulation: dot1q
 Negotiation of Trunking: Off
-Access Mode VLAN: 10 (Upravlenie)
+Access Mode VLAN: 1 (default)
 Trunking Native Mode VLAN: 1000 (Inactive)
 Voice VLAN: none
 Administrative private-vlan host-association: none
