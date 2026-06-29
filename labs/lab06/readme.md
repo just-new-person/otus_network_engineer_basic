@@ -323,7 +323,7 @@ S1(config)#interface range fa0/2-4, fa0/7-24, g0/1-2
 S1(config-if-range)#swi
 S1(config-if-range)#switchport mode
 S1(config-if-range)#switchport mode access
-S1(config-if-range)#switchport access vlan 99
+S1(config-if-range)#switchport access vlan 999
 S1(config-if-range)#end
 S1#
 %SYS-5-CONFIG_I: Configured from console by console
@@ -395,7 +395,7 @@ S2(config-if-range)#switchport mode access
 S2(config-if-range)#sw
 S2(config-if-range)#switchport ass
 S2(config-if-range)#switchport acc
-S2(config-if-range)#switchport access vlan 99
+S2(config-if-range)#switchport access vlan 999
 S2(config-if-range)#sh
 ```
 <details>
@@ -492,6 +492,7 @@ VLAN Name                             Status    Ports
 1    default                          active    
 10   Upravlenie                       active    Fa0/6
 20   Sales                            active    
+30   Operations                       active    
 999  Parking_Lot                      active    Fa0/2, Fa0/3, Fa0/4, Fa0/7
                                                 Fa0/8, Fa0/9, Fa0/10, Fa0/11
                                                 Fa0/12, Fa0/13, Fa0/14, Fa0/15
@@ -501,10 +502,10 @@ VLAN Name                             Status    Ports
 1002 fddi-default                     active    
 1003 token-ring-default               active    
 1004 fddinet-default                  active    
-1005 trnet-default                    active    
+1005 trnet-default                    active   
 S1(config-if-range)#
 %CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on FastEthernet0/1 (10), with S2 FastEthernet0/1 (1).
-S1(config-if-range)#do sh int statsh interfaces stat
+S1(config-if-range)#do sh interfaces stat
 Port      Name               Status       Vlan       Duplex  Speed Type
 Fa0/1                        connected    trunk      a-full  a-100 10/100BaseTX
 Fa0/2                        disabled 999        auto    auto  10/100BaseTX
@@ -532,18 +533,19 @@ Fa0/23                       disabled 999        auto    auto  10/100BaseTX
 Fa0/24                       disabled 999        auto    auto  10/100BaseTX
 Gig0/1                       disabled 999        auto    auto  10/100/1000BaseTX
 Gig0/2                       disabled 999        auto    auto  10/100/1000BaseTX
-
 S1#
 ```
 Маршрутизатор S2
 ```
-S2(config-if-range)#do sh vlan br
+S2(config-if-range)#do sh vl br
 
 VLAN Name                             Status    Ports
 ---- -------------------------------- --------- -------------------------------
 1    default                          active    
-10   Upravlenie                       active    
-30   Operations                       active    Fa0/18
+10   Upravlenie                       active    Fa0/18
+20   Sales                            active    
+30   Operations                       active    
+99   123                              active    
 999  Parking_Lot                      active    Fa0/2, Fa0/3, Fa0/4, Fa0/5
                                                 Fa0/6, Fa0/7, Fa0/8, Fa0/9
                                                 Fa0/10, Fa0/11, Fa0/12, Fa0/13
@@ -555,7 +557,6 @@ VLAN Name                             Status    Ports
 1004 fddinet-default                  active    
 1005 trnet-default                    active    
 S2(config-if-range)#do sh int stat
-S2#sh int stat
 Port      Name               Status       Vlan       Duplex  Speed Type
 Fa0/1                        connected    trunk      a-full  a-100 10/100BaseTX
 Fa0/2                        disabled 999        auto    auto  10/100BaseTX
@@ -574,7 +575,7 @@ Fa0/14                       disabled 999        auto    auto  10/100BaseTX
 Fa0/15                       disabled 999        auto    auto  10/100BaseTX
 Fa0/16                       disabled 999        auto    auto  10/100BaseTX
 Fa0/17                       disabled 999        auto    auto  10/100BaseTX
-Fa0/18                       connected    30         a-full  a-100 10/100BaseTX
+Fa0/18                       connected    10         a-full  a-100 10/100BaseTX
 Fa0/19                       disabled 999        auto    auto  10/100BaseTX
 Fa0/20                       disabled 999        auto    auto  10/100BaseTX
 Fa0/21                       disabled 999        auto    auto  10/100BaseTX
