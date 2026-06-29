@@ -271,8 +271,6 @@ S1(config)#vlan 20
 S1(config-vlan)#name Sales
 S1(config)#vlan 30
 S1(config-vlan)#name Operations
-S1(config)#vlan 1000
-S1(config-vlan)#name Native
 ```
 Маршрутизатор S2
 ```
@@ -469,14 +467,14 @@ S1(config-if-range)#no sh
 S2#conf t
 Enter configuration commands, one per line.  End with CNTL/Z.
 S2(config)#int
-S2(config)#interface range fa0/1, fa0/18
+S2(config)#interface fa0/18
 S2(config-if-range)#sw
 S2(config-if-range)#switchport ac
 S2(config-if-range)#switchport mode acc
 S2(config-if-range)#switchport mode access 
 S2(config-if-range)#sw
 S2(config-if-range)#switchport ac
-S2(config-if-range)#switchport access vlan 10
+S2(config-if-range)#switchport access vlan 30
 S2(config-if-range)#no sh
 ```
 #### b.	Убедитесь, что VLAN назначены на правильные интерфейсы.
@@ -485,7 +483,7 @@ S2(config-if-range)#no sh
 
 Маршрутизатор S1
 ```
-S1(config-if)#do sh vlan br
+S1(config)#do sh vl br
 
 VLAN Name                             Status    Ports
 ---- -------------------------------- --------- -------------------------------
@@ -499,13 +497,12 @@ VLAN Name                             Status    Ports
                                                 Fa0/16, Fa0/17, Fa0/18, Fa0/19
                                                 Fa0/20, Fa0/21, Fa0/22, Fa0/23
                                                 Fa0/24, Gig0/1, Gig0/2
-1000 Native                           active    
 1002 fddi-default                     active    
 1003 token-ring-default               active    
 1004 fddinet-default                  active    
 1005 trnet-default                    active    
-S1(config-if)#
-S1(config-if)#do sh int stat
+S1(config)#
+S1(config)#do sh int stat
 Port      Name               Status       Vlan       Duplex  Speed Type
 Fa0/1                        connected    trunk      a-full  a-100 10/100BaseTX
 Fa0/2                        disabled 999        auto    auto  10/100BaseTX
@@ -655,6 +652,7 @@ S2(config-if)#switchport trunk native vlan 1000
 Маршрутизатор S1
 ```
 S1(config-if)#switchport trunk allowed vlan 10,20,30,1000
+S1(config-if)#switchport nonegotiate
 ```
 Маршрутизатор S2
 ```
@@ -662,6 +660,7 @@ S2(config-if)#sw
 S2(config-if)#switchport trunk
 S2(config-if)#switchport trunk all
 S2(config-if)#switchport trunk allowed vlan 10,20,30,1000
+S2(config-if)#switchport nonegotiate
 ```
 #### d.	Проверьте транки, native VLAN и разрешенные VLAN через транк.
 Маршрутизатор S1
@@ -695,7 +694,7 @@ Appliance trust: none
 ```
 Маршрутизатор S2
 ```
-S2(config-if)#do sh int fa0/1 sw
+S2(config)#do sh int fa0/1 sw
 Name: Fa0/1
 Switchport: Enabled
 Administrative Mode: trunk
@@ -703,7 +702,7 @@ Operational Mode: trunk
 Administrative Trunking Encapsulation: dot1q
 Operational Trunking Encapsulation: dot1q
 Negotiation of Trunking: Off
-Access Mode VLAN: 10 (Upravlenie)
+Access Mode VLAN: 1 (default)
 Trunking Native Mode VLAN: 1000 (Inactive)
 Voice VLAN: none
 Administrative private-vlan host-association: none
@@ -762,6 +761,35 @@ Operational Trunking Encapsulation: dot1q
 Negotiation of Trunking: Off
 Access Mode VLAN: 10 (Upravlenie)
 Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none
+Administrative private-vlan host-association: none
+Administrative private-vlan mapping: none
+Administrative private-vlan trunk native VLAN: none
+Administrative private-vlan trunk encapsulation: dot1q
+Administrative private-vlan trunk normal VLANs: none
+Administrative private-vlan trunk private VLANs: none
+Operational private-vlan: none
+Trunking VLANs Enabled: 10,20,30,1000
+Pruning VLANs Enabled: 2-1001
+Capture Mode Disabled
+Capture VLANs Allowed: ALL
+Protected: false
+Unknown unicast blocked: disabled
+Unknown multicast blocked: disabled
+Appliance trust: none
+```
+Маршрутизатор 2
+```
+S2(config)#do sh int fa0/1 sw
+Name: Fa0/1
+Switchport: Enabled
+Administrative Mode: trunk
+Operational Mode: trunk
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: dot1q
+Negotiation of Trunking: Off
+Access Mode VLAN: 1 (default)
+Trunking Native Mode VLAN: 1000 (Inactive)
 Voice VLAN: none
 Administrative private-vlan host-association: none
 Administrative private-vlan mapping: none
@@ -838,6 +866,8 @@ R1(config-subif)#int g0/0/1.20
 R1(config-subif)#description Default Gateway for VLAN 20
 R1(config-subif)#int g0/0/1.30
 R1(config-subif)#description Default Gateway for VLAN 30
+R1(config)#int g0/0/1.1000
+R1(config-subif)#description Default Gateway for VLAN 1000
 ```
 #### c.	Убедитесь, что вспомогательные интерфейсы работают
 ```
@@ -888,10 +918,27 @@ GigabitEthernet0/0/1.1000 is up, line protocol is up (connected)
 
 
 #### b.	Отправьте эхо-запрос с PC-A на PC-B.
+```
+Cisco Packet Tracer PC Command Line 1.0
+C:\>ping 192.168.30.3
 
+Pinging 192.168.30.3 with 32 bytes of data:
+
+Reply from 192.168.30.3: bytes=32 time<1ms TTL=127
+Reply from 192.168.30.3: bytes=32 time<1ms TTL=127
+Reply from 192.168.30.3: bytes=32 time<1ms TTL=127
+Reply from 192.168.30.3: bytes=32 time<1ms TTL=127
+
+Ping statistics for 192.168.30.3:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
 
 #### c.	Отправьте команду ping с компьютера PC-A на коммутатор S2.
+```
 
+```
 
 ### ### Шаг 2. Пройдите следующий тест с PC-B.
 В окне командной строки на PC-B выполните команду tracert на адрес PC-A.
