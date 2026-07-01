@@ -62,18 +62,22 @@ S1(config)#enable secret class
 ```
 #### d.	Назначьте cisco в качестве паролей консоли и VTY и активируйте вход для консоли и VTY каналов.
 ```
-S1(config-line)#line vty 0 4
+S1(config)#line vty 0 4
+S1(config-line)#pas
 S1(config-line)#password cisco
 S1(config-line)#login
+S1(config-line)#line console 0
+S1(config-line)#pas
+S1(config-line)#password cisco
+S1(config-line)#login
+S1(config-line)#
 ```
 #### e.	Настройте logging synchronous для консольного канала.
+Использование параметра logging synchronous, позволяет сделать так, чтобы чтобы консольные сообщения не прерывали выполнение команд.
 ```
-S1(config)#line console 0
 S1(config-line)#logg
 S1(config-line)#logging s
 S1(config-line)#logging synchronous 
-S1(config-line)#password cisco
-S1(config-line)#login
 ```
 #### f.	Настройте баннерное сообщение дня (MOTD) для предупреждения пользователей о запрете несанкционированного доступа.
 ```
@@ -85,6 +89,12 @@ Unauthorized access is stricly phohibited. #
 ```
 S1(config)#int vlan 1
 S1(config-if)#ip address 192.168.1.1 255.255.255.0
+S1(config-if)#no sh
+
+S1(config-if)#
+%LINK-3-UPDOWN: Interface Vlan1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to up
 ```
 #### h.	Скопируйте текущую конфигурацию в файл загрузочной конфигурации.
 ```
