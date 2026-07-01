@@ -285,8 +285,14 @@ S2(config-vlan)#name Operations
 Маршрутизатор S1
 ```
 S1(config-vlan)#exit
-S1(config)#int vlan 1
+S1(config)#int
+S1(config)#interface vlan 10
+S1(config-if)#
+%LINK-5-CHANGED: Interface Vlan10, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan10, changed state to up
 S1(config-if)#ip address 192.168.10.11 255.255.255.0
+S1(config-if)#no sh
 S1(config-if)#exit
 S1(config)#ip def
 S1(config)#ip default-gateway 192.168.10.1
@@ -294,11 +300,16 @@ S1(config)#ip default-gateway 192.168.10.1
 Маршрутизатор S2
 ```
 S2(config-vlan)#exit
-S2(config)#int vlan 1
+S2(config-if)#int vlan 10
+S2(config-if)#
+%LINK-5-CHANGED: Interface Vlan10, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan10, changed state to up
+
 S2(config-if)#ip address 192.168.10.12 255.255.255.0
+S2(config-if)#no sh
 S2(config-if)#exit
 S2(config)#ip d
-%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on FastEthernet0/1 (1), with S1 FastEthernet0/1 (1
 S2(config)#ip def
 S2(config)#ip default-gateway 192.168.10.1
 ```
@@ -915,11 +926,24 @@ GigabitEthernet0/0/1.1000 is up, line protocol is up (connected)
 ### ### Шаг 1. Выполните следующие тесты с PC-A. Все должно быть успешно.
 Примечание. Возможно, вам придется отключить брандмауэр ПК для работы ping
 #### a.	Отправьте эхо-запрос с PC-A на шлюз по умолчанию.
+```
+C:\>ping 192.168.20.1
 
+Pinging 192.168.20.1 with 32 bytes of data:
+
+Reply from 192.168.20.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.20.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.20.1: bytes=32 time=5ms TTL=255
+Reply from 192.168.20.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 192.168.20.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 5ms, Average = 1ms
+```
 
 #### b.	Отправьте эхо-запрос с PC-A на PC-B.
 ```
-Cisco Packet Tracer PC Command Line 1.0
 C:\>ping 192.168.30.3
 
 Pinging 192.168.30.3 with 32 bytes of data:
@@ -937,10 +961,37 @@ Approximate round trip times in milli-seconds:
 
 #### c.	Отправьте команду ping с компьютера PC-A на коммутатор S2.
 ```
+C:\>ping 192.168.10.12
 
+Pinging 192.168.10.12 with 32 bytes of data:
+
+Reply from 192.168.10.12: bytes=32 time<1ms TTL=254
+Reply from 192.168.10.12: bytes=32 time<1ms TTL=254
+Reply from 192.168.10.12: bytes=32 time<1ms TTL=254
+Reply from 192.168.10.12: bytes=32 time<1ms TTL=254
+
+Ping statistics for 192.168.10.12:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
 ```
 
 ### ### Шаг 2. Пройдите следующий тест с PC-B.
 В окне командной строки на PC-B выполните команду tracert на адрес PC-A.
+```
+C:\>tracert 192.168.20.3
+
+Tracing route to 192.168.20.3 over a maximum of 30 hops: 
+
+  1   0 ms      0 ms      0 ms      192.168.30.1
+  2   0 ms      0 ms      0 ms      192.168.20.3
+
+Trace complete.
+```
+
 Вопрос:
-Какие промежуточные IP-адреса отображаются в результатах?
+Какие промежуточные IP-адреса отображаются в результатах?<br>.
+
+192.168.30.1 - это IP сабсети (g0/0/1.30) на маршрутизаторе, т.к. интерфейсе f0/18 у нас входит во vlan 30 по условиям задачи.<br>
+Следующий шаг 192.168.20.3 - это уже IP PC-A.
+
