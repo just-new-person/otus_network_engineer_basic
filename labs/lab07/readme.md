@@ -95,6 +95,10 @@ S1#
 S1#copy run
 S1#copy running-config st
 S1#copy running-config startup-config 
+Destination filename [startup-config]? 
+Building configuration...
+[OK]
+S1#
 ```
 ### Шаг 4:	Проверьте связь.
 Проверьте способность компьютеров обмениваться эхо-запросами.
