@@ -153,14 +153,15 @@ Success rate is 60 percent (3/5), round-trip min/avg/max = 0/0/0 ms
 <details>
   <summary>S1</summary>
 S1#conf t
+
 Enter configuration commands, one per line.  End with CNTL/Z.
+	
 S1(config)#int range f0/1-4
+	
 S1(config-if-range)#shutdown
 
-
-
-
 S1(config-if-range)#
+
 %LINK-5-CHANGED: Interface FastEthernet0/1, changed state to administratively down
 
 %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to down
@@ -184,14 +185,16 @@ S1(config-if-range)#
 <details>
   <summary>S2</summary>
 S2#conf t
+
 Enter configuration commands, one per line.  End with CNTL/Z.
+
 S2(config)#int range f0/1-4
+
 S2(config-if-range)#shutdown
 
 %LINK-5-CHANGED: Interface FastEthernet0/1, changed state to administratively down
 
 %LINK-5-CHANGED: Interface FastEthernet0/2, changed state to administratively down
-
 
 S2(config-if-range)#
 %LINK-5-CHANGED: Interface FastEthernet0/3, changed state to administratively down
@@ -209,8 +212,11 @@ S2(config-if-range)#
 <details>
   <summary>S3</summary>
 S3#conf t
+	
 Enter configuration commands, one per line.  End with CNTL/Z.
+
 S3(config)#int range f0/1-4
+
 S3(config-if-range)#shutdown
 
 %LINK-5-CHANGED: Interface FastEthernet0/1, changed state to administratively down
