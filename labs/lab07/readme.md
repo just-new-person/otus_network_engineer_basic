@@ -150,9 +150,78 @@ Success rate is 60 percent (3/5), round-trip min/avg/max = 0/0/0 ms
 Для каждого экземпляра протокола spanning-tree (коммутируемая сеть LAN или широковещательный домен) существует коммутатор, выделенный в качестве корневого моста. Корневой мост служит точкой привязки для всех расчётов протокола spanning-tree, позволяя определить избыточные пути, которые следует заблокировать.
 Процесс выбора определяет, какой из коммутаторов станет корневым мостом. Коммутатор с наименьшим значением идентификатора моста (BID) становится корневым мостом. Идентификатор BID состоит из значения приоритета моста, расширенного идентификатора системы и MAC-адреса коммутатора. Значение приоритета может находиться в диапазоне от 0 до 65535 с шагом 4096. По умолчанию используется значение 32768.
 ### Шаг 1:	Отключите все порты на коммутаторах.
-```
+<details>
+  <summary>S1</summary>
+S1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S1(config)#int range f0/1-4
+S1(config-if-range)#shutdown
 
-```
+
+
+
+S1(config-if-range)#
+%LINK-5-CHANGED: Interface FastEthernet0/1, changed state to administratively down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to down
+
+%LINK-5-CHANGED: Interface FastEthernet0/2, changed state to administratively down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/2, changed state to down
+
+%LINK-5-CHANGED: Interface FastEthernet0/3, changed state to administratively down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/3, changed state to down
+
+%LINK-5-CHANGED: Interface FastEthernet0/4, changed state to administratively down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/4, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to down
+
+S1(config-if-range)#
+</details>
+<details>
+  <summary>S2</summary>
+S2#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S2(config)#int range f0/1-4
+S2(config-if-range)#shutdown
+
+%LINK-5-CHANGED: Interface FastEthernet0/1, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/2, changed state to administratively down
+
+
+S2(config-if-range)#
+%LINK-5-CHANGED: Interface FastEthernet0/3, changed state to administratively down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/3, changed state to down
+
+%LINK-5-CHANGED: Interface FastEthernet0/4, changed state to administratively down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/4, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to down
+
+S2(config-if-range)#
+</details>
+<details>
+  <summary>S3</summary>
+S3#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S3(config)#int range f0/1-4
+S3(config-if-range)#shutdown
+
+%LINK-5-CHANGED: Interface FastEthernet0/1, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/2, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/3, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/4, changed state to administratively down
+S3(config-if-range)#
+</details>
 ### Шаг 2:	Настройте подключенные порты в качестве транковых.
 ```
 
