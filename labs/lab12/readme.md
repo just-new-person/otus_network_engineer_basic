@@ -51,7 +51,11 @@ R1(config)#
 ```
 Маршрутизатор R2
 ```
-
+Router>en
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#hostname R2
+R2(config)#
 ```
 ### b.	Отключите поиск DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
 Маршрутизатор R1
@@ -60,7 +64,7 @@ R1(config)#no ip domain-lookup
 ```
 Маршрутизатор R2
 ```
-
+R2(config)#no ip domain-lookup 
 ```
 ### c.	Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.
 ```
@@ -69,7 +73,7 @@ R1(config)#
 ```
 Маршрутизатор R2
 ```
-
+R2(config)#enable secret class
 ```
 ### d.	Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.
 Маршрутизатор R1
@@ -82,7 +86,11 @@ R1(config-line)#login
 ```
 Маршрутизатор R2
 ```
-
+R2(config)#line con
+R2(config)#line console 0
+R2(config-line)#pass
+R2(config-line)#password cisco
+R2(config-line)#login
 ```
 ### e.	Назначьте cisco в качестве пароля VTY и включите вход в систему по паролю.
 Маршрутизатор R1
@@ -94,7 +102,13 @@ R1(config-line)#login
 ```
 Маршрутизатор R2
 ```
-
+R2(config-line)#ex
+% Ambiguous command: "ex"
+R2(config-line)#exit
+R2(config)#line vty 0 4
+R2(config-line)#pass
+R2(config-line)#password cisco
+R2(config-line)#login
 ```
 ### f.	Зашифруйте открытые пароли.
 Маршрутизатор R1
@@ -107,7 +121,9 @@ R1(config)#
 ```
 Маршрутизатор R2
 ```
-
+R2(config)#serv
+R2(config)#service pass
+R2(config)#service password-encryption 
 ```
 ### g.	Создайте баннер с предупреждением о запрете несанкционированного доступа к устройству.
 Маршрутизатор R1
@@ -120,7 +136,11 @@ R1(config)#
 ```
 Маршрутизатор R2
 ```
+R2(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
 
+R2(config)#
 ```
 ### h.	Настройте IP-адресации интерфейса, как указано в таблице выше.
 Маршрутизатор R1
