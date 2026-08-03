@@ -227,6 +227,8 @@ Building configuration...
 R2#
 ```
 Закройте окно настройки.
+
+
 ### Шаг 3. Настройте базовые параметры каждого коммутатора.
 Откройте окно конфигурации
 ### a.	Присвойте коммутатору имя устройства.
@@ -241,7 +243,11 @@ S1(config)#
 ```
 Коммутатор S2
 ```
-
+Switch>en
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#hostname S2
+S2(config)#
 ```
 ### b.	Отключите поиск DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
 Коммутатор S1
@@ -254,7 +260,8 @@ S1(config)#
 ```
 Коммутатор S2
 ```
-
+S2(config)#no ip domain-lookup 
+S2(config)#
 ```
 ### c.	Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.
 Коммутатор S1
@@ -267,7 +274,8 @@ S1(config)#
 ```
 Коммутатор S2
 ```
-
+S2(config)#enable secret class
+S2(config)#
 ```
 ### d.	Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.
 Коммутатор S1
@@ -281,7 +289,11 @@ S1(config-line)#
 ```
 Коммутатор S2
 ```
-
+S2(config)#line console 0
+S2(config-line)#pas
+S2(config-line)#password cisco
+S2(config-line)#login
+S2(config-line)#
 ```
 ### e.	Назначьте cisco в качестве пароля VTY и включите вход в систему по паролю.
 Коммутатор S1
@@ -306,7 +318,11 @@ S1(config-line)#
 ```
 Коммутатор S2
 ```
-
+S2(config-line)#line vty 0 4
+S2(config-line)#pas
+S2(config-line)#password cisco
+S2(config-line)#login
+S2(config-line)#
 ```
 ### f.	Зашифруйте открытые пароли.
 Коммутатор S1
@@ -316,7 +332,15 @@ S1(config)#
 ```
 Коммутатор S2
 ```
+S2(config-line)#
+S2#
+%SYS-5-CONFIG_I: Configured from console by console
 
+S2#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S2(config)#service pas
+S2(config)#service password-encryption 
+S2(config)#
 ```
 ### g.	Создайте баннер с предупреждением о запрете несанкционированного доступа к устройству.
 Коммутатор S1
@@ -332,7 +356,12 @@ S1(config)#
 ```
 Коммутатор S2
 ```
+S2(config)#ban
+S2(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
 
+S2(config)#
 ```
 ### h.	Выключите все интерфейсы, которые не будут использоваться.
 Коммутатор S1
@@ -388,7 +417,7 @@ S1(config-if-range)#
 ```
 
 <details>
-  <summary>проверка_отключения_интерфесов_S1</summary>
+  <summary>проверка отключения интерфесов S1</summary>
 S1(config-if-range)#do sh run<br>
 Building configuration...<br>
 
@@ -445,7 +474,7 @@ S1(config-if-range)#sh
 ```
 
 <details>
-	<summary>повторная_проверка_отключения_интерфесов_S1</summary>
+	<summary>повторная проверка отключения интерфесов S1</summary>
 S1(config-if-range)#do sh run<br>
 Building configuration...<br>
 
@@ -571,8 +600,188 @@ end<br>
 
 Коммутатор S2
 ```
+S2(config)#int range fa0/2-17, fa0/19-24, g0/1-23
+interface range not validated - command rejected
+S2(config)#int range fa0/2-17, fa0/19-24, g0/1-2
+S2(config-if-range)#sh
 
+%LINK-5-CHANGED: Interface FastEthernet0/2, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/3, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/4, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/5, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/6, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/7, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/8, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/9, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/10, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/11, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/12, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/13, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/14, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/15, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/16, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/17, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/19, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/20, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/21, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/22, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/23, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/24, changed state to administratively down
+
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to administratively down
+
+%LINK-5-CHANGED: Interface GigabitEthernet0/2, changed state to administratively down
+S2(config-if-range)#
 ```
+<details>
+<summary>проверка отключения интерфейсов S2</summary>
+S2(config-if-range)#do sh run<br>
+Building configuration...<br>
+
+Current configuration : 1498 bytes<br>
+!<br>
+version 15.0<br>
+no service timestamps log datetime msec<br>
+no service timestamps debug datetime msec<br>
+service password-encryption<br>
+!<br>
+hostname S2<br>
+!<br>
+enable secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1<br>
+!<br>
+!<br>
+!<br>
+no ip domain-lookup<br>
+!<br>
+!<br>
+!<br>
+spanning-tree mode pvst<br>
+spanning-tree extend system-id<br>
+!<br>
+interface FastEthernet0/1<br>
+!<br>
+interface FastEthernet0/2<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/3<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/4<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/5<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/6<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/7<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/8<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/9<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/10<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/11<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/12<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/13<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/14<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/15<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/16<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/17<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/18<br>
+!<br>
+interface FastEthernet0/19<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/20<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/21<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/22<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/23<br>
+shutdown<br>
+!<br>
+interface FastEthernet0/24<br>
+shutdown<br>
+!<br>
+interface GigabitEthernet0/1<br>
+shutdown<br>
+!<br>
+interface GigabitEthernet0/2<br>
+shutdown<br>
+!<br>
+interface Vlan1<br>
+no ip address<br>
+shutdown<br>
+!<br>
+banner motd ^C<br>
+Unauthorized access is stricly phohibited. ^C<br>
+!<br>
+!<br>
+!<br>
+line con 0<br>
+password 7 0822455D0A16<br>
+login<br>
+!<br>
+line vty 0 4<br>
+password 7 0822455D0A16<br>
+login<br>
+line vty 5 15<br>
+login<br>
+!<br>
+!<br>
+!<br>
+!<br>
+end<br>
+
+S2(config-if-range)#<br>
+</details>
+
 ### i.	Настройте IP-адресации интерфейса, как указано в таблице выше.
 Коммутатор S1
 ```
