@@ -37,15 +37,118 @@
 ![](Топология_35_вып.png)
 
 ### Шаг 2. Произведите базовую настройку маршрутизаторов.
-Откройте окно конфигурации
+Откройте окно конфигурации<br>
 ### a.	Назначьте маршрутизатору имя устройства.
+Маршрутизатор R1
+```
+Router>en
+Router#
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#
+Router(config)#hostname R1
+R1(config)#
+```
+Маршрутизатор R2
+```
+
+```
 ### b.	Отключите поиск DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
+Маршрутизатор R1
+```
+R1(config)#no ip domain-lookup
+```
+Маршрутизатор R2
+```
+
+```
 ### c.	Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.
+```
+R1(config)#enable secret class
+R1(config)#
+```
+Маршрутизатор R2
+```
+
+```
 ### d.	Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.
+Маршрутизатор R1
+```
+R1(config)#line console 0
+R1(config-line)#logging synchronous 
+R1(config-line)#pass
+R1(config-line)#password cisco
+R1(config-line)#login
+```
+Маршрутизатор R2
+```
+
+```
 ### e.	Назначьте cisco в качестве пароля VTY и включите вход в систему по паролю.
+Маршрутизатор R1
+```
+R1(config-line)#exit
+R1(config)#line vty 0 4
+R1(config-line)#password cisco
+R1(config-line)#login
+```
+Маршрутизатор R2
+```
+
+```
 ### f.	Зашифруйте открытые пароли.
+Маршрутизатор R1
+```
+R1(config-line)#exit
+R1(config)#serv
+R1(config)#service pas
+R1(config)#service password-encryption 
+R1(config)#
+```
+Маршрутизатор R2
+```
+
+```
 ### g.	Создайте баннер с предупреждением о запрете несанкционированного доступа к устройству.
+Маршрутизатор R1
+```
+R1(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
+
+R1(config)#
+```
+Маршрутизатор R2
+```
+
+```
 ### h.	Настройте IP-адресации интерфейса, как указано в таблице выше.
+Маршрутизатор R1
+```
+R1(config)#int g0/0/0
+R1(config-if)#ip ad
+R1(config-if)#ip address 209.165.200.230 255.255.255.248
+R1(config-if)#bo sh
+               ^
+% Invalid input detected at '^' marker.
+	
+R1(config-if)#no sh
+
+R1(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up
+R1(config-if)#int g0/0/1
+R1(config-if)#ip add 192.168.1.1 255.255.255.0
+R1(config-if)#no sh
+
+R1(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/1, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1, changed state to up
+```
+Маршрутизатор R2
+```
+
+```
 ### i.	Настройте маршрут по умолчанию. от R2 до  R1.
 ### j.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 Закройте окно настройки.
