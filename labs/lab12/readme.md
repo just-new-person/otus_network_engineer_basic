@@ -386,6 +386,189 @@ S1(config-if-range)#shutdown
 %LINK-5-CHANGED: Interface GigabitEthernet0/2, changed state to administratively down
 S1(config-if-range)#
 ```
+
+<details>
+  <summary>проверка_отключения_интерфесов_S1</summary>
+S1(config-if-range)#do sh run<br>
+Building configuration...<br>
+
+Current configuration : 1478 bytes<br>
+!<br>
+version 15.0<br>
+no service timestamps log datetime msec<br>
+no service timestamps debug datetime msec<br>
+service password-encryption<br>
+!<br>
+hostname S1<br>
+!<br>
+enable secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1<br>
+!<br>
+!<br>
+!<br>
+no ip domain-lookup<br>
+!<br>
+!<br>
+!<br>
+spanning-tree mode pvst<br>
+spanning-tree extend system-id<br>
+!<br>
+interface FastEthernet0/1<br>
+!<br>
+interface FastEthernet0/2<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/3<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/4<br>
+!<br>
+interface FastEthernet0/5<br>
+!<br>
+interface FastEthernet0/6<br>
+!<br>
+interface FastEthernet0/7<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/8<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/9<br>
+ shutdown<br>
+</details>
+
+```
+S1(config-if-range)#int ran
+S1(config-if-range)#int ran fa0/2-4
+S1(config-if-range)#sh 
+
+%LINK-5-CHANGED: Interface FastEthernet0/4, changed state to administratively down
+```
+
+<details>
+	<summary>повторная_проверка_отключения_интерфесов_S1</summary>
+S1(config-if-range)#do sh run<br>
+Building configuration...<br>
+
+Current configuration : 1488 bytes<br>
+!<br>
+version 15.0<br>
+no service timestamps log datetime msec<br>
+no service timestamps debug datetime msec<br>
+service password-encryption<br>
+!<br>
+hostname S1<br>
+!<br>
+enable secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1<br>
+!<br>
+!<br>
+!<br>
+no ip domain-lookup<br>
+!<br>
+!<br>
+!<br>
+spanning-tree mode pvst<br>
+spanning-tree extend system-id<br>
+!<br>
+interface FastEthernet0/1<br>
+!<br>
+interface FastEthernet0/2<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/3<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/4<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/5<br>
+!<br>
+interface FastEthernet0/6<br>
+!<br>
+interface FastEthernet0/7<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/8<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/9<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/10<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/11<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/12<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/13<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/14<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/15<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/16<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/17<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/18<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/19<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/20<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/21<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/22<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/23<br>
+ shutdown<br>
+!<br>
+interface FastEthernet0/24<br>
+ shutdown<br>
+!<br>
+interface GigabitEthernet0/1<br>
+ shutdown<br>
+!<br>
+interface GigabitEthernet0/2<br>
+ shutdown<br>
+!<br>
+interface Vlan1<br>
+ no ip address<br>
+ shutdown<br>
+!<br>
+banner motd ^C<br>
+Unauthorized access is stricly phohibited. ^C<br>
+!<br>
+!<br>
+!<br>
+line con 0<br>
+ password 7 0822455D0A16<br>
+ login<br>
+!<br>
+line vty 0 4<br>
+ password 7 0822455D0A16<br>
+ login<br>
+line vty 5 15<br>
+ login<br>
+!<br>
+!<br>
+!<br>
+!<br>
+end<br>
+</details>
+
 Коммутатор S2
 ```
 
