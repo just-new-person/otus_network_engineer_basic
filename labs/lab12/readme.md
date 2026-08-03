@@ -232,7 +232,12 @@ R2#
 ### a.	Присвойте коммутатору имя устройства.
 Коммутатор S1
 ```
-
+Switch>
+Switch>en
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#hostname S1
+S1(config)#
 ```
 Коммутатор S2
 ```
@@ -241,7 +246,11 @@ R2#
 ### b.	Отключите поиск DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
 Коммутатор S1
 ```
-
+S1(config)#
+S1(config)#no ip domain0l
+S1(config)#no ip domain-l
+S1(config)#no ip domain-lookup 
+S1(config)#
 ```
 Коммутатор S2
 ```
@@ -250,7 +259,11 @@ R2#
 ### c.	Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.
 Коммутатор S1
 ```
-
+S1(config)#ena
+S1(config)#enable pas
+S1(config)#enable sec
+S1(config)#enable secret class
+S1(config)#
 ```
 Коммутатор S2
 ```
@@ -259,7 +272,12 @@ R2#
 ### d.	Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.
 Коммутатор S1
 ```
-
+S1(config)#line con
+S1(config)#line console 0
+S1(config-line)#pass
+S1(config-line)#password cisco
+S1(config-line)#login
+S1(config-line)#
 ```
 Коммутатор S2
 ```
@@ -268,7 +286,23 @@ R2#
 ### e.	Назначьте cisco в качестве пароля VTY и включите вход в систему по паролю.
 Коммутатор S1
 ```
+S1(config-line)#int vty 0 4
+                ^
+% Invalid input detected at '^' marker.
+	
+S1(config-line)#ex
+% Ambiguous command: "ex"
+S1(config-line)#end
+S1#
+%SYS-5-CONFIG_I: Configured from console by console
 
+S1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S1(config)#line vty 0 4
+S1(config-line)#pas
+S1(config-line)#password cisco
+S1(config-line)#login
+S1(config-line)#
 ```
 Коммутатор S2
 ```
@@ -277,7 +311,8 @@ R2#
 ### f.	Зашифруйте открытые пароли.
 Коммутатор S1
 ```
-
+S1(config)#service password-encryption 
+S1(config)#
 ```
 Коммутатор S2
 ```
@@ -286,7 +321,14 @@ R2#
 ### g.	Создайте баннер с предупреждением о запрете несанкционированного доступа к устройству.
 Коммутатор S1
 ```
+S1(config)#motd ?
+% Unrecognized command
+S1(config)#ban
+S1(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
 
+S1(config)#
 ```
 Коммутатор S2
 ```
@@ -295,7 +337,54 @@ R2#
 ### h.	Выключите все интерфейсы, которые не будут использоваться.
 Коммутатор S1
 ```
+S1(config)#int rang
+S1(config)#int range fa0/2-3, fa0/7-24, g0/1-2
+S1(config-if-range)#shutdown
 
+%LINK-5-CHANGED: Interface FastEthernet0/2, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/3, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/7, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/8, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/9, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/10, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/11, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/12, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/13, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/14, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/15, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/16, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/17, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/18, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/19, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/20, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/21, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/22, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/23, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/24, changed state to administratively down
+
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to administratively down
+
+%LINK-5-CHANGED: Interface GigabitEthernet0/2, changed state to administratively down
+S1(config-if-range)#
 ```
 Коммутатор S2
 ```
