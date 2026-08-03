@@ -800,6 +800,12 @@ S2(config-if-range)#exit
 S2(config)#int vlan 1
 S2(config-if)#ip ad
 S2(config-if)#ip address 192.168.1.12 255.255.255.0
+S2(config-if)#no sh
+
+S2(config-if)#
+%LINK-3-UPDOWN: Interface Vlan1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to up
 ```
 ### j.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 Коммутатор S1
