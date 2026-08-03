@@ -576,7 +576,14 @@ end<br>
 ### i.	Настройте IP-адресации интерфейса, как указано в таблице выше.
 Коммутатор S1
 ```
+S1(config)#int vlan 1
+S1(config-if)#ip add 192.168.1.11 255.255.255.0
+S1(config-if)#no sh
 
+S1(config-if)#
+%LINK-3-UPDOWN: Interface Vlan1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to up
 ```
 Коммутатор S2
 ```
@@ -585,7 +592,14 @@ end<br>
 ### j.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 Коммутатор S1
 ```
-
+S1(config-if)#wr
+              ^
+% Invalid input detected at '^' marker.
+	
+S1(config-if)#do wr
+Building configuration...
+[OK]
+S1(config-if)#
 ```
 Коммутатор S2
 ```
