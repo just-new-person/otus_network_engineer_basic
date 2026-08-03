@@ -167,9 +167,42 @@ R1(config-if)#
 ```
 Маршрутизатор R2
 ```
+R2(config)#int g0/0/0
+R2(config-if)#ip add 209.165.200.225 255.255.255.248
+R2(config-if)#int ?
+% Unrecognized command
+R2(config-if)#exit
+R2(config)#int
+R2(config)#interface ?
+  Dialer            Dialer interface
+  Dot11Radio        Dot11 interface
+  Ethernet          IEEE 802.3
+  FastEthernet      FastEthernet IEEE 802.3
+  GigabitEthernet   GigabitEthernet IEEE 802.3z
+  Loopback          Loopback interface
+  Port-channel      Ethernet Channel of interfaces
+  Serial            Serial
+  Tunnel            Tunnel interface
+  Virtual-Template  Virtual Template interface
+  Vlan              Catalyst Vlans
+  range             interface range command
+R2(config)#interface lo
+R2(config)#interface loopback ?
+  <0-2147483647>  Loopback interface number
+R2(config)#interface loopback 1
 
+R2(config-if)#
+%LINK-3-UPDOWN: Interface Loopback1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback1, changed state to up
+
+R2(config-if)#ip add 209.165.200.1 255.255.255.224
+R2(config-if)#
 ```
 ### i.	Настройте маршрут по умолчанию. от R2 до  R1.
+```
+
+```
 ### j.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 Закройте окно настройки.
 ### Шаг 3. Настройте базовые параметры каждого коммутатора.
