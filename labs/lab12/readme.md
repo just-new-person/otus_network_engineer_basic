@@ -812,6 +812,11 @@ S2(config-if)#
 
 %LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to up
 ```
++ настройка шлюза (без настройки шлюза в часть 2 шаг 2 пункт "c" пинг не пройдет)<br>
+настройка S2 по аналогии
+```
+S1(config)#ip default-gateway 192.168.1.1
+```
 ### j.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 Коммутатор S1
 ```
