@@ -956,9 +956,20 @@ R1#show ip nat translations ?
 ```
 
 ### f.	Учитывая, что пул ограничен тремя адресами, NAT для пула адресов недостаточно для нашего приложения. Очистите преобразование NAT и статистику, и мы перейдем к PAT.
-R1# clear ip nat translations * 
-R1# clear ip nat statistics 
+В примере из методички указано<br>
+R1# clear ip nat translations *<br>
+R1# clear ip nat statistics<br>
 Закройте окно настройки.
+
+У первой команды буквы S в окончании нет
+```
+R1#clear ip nat ?
+  translation  Clear dynamic translation
+R1#clear ip nat tra
+R1#clear ip nat translation 
+```
+Вторая предлагаемая команда не бьется. Как видим вариант только один - "translation".
+
 ## Часть 3. Настройка и проверка PAT для IPv4.
 В части 3 необходимо настроить замену NAT на PAT в пул адресов, а затем на PAT с помощью интерфейса.
 ### Шаг 1. Удалите команду преобразования на R1.
