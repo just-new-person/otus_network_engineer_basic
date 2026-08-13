@@ -622,19 +622,88 @@ S1(config-if)#
 Вопрос:<br>
 Почему интерфейс F0/5 указан в VLAN 1?<br>
 Ответ<br>
-Потому что изначально все интерфейсы находятся во vlan 1. Далее, согласно указаний методички, мы загнали все интерфейсы, кроме f0/5-6, в Parking_Lot и отключили командой административно. F0/6 назначен во vlan 100 (Clients). Вот и получается, что f0/5 остался один во vlan 1.
+Потому что изначально все интерфейсы находятся во vlan 1. Далее, согласно указаний методички, мы загнали все интерфейсы, кроме f0/5-6, в Parking_Lot и отключили командой административно. Далее f0/6 назначен во vlan 100 (Clients). Вот и получается, что f0/5 остался один во vlan 1.
 
 
 
 ### Шаг 9.	Вручную настройте интерфейс S1 F0/5 в качестве транка 802.1Q.
+Тут у меня был вопрос почему я не могу выбрать инкапсуляцию dot1q при настройке trunk.<br>
+Интернет сказал, что такая ситуация встречается при переходе от старых к новым платформам Cisco.<br>
+Мол старое оборудование поддерживало два типа инкапсуляции: isl и dot1q, и выбор надо было делать, а обновленное поддеживает только dot1q. На CPT v.8, по-моему, на лекции, когда я параллельно делал, там я мог выбирать метод инкапсуляции, в v.9 уже, похоже, нет.
 #### a.	Измените режим порта коммутатора, чтобы принудительно создать магистральный канал.
+```
+S1(config)#int f0/5
+S1(config-if)#sw
+S1(config-if)#switchport mode
+S1(config-if)#switchport mode tr
+S1(config-if)#switchport mode trunk 
+
+S1(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/5, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/5, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan200, changed state to up
+
+S1(config-if)#
+```
 #### b.	В рамках конфигурации транка  установите для native  VLAN значение 1000.
+```
+S1(config-if)#switchport trunk native vlan 1000
+```
 #### c.	В качестве другой части конфигурации магистрали укажите, что VLAN 100, 200 и 1000 могут проходить по транку.
+```
+S1(config-if)#switchport tr
+S1(config-if)#switchport trunk all
+S1(config-if)#switchport trunk allowed vlan 100,200,1000
+S1(config-if)#sw
+S1(config-if)#switchport non
+S1(config-if)#switchport nonegotiate 
+S1(config-if)#
+```
 #### d.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
+```
+S1#wr
+Building configuration...
+[OK]
+S1#
+```
 #### e.	Проверьте состояние транка.
-Вопрос:
-Какой IP-адрес был бы у ПК, если бы он был подключен к сети с помощью DHCP?
+```
+S1#sh int f0/5 sw
+S1#sh int f0/5 switchport 
+Name: Fa0/5
+Switchport: Enabled
+Administrative Mode: trunk
+Operational Mode: trunk
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: dot1q
+Negotiation of Trunking: Off
+Access Mode VLAN: 1 (default)
+Trunking Native Mode VLAN: 1000 (myself_own_subnet)
+Voice VLAN: none
+Administrative private-vlan host-association: none
+Administrative private-vlan mapping: none
+Administrative private-vlan trunk native VLAN: none
+Administrative private-vlan trunk encapsulation: dot1q
+Administrative private-vlan trunk normal VLANs: none
+Administrative private-vlan trunk private VLANs: none
+Operational private-vlan: none
+Trunking VLANs Enabled: 100,200,1000
+Pruning VLANs Enabled: 2-1001
+Capture Mode Disabled
+Capture VLANs Allowed: ALL
+Protected: false
+Unknown unicast blocked: disabled
+Unknown multicast blocked: disabled
+Appliance trust: none
+```
 Закройте окно настройки.
+Вопрос:<br>
+Какой IP-адрес был бы у ПК, если бы он был подключен к сети с помощью DHCP?<br>
+Ответ:<br>
+Какой-то свободный адрес из пула адресов заданного диапазона, обусловленного настройками DHCP-сервера.
+
 ## Часть 2.	Настройка и проверка двух серверов DHCPv4 на R1
 В части 2 необходимо настроить и проверить сервер DHCPv4 на R1. Сервер DHCPv4 будет обслуживать две подсети, подсеть A и подсеть C.
 ### Шаг 1.	Настройте R1 с пулами DHCPv4 для двух поддерживаемых подсетей. Ниже приведен только пул DHCP для подсети A
