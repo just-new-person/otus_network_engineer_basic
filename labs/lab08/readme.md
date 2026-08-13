@@ -165,7 +165,7 @@ R1#
 R1#clock set 22:09:26 10 aug 2026
 ```
 
-### Шаг 4.	Настройка маршрутизации между сетями VLAN на маршрутизаторе R1
+### Шаг 4.	Настройка маршрутизации между сетями VLAN на маршрутизаторе R1.
 #### a.	Активируйте интерфейс G0/0/1 на маршрутизаторе.
 ```
 R1(config)#int g0/0/1
@@ -322,10 +322,53 @@ line vty 0 4
 end
 ```
 
-### Шаг 5.	Настройте G0/1 на R2, затем G0/0/0 и статическую маршрутизацию для обоих маршрутизаторов
+### Шаг 5.	Настройте G0/1 на R2, затем G0/0/0 и статическую маршрутизацию для обоих маршрутизаторов.
 #### a.	Настройте G0/0/1 на R2 с первым IP-адресом подсети C, рассчитанным ранее.
+```
+R2(config)#int g0/0/1
+R2(config-if)#ip address 192.168.1.97 255.255.255.240
+R2(config-if)#no sh
+
+R2(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/1, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1, changed state to up
+
+R2(config-if)#
+```
+
 #### b.	Настройте интерфейс G0/0/0 для каждого маршрутизатора на основе приведенной выше таблицы IP-адресации.
+Маршрутизатор R1
+```
+R1(config)#int g0/0/0
+R1(config-if)#ip address 10.0.0.1 255.255.255.252
+R1(config-if)#no sh
+
+R1(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0, changed state to up
+
+R1(config-if)#
+```
+Маршрутизатор R2
+```
+R2(config)#int g0/0/0
+R2(config-if)#ip address
+R2(config-if)#ip address 10.0.0.2 255.255.255.252
+R2(config-if)#no sh
+R2(config-if)#no shutdown 
+
+R2(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up
+
+R2(config-if)#
+```
+
 #### c.	Настройте маршрут по умолчанию на каждом маршрутизаторе, указываемом на IP-адрес G0/0/0 на другом маршрутизаторе.
+```
+
+
 #### d.	Убедитесь, что статическая маршрутизация работает с помощью пинга до адреса G0/0/1 R2 от R1.
 #### e.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 ### Шаг 6.	Настройте базовые параметры каждого коммутатора.
