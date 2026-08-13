@@ -179,9 +179,149 @@ R1(config-if)#
 
 #### b.	Настройте подинтерфейсы для каждой VLAN в соответствии с требованиями таблицы IP-адресации. Все субинтерфейсы используют инкапсуляцию 802.1Q и назначаются первый полезный адрес из вычисленного пула IP-адресов. Убедитесь, что подинтерфейсу для native VLAN не назначен IP-адрес. Включите описание для каждого подинтерфейса.
 ```
+R1(config)#
+R1(config)#int g0/0/1.100
+R1(config-subif)#
+%LINK-3-UPDOWN: Interface GigabitEthernet0/0/1.100, changed state to down
 
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1.100, changed state to up
+
+R1(config-subif)#en
+R1(config-subif)#encapsulation d
+R1(config-subif)#encapsulation dot1Q 100
+R1(config-subif)#ip address 192.168.1.1 255.255.255.192
+R1(config-subif)#des
+R1(config-subif)#description Default Gateway for VLAN 100
+R1(config-subif)#exit
+R1(config)#
+R1(config)# int g0/0/1.200
+R1(config-subif)#
+%LINK-3-UPDOWN: Interface GigabitEthernet0/0/1.200, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1.200, changed state to up
+
+R1(config-subif)#en
+R1(config-subif)#encapsulation d
+R1(config-subif)#encapsulation dot1Q 200
+R1(config-subif)#ip address 192.168.1.66 255.255.255.224
+R1(config-subif)#des
+R1(config-subif)#description Default Gateway for VLAN 200
+R1(config-subif)#exit
+R1(config)#
+R1(config)#int g0/0/1.1000
+R1(config-subif)#
+%LINK-3-UPDOWN: Interface GigabitEthernet0/0/1.1000, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1.1000, changed state to up
+
+R1(config-subif)#description myself own subnet
+R1(config-subif)#exit
+```
 
 #### c.	Убедитесь, что вспомогательные интерфейсы работают.
+```
+R1(config)#do sh run
+Building configuration...
+
+Current configuration : 1127 bytes
+!
+version 15.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname R1
+!
+!
+!
+enable secret 5 $1$mERr$9cTjUIEqNGurQiFU.ZeCi1
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0/1.100
+ description Default Gateway for VLAN 100
+ encapsulation dot1Q 100
+ ip address 192.168.1.1 255.255.255.192
+!
+interface GigabitEthernet0/0/1.200
+ description Default Gateway for VLAN 200
+ encapsulation dot1Q 200
+ ip address 192.168.1.66 255.255.255.224
+!
+interface GigabitEthernet0/0/1.1000
+ description myself own subnet
+ no ip address
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+banner motd ^C
+Unauthorized access is stricly phohibited. ^C
+!
+!
+!
+!
+line con 0
+ password 7 0822455D0A16
+ logging synchronous
+ login
+!
+line aux 0
+!
+line vty 0 4
+ password 7 0822455D0A16
+ login
+!
+!
+!
+end
+```
+
 ### Шаг 5.	Настройте G0/1 на R2, затем G0/0/0 и статическую маршрутизацию для обоих маршрутизаторов
 #### a.	Настройте G0/0/1 на R2 с первым IP-адресом подсети C, рассчитанным ранее.
 #### b.	Настройте интерфейс G0/0/0 для каждого маршрутизатора на основе приведенной выше таблицы IP-адресации.
