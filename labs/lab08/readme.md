@@ -491,18 +491,141 @@ S1(config-vlan)#vlan 1000
 S1(config-vlan)#name myself_own_subnet
 S1(config-vlan)#
 ```
-
 #### b.	Настройте и активируйте интерфейс управления на S1 (VLAN 200), используя второй IP-адрес из подсети, рассчитанный ранее. Кроме того установите шлюз по умолчанию на S1.
-#### c.	Настройте и активируйте интерфейс управления на S2 (VLAN 1), используя второй IP-адрес из подсети, рассчитанный ранее. Кроме того, установите шлюз по умолчанию на S2
+```
+S1(config)#int vlan 200
+S1(config-if)#
+%LINK-5-CHANGED: Interface Vlan200, changed state to up
+
+S1(config-if)#ip address 192.168.1.66 255.255.255.224
+S1(config-if)#exit
+S1(config)#
+S1(config)#ip def
+S1(config)#ip default-gateway 10.0.0.1
+```
+#### c.	Настройте и активируйте интерфейс управления на S2 (VLAN 1), используя второй IP-адрес из подсети, рассчитанный ранее. Кроме того, установите шлюз по умолчанию на S2.
+```
+S2(config)#int vlan 1
+S2(config-if)#ip ad
+S2(config-if)#ip address 192.168.1.98 255.255.255.240
+S2(config-if)#
+S2#
+%SYS-5-CONFIG_I: Configured from console by console
+
+S2#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S2(config)#ip def
+S2(config)#ip default-gateway 10.0.0.2
+S2(config)#
+```
 #### d.	Назначьте все неиспользуемые порты S1 VLAN Parking_Lot, настройте их для статического режима доступа и административно деактивируйте их. На S2 административно деактивируйте все неиспользуемые порты.
 Примечание. Команда interface range полезна для выполнения этой задачи с минимальным количеством команд.
 Закройте окно настройки.
+```
+S1(config)#int range f0/1-4,f0/7-24,g0/1-2
+S1(config-if-range)#sw
+S1(config-if-range)#switchport mode acc
+S1(config-if-range)#switchport mode access 
+S1(config-if-range)#sw
+S1(config-if-range)#switchport acc
+S1(config-if-range)#switchport access vlan 999
+S1(config-if-range)#sh
+S1(config-if-range)#shutdown 
+
+%LINK-5-CHANGED: Interface FastEthernet0/1, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/2, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/3, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/4, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/7, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/8, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/9, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/10, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/11, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/12, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/13, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/14, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/15, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/16, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/17, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/18, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/19, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/20, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/21, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/22, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/23, changed state to administratively down
+
+%LINK-5-CHANGED: Interface FastEthernet0/24, changed state to administratively down
+
+%LINK-5-CHANGED: Interface GigabitEthernet0/1, changed state to administratively down
+
+%LINK-5-CHANGED: Interface GigabitEthernet0/2, changed state to administratively down
+S1(config-if-range)#
+```
+
+
+
 ### Шаг 8.	Назначьте сети VLAN соответствующим интерфейсам коммутатора.
 #### a.	Назначьте используемые порты соответствующей VLAN (указанной в таблице VLAN выше) и настройте их для режима статического доступа.
 Откройте окно конфигурации
+```
+S1(config)#int f0/6
+S1(config-if)#sw
+S1(config-if)#switchport mode
+S1(config-if)#switchport mode ac
+S1(config-if)#switchport mode access 
+S1(config-if)#sw
+S1(config-if)#switchport ac
+S1(config-if)#switchport access vlan 100
+```
 #### b.	Убедитесь, что VLAN назначены на правильные интерфейсы.
-Вопрос:
-Почему интерфейс F0/5 указан в VLAN 1?
+```
+S1(config-if)#do sh vlan br
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/5
+100  Clients                          active    Fa0/6
+200  Management                       active    
+999  Parking_Lot                      active    Fa0/1, Fa0/2, Fa0/3, Fa0/4
+                                                Fa0/7, Fa0/8, Fa0/9, Fa0/10
+                                                Fa0/11, Fa0/12, Fa0/13, Fa0/14
+                                                Fa0/15, Fa0/16, Fa0/17, Fa0/18
+                                                Fa0/19, Fa0/20, Fa0/21, Fa0/22
+                                                Fa0/23, Fa0/24, Gig0/1, Gig0/2
+1000 myself_own_subnet                active    
+1002 fddi-default                     active    
+1003 token-ring-default               active    
+1004 fddinet-default                  active    
+1005 trnet-default                    active    
+S1(config-if)#
+```
+Вопрос:<br>
+Почему интерфейс F0/5 указан в VLAN 1?<br>
+Ответ<br>
+Потому что изначально все интерфейсы находятся во vlan 1. Далее, согласно указаний методички, мы загнали все интерфейсы, кроме f0/5-6, в Parking_Lot и отключили командой административно. F0/6 назначен во vlan 100 (Clients). Вот и получается, что f0/5 остался один во vlan 1.
+
+
+
 ### Шаг 9.	Вручную настройте интерфейс S1 F0/5 в качестве транка 802.1Q.
 #### a.	Измените режим порта коммутатора, чтобы принудительно создать магистральный канал.
 #### b.	В рамках конфигурации транка  установите для native  VLAN значение 1000.
