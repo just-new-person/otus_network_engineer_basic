@@ -366,24 +366,121 @@ R2(config-if)#
 ```
 
 #### c.	Настройте маршрут по умолчанию на каждом маршрутизаторе, указываемом на IP-адрес G0/0/0 на другом маршрутизаторе.
+Маршрутизатор R1
+```
+R1(config)#ip route 0.0.0.0 0.0.0.0 10.0.0.2
+```
+Маршрутизатор R2
+```
+R2(config)#ip route 0.0.0.0 0.0.0.0 10.0.0.1
 ```
 
-
 #### d.	Убедитесь, что статическая маршрутизация работает с помощью пинга до адреса G0/0/1 R2 от R1.
+```
+R1#ping 192.168.1.97
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.97, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/0 ms
+```
+
 #### e.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
+```
+R1#wr
+Building configuration...
+[OK]
+```
+
 ### Шаг 6.	Настройте базовые параметры каждого коммутатора.
+Настройка маршрутизатора S2 аналогична настройке S1.
 #### a.	Присвойте коммутатору имя устройства.
 Откройте окно конфигурации
+```
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#hostname S1
+S1(config)#
+```
+
 #### b.	Отключите поиск DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
+```
+S1(config)#no ip domain0lookup
+                       ^
+% Invalid input detected at '^' marker.
+	
+S1(config)#no ip domain-lookup
+```
+
 #### c.	Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.
+```
+S1(config)#en
+S1(config)#ena
+S1(config)#enable sec
+S1(config)#enable secret class
+```
+
 #### d.	Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.
+```
+S1(config)#line console 0
+S1(config-line)#pas
+S1(config-line)#password cisco
+S1(config-line)#login
+```
+
 #### e.	Назначьте cisco в качестве пароля VTY и включите вход в систему по паролю.
+```
+S1(config-line)#line vty 0 4
+S1(config-line)#pas
+S1(config-line)#password cisco
+S1(config-line)#login
+S1(config-line)#
+```
+
 #### f.	Зашифруйте открытые пароли.
+```
+S1(config-line)#exit
+S1(config)#en
+S1(config)#service en
+S1(config)#service p
+S1(config)#service password-encryption
+```
+
 #### g.	Создайте баннер с предупреждением о запрете несанкционированного доступа к устройству.
+```
+S1(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
+
+S1(config)#
+```
+
 #### h.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
+```
+S1(config)#
+S1(config)#
+S1#
+%SYS-5-CONFIG_I: Configured from console by console
+
+S1#wr
+Building configuration...
+[OK]
+```
+
 #### i.	Установите часы на маршрутизаторе на сегодняшнее время и дату.
 Примечание. Вопросительный знак (?) позволяет открыть справку с правильной последовательностью параметров, необходимых для выполнения этой команды.
+```
+S1#cl
+S1#clo
+S1#clock set
+S1#clock set 22:22:00 13 aug 2026
+```
 #### j.	Скопируйте текущую конфигурацию в файл загрузочной конфигурации.
+```
+S1#wr
+Building configuration...
+[OK]
+```
 ### Шаг 7.	Создайте сети VLAN на коммутаторе S1.
 Примечание. S2 настроен только с базовыми настройками. 
 #### a.	Создайте необходимые VLAN на коммутаторе 1 и присвойте им имена из приведенной выше таблицы.
