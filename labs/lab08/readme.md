@@ -508,7 +508,12 @@ S1(config)#ip default-gateway 192.168.1.65
 S2(config)#int vlan 1
 S2(config-if)#ip ad
 S2(config-if)#ip address 192.168.1.98 255.255.255.240
-S2(config-if)#
+S1(config-if)#no sh
+
+S1(config-if)#
+%LINK-3-UPDOWN: Interface Vlan1, changed state to down
+ 
+S1(config-if)#
 S2#
 %SYS-5-CONFIG_I: Configured from console by console
 
@@ -706,7 +711,7 @@ Appliance trust: none
 Вопрос:<br>
 Какой IP-адрес был бы у ПК, если бы он был подключен к сети с помощью DHCP?<br>
 Ответ:<br>
-Какой-то свободный адрес из пула адресов заданного диапазона, обусловленного настройками DHCP-сервера.
+Какой-то свободный адрес из пула адресов заданного диапазона, обусловленного настройками DHCP-сервера, исключая зарезервированные
 
 ## Часть 2.	Настройка и проверка двух серверов DHCPv4 на R1
 В части 2 необходимо настроить и проверить сервер DHCPv4 на R1. Сервер DHCPv4 будет обслуживать две подсети, подсеть A и подсеть C.
