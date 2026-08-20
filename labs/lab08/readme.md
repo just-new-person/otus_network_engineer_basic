@@ -501,7 +501,7 @@ S1(config-if)#ip address 192.168.1.66 255.255.255.224
 S1(config-if)#exit
 S1(config)#
 S1(config)#ip def
-S1(config)#ip default-gateway 10.0.0.1
+S1(config)#ip default-gateway 192.168.1.65
 ```
 #### c.	Настройте и активируйте интерфейс управления на S2 (VLAN 1), используя второй IP-адрес из подсети, рассчитанный ранее. Кроме того, установите шлюз по умолчанию на S2.
 ```
@@ -515,7 +515,7 @@ S2#
 S2#conf t
 Enter configuration commands, one per line.  End with CNTL/Z.
 S2(config)#ip def
-S2(config)#ip default-gateway 10.0.0.2
+S2(config)#ip default-gateway 192.168.1.97
 S2(config)#
 ```
 #### d.	Назначьте все неиспользуемые порты S1 VLAN Parking_Lot, настройте их для статического режима доступа и административно деактивируйте их. На S2 административно деактивируйте все неиспользуемые порты.
