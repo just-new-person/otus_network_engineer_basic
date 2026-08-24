@@ -717,13 +717,8 @@ Appliance trust: none
 В части 2 необходимо настроить и проверить сервер DHCPv4 на R1. Сервер DHCPv4 будет обслуживать две подсети, подсеть A и подсеть C.
 ### Шаг 1.	Настройте R1 с пулами DHCPv4 для двух поддерживаемых подсетей. Ниже приведен только пул DHCP для подсети A
 #### a.	Исключите первые пять используемых адресов из каждого пула адресов.
-Подсеть А
 ```
 R1(config)#ip dhcp excluded-address 192.168.1.2 192.168.1.6
-```
-Подсеть С
-```
-
 ```
 #### b.	Создайте пул DHCP (используйте уникальное имя для каждого пула).
 ```
@@ -755,19 +750,146 @@ R1(dhcp-config)#?
 R1(dhcp-config)#
 ```
 #### g.	Затем настройте второй пул DHCPv4, используя имя пула R2_Client_LAN и вычислите сеть, маршрутизатор по умолчанию, и используйте то же имя домена и время аренды, что и предыдущий пул DHCP.
-
+```
+R1(config)#ip dhcp ex
+R1(config)#ip dhcp excluded-address 192.168.1.98 192.168.1.102
+R1(config)#ip dhcp pool R2_Client_LAN
+R1(dhcp-config)#netw
+R1(dhcp-config)#network 192.168.1.96 255.255.255.240
+R1(dhcp-config)#doma
+R1(dhcp-config)#domain-name CCNA-lab.com
+R1(dhcp-config)#def
+R1(dhcp-config)#default-router 192.168.1.97
+R1(dhcp-config)#?
+  default-router  Default routers
+  dns-server      Set name server
+  domain-name     Domain name
+  exit            Exit from DHCP pool configuration mode
+  network         Network number and mask
+  no              Negate a command or set its defaults
+  option          Raw DHCP options
+R1(dhcp-config)#
+```
 
 ### Шаг 2.	Сохраните конфигурацию.
 Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 Закройте окно настройки.
+
 ### Шаг 3.	Проверка конфигурации сервера DHCPv4
-#### a.	Чтобы просмотреть сведения о пуле, выполните команду show ip dhcp pool .
+#### a.	Чтобы просмотреть сведения о пуле, выполните команду show ip dhcp pool.
+```
+R1#sh ip dhcp pool
+
+Pool subweb_A :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 62
+ Leased addresses               : 0
+ Excluded addresses             : 2
+ Pending event                  : none
+
+ 1 subnet is currently in the pool
+ Current index        IP address range                    Leased/Excluded/Total
+ 192.168.1.1          192.168.1.1      - 192.168.1.62      0    / 2     / 62
+
+Pool R2_Client_LAN :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 14
+ Leased addresses               : 0
+ Excluded addresses             : 2
+ Pending event                  : none
+
+ 1 subnet is currently in the pool
+ Current index        IP address range                    Leased/Excluded/Total
+ 192.168.1.97         192.168.1.97     - 192.168.1.110     0    / 2     / 14
+R1#
+```
 #### b.	Выполните команду show ip dhcp bindings для проверки установленных назначений адресов DHCP.
+Список пуст.
+```
+R1#sh ip dhcp binding 
+IP address       Client-ID/              Lease expiration        Type
+                 Hardware address
+R1#
+```
 #### c.	Выполните команду show ip dhcp server statistics для проверки сообщений DHCP.
+Команда show ip dhcp server **statistics** отсутствует в возможных вариантов для ввода. Проверить не получилось.
+```
+R1#show ip dhcp ?
+  binding   DHCP address bindings
+  conflict  DHCP address conflicts
+  pool      DHCP pools information
+  relay     Miscellaneous DHCP relay information
+R1#show ip dhcp
+```
+
 ### Шаг 4.	Попытка получить IP-адрес от DHCP на PC-A
 #### a.	Из командной строки компьютера PC-A выполните команду ipconfig /all.
+```
+C:\>ipconfig /all
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Physical Address................: 0030.A344.7A07
+   Link-local IPv6 Address.........: FE80::230:A3FF:FE44:7A07
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.1.7
+   Subnet Mask.....................: 255.255.255.192
+   Default Gateway.................: ::
+                                     192.168.1.1
+   DHCP Servers....................: 192.168.1.1
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-90-38-55-3C-00-30-A3-44-7A-07
+   DNS Servers.....................: ::
+                                     0.0.0.0
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Physical Address................: 000C.CF7C.A0B0
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-90-38-55-3C-00-30-A3-44-7A-07
+   DNS Servers.....................: ::
+                                     0.0.0.0
+```
 #### b.	После завершения процесса обновления выполните команду ipconfig для просмотра новой информации об IP-адресе.
+```
+C:\>ipconfig
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Link-local IPv6 Address.........: FE80::230:A3FF:FE44:7A07
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.1.7
+   Subnet Mask.....................: 255.255.255.192
+   Default Gateway.................: ::
+                                     192.168.1.1
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+
+```
 #### c.	Проверьте подключение с помощью пинга IP-адреса интерфейса R0 G0/0/1.
+```
+
+```
 ## Часть 3.	Настройка и проверка DHCP-ретрансляции на R2
 В части 3 настраивается R2 для ретрансляции DHCP-запросов из локальной сети на интерфейсе G0/0/1 на DHCP-сервер (R1). 
 ### Шаг 1.	Настройка R2 в качестве агента DHCP-ретрансляции для локальной сети на G0/0/1
