@@ -908,14 +908,134 @@ Approximate round trip times in milli-seconds:
 ### Шаг 1.	Настройка R2 в качестве агента DHCP-ретрансляции для локальной сети на G0/0/1
 #### a.	Настройте команду ip helper-address на G0/0/1, указав IP-адрес G0/0/0 R1.
 ```
-
+R2(config)#int g0/0/1
+R2(config-if)#ip h
+R2(config-if)#ip ?
+  access-group     Specify access control for packets
+  address          Set the IP address of an interface
+  authentication   authentication subcommands
+  flow             NetFlow Related commands
+  hello-interval   Configures IP-EIGRP hello interval
+  helper-address   Specify a destination address for UDP broadcasts
+  inspect          Apply inspect name
+  ips              Create IPS rule
+  mtu              Set IP Maximum Transmission Unit
+  nat              NAT interface commands
+  ospf             OSPF interface commands
+  proxy-arp        Enable proxy ARP
+  split-horizon    Perform split horizon
+  summary-address  Perform address summarization
+R2(config-if)#ip help
+R2(config-if)#ip helper-address 10.0.0.1
+R2(config-if)#
 ```
 Откройте окно конфигурации
 #### b.	Сохраните конфигурацию.
+```
+R2(config-if)#
+R2#
+%SYS-5-CONFIG_I: Configured from console by console
+
+R2#wr
+Building configuration...
+[OK]
+R2#
+```
 ### Шаг 2.	Попытка получить IP-адрес от DHCP на PC-B
 #### a.	Из командной строки компьютера PC-B выполните команду ipconfig /all.
-#### b.	После завершения процесса обновления выполните команду ipconfig для просмотра новой информации об IP-адресе.
-#### c.	Проверьте подключение с помощью пинга IP-адреса интерфейса R1 G0/0/1.
-#### d.	Выполните show ip dhcp binding для R1 для проверки назначений адресов в DHCP.
-#### e.	Выполните команду show ip dhcp server statistics для проверки сообщений DHCP.
+```
+C:\>ipconfig /all
 
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Physical Address................: 0001.4325.7D87
+   Link-local IPv6 Address.........: FE80::201:43FF:FE25:7D87
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.1.103
+   Subnet Mask.....................: 255.255.255.240
+   Default Gateway.................: ::
+                                     192.168.1.97
+   DHCP Servers....................: 10.0.0.1
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-3E-5C-3C-BB-00-01-43-25-7D-87
+   DNS Servers.....................: ::
+                                     0.0.0.0
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Physical Address................: 0030.F263.B79A
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-3E-5C-3C-BB-00-01-43-25-7D-87
+   DNS Servers.....................: ::
+                                     0.0.0.0
+
+
+C:\>
+```
+#### b.	После завершения процесса обновления выполните команду ipconfig для просмотра новой информации об IP-адресе.
+```
+C:\>ipconfig
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Link-local IPv6 Address.........: FE80::201:43FF:FE25:7D87
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.1.103
+   Subnet Mask.....................: 255.255.255.240
+   Default Gateway.................: ::
+                                     192.168.1.97
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: CCNA-lab.com
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+```
+#### c.	Проверьте подключение с помощью пинга IP-адреса интерфейса R1 G0/0/1.
+```
+C:\>ping 192.168.1.1
+
+Pinging 192.168.1.1 with 32 bytes of data:
+
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=254
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=254
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=254
+Reply from 192.168.1.1: bytes=32 time<1ms TTL=254
+
+Ping statistics for 192.168.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+#### d.	Выполните show ip dhcp binding для R1 для проверки назначений адресов в DHCP.
+```
+R1#show ip dhcp binding
+IP address       Client-ID/              Lease expiration        Type
+                 Hardware address
+192.168.1.7      0030.A344.7A07           --                     Automatic
+192.168.1.103    0001.4325.7D87           --                     Automatic
+```
+#### e.	Выполните команду show ip dhcp server statistics для проверки сообщений DHCP.
+Команда show ip dhcp server **statistics** отсутствует в возможных вариантов для ввода. Проверить не получилось.
+```
+R2#show ip dhcp ?
+  binding   DHCP address bindings
+  conflict  DHCP address conflicts
+  pool      DHCP pools information
+  relay     Miscellaneous DHCP relay information
+R2#show ip dhcp 
+```
