@@ -742,8 +742,21 @@ R1(dhcp-config)#domain-name CCNA-lab.com
 R1(dhcp-config)#default-router 192.168.1.1
 ```
 #### f.	Настройте время аренды на 2 дня 12 часов и 30 минут.
-
+Команда lease отсутствует в возможных вариантов для ввода при настройке dhcp. Настроить не получилось.
+```
+R1(dhcp-config)#?
+  default-router  Default routers
+  dns-server      Set name server
+  domain-name     Domain name
+  exit            Exit from DHCP pool configuration mode
+  network         Network number and mask
+  no              Negate a command or set its defaults
+  option          Raw DHCP options
+R1(dhcp-config)#
+```
 #### g.	Затем настройте второй пул DHCPv4, используя имя пула R2_Client_LAN и вычислите сеть, маршрутизатор по умолчанию, и используйте то же имя домена и время аренды, что и предыдущий пул DHCP.
+
+
 ### Шаг 2.	Сохраните конфигурацию.
 Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 Закройте окно настройки.
