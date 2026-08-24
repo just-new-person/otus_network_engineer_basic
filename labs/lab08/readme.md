@@ -9,13 +9,13 @@
 |---------------|---------------|---------------|-------------------|-----------------------|
 |	R1	|	G0/0/0	|	10.0.0.1	|	255.255.255.252	|	—	|
 |	R1	|	G0/0/1	|	—	|	—	|		|
-|	R1	|	G0/0/1.100	|	192.168.1.1	|	255.255.255.192	|		|
-|	R1	|	G0/0/1.200	|		|		|		|
-|	R1	|	G0/0/1.1000	|	—	|	—	|		|
-|	R2	|	G0/0	|	10.0.0.2	|	255.255.255.252	|	—	|
-|	R2	|	G0/0/1	|	192.168.1.1	|	255.255.255.240	|		|
-|	S1	|	VLAN 200	|	192.168.1.2	|	255.255.255.224	|	192.168.1.1	|
-|	S2	|	VLAN 1	|		|		|		|
+|	R1	|	G0/0/1.100	|	**192.168.1.1**	|	**255.255.255.192**	|	-	|
+|	R1	|	G0/0/1.200	|	**192.168.1.65**	|	**255.255.255.224**	|	-	|
+|	R1	|	G0/0/1.1000	|	—	|	—	|	-	|
+|	R2	|	G0/0	|	**10.0.0.2**	|	**255.255.255.252**	|	—	|
+|	R2	|	G0/0/1	|	**192.168.1.97**	|	**255.255.255.240**	|	-	|
+|	S1	|	VLAN 200	|	**192.168.1.66**	|	**255.255.255.224**	|	**192.168.1.65**	|
+|	S2	|	VLAN 1	|	**192.168.1.98**	|	**255.255.255.240**	|	**192.168.1.97**	|
 |	PC-A	|	NIC	|	DHCP	|	DHCP	|	DHCP	|
 |	PC-B	|	NIC	|	DHCP	|	DHCP	|	DHCP	|
 
@@ -202,7 +202,7 @@ R1(config-subif)#
 R1(config-subif)#en
 R1(config-subif)#encapsulation d
 R1(config-subif)#encapsulation dot1Q 200
-R1(config-subif)#ip address 192.168.1.66 255.255.255.224
+R1(config-subif)#ip address 192.168.1.65 255.255.255.224
 R1(config-subif)#des
 R1(config-subif)#description Default Gateway for VLAN 200
 R1(config-subif)#exit
@@ -283,7 +283,7 @@ interface GigabitEthernet0/0/1.100
 interface GigabitEthernet0/0/1.200
  description Default Gateway for VLAN 200
  encapsulation dot1Q 200
- ip address 192.168.1.66 255.255.255.224
+ ip address 192.168.1.65 255.255.255.224
 !
 interface GigabitEthernet0/0/1.1000
  description myself own subnet
@@ -888,12 +888,28 @@ Bluetooth Connection:
 ```
 #### c.	Проверьте подключение с помощью пинга IP-адреса интерфейса R0 G0/0/1.
 ```
+C:\>ping 192.168.1.65
 
+Pinging 192.168.1.65 with 32 bytes of data:
+
+Reply from 192.168.1.65: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.65: bytes=32 time<1ms TTL=255
+Reply from 192.168.1.65: bytes=32 time=5ms TTL=255
+Reply from 192.168.1.65: bytes=32 time=5ms TTL=255
+
+Ping statistics for 192.168.1.65:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 5ms, Average = 2ms
 ```
+
 ## Часть 3.	Настройка и проверка DHCP-ретрансляции на R2
 В части 3 настраивается R2 для ретрансляции DHCP-запросов из локальной сети на интерфейсе G0/0/1 на DHCP-сервер (R1). 
 ### Шаг 1.	Настройка R2 в качестве агента DHCP-ретрансляции для локальной сети на G0/0/1
 #### a.	Настройте команду ip helper-address на G0/0/1, указав IP-адрес G0/0/0 R1.
+```
+
+```
 Откройте окно конфигурации
 #### b.	Сохраните конфигурацию.
 ### Шаг 2.	Попытка получить IP-адрес от DHCP на PC-B
