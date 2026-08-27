@@ -63,13 +63,49 @@
 
 ### Шаг 3. Произведите базовую настройку маршрутизаторов.
 #### a.	Назначьте маршрутизатору имя устройства.
+```
+Router(config)#hostname R1
+```
 #### b.	Отключите поиск DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
+```
+R1(config)#no ip domain-lookup
+```
 #### c.	Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.
+```
+R1(config)#enable secret class
+```
 #### d.	Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.
+```
+R1(config)#line console 0
+R1(config-line)#pass
+R1(config-line)#password cisco
+```
 #### e.	Назначьте cisco в качестве пароля VTY и включите вход в систему по паролю.
+```
+R1(config-line)#line vty 0 4
+R1(config-line)#pas
+R1(config-line)#password cisco
+```
 #### f.	Зашифруйте открытые пароли.
+```
+R1(config-line)#
+R1(config-line)#exit
+R1(config)#serv
+R1(config)#service pas
+R1(config)#service password-encryption
+```
 #### g.	Создайте баннер с предупреждением о запрете несанкционированного доступа к устройству.
+```
+R1(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+Unauthorized access is stricly phohibited. #
+
+R1(config)#
+```
 #### h.	Активация IPv6-маршрутизации
+```
+
+```
 #### i.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 
 ### Шаг 4. Настройка интерфейсов и маршрутизации для обоих маршрутизаторов.
