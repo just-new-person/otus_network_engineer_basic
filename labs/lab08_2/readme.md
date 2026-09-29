@@ -151,8 +151,36 @@ R2(config-if)#ipv6 address fe80::1 link-local
 R2(config-if)#no shutdown
 ```
 #### b.	Настройте маршрут по умолчанию на каждом маршрутизаторе, который указывает на IP-адрес G0/0/0 на другом маршрутизаторе.
+R1
+```
+R1(config)#ipv6 route ::/0 2001:db8:acad:2::2
+```
+R2
+```
+R2(config)#ipv6 route ::/0 2001:db8:acad:2::1
+```
 #### c.	Убедитесь, что маршрутизация работает с помощью пинга адреса G0/0/1 R2 из R1
+```
+R1#ping 2001:db8:acad:3::1
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 2001:db8:acad:3::1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/4 ms
+```
 #### d.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
+R1
+```
+R1#wr
+Building configuration...
+[OK]
+```
+R2
+```
+R2#wr
+Building configuration...
+[OK]
+```
 
 ## Часть 2. Проверка назначения адреса SLAAC от R1
 В части 2 вы убедитесь, что узел PC-A получает адрес IPv6 с помощью метода SLAAC.<br>
