@@ -186,27 +186,50 @@ Building configuration...
 В части 2 вы убедитесь, что узел PC-A получает адрес IPv6 с помощью метода SLAAC.<br>
 Включите PC-A и убедитесь, что сетевой адаптер настроен для автоматической настройки IPv6.<br>
 Через несколько минут результаты команды ipconfig должны показать, что PC-A присвоил себе адрес из сети 2001:db8:1::/64.<br>
-C:\Users\Student> ipconfig 
-Настройка IP для Windows
+PC-A
+```
+C:\>ipconfig
 
-Ethernet adapter Ethernet 2: 
+FastEthernet0 Connection:(default port)
 
-   Connection-specific DNS Suffix . : 
-   IPv6 Address. . . . . . . . . . . : 2001:db8:acad: 1:5 c43:ee7c:2959:da68
-   Temporary IPv6 Address. . . . . . : 2001:db8:acad: 1:3 c64:e4f 9:46 e 1:1 f23
-   Link-local IPv6-адрес. . . . .: fe80። 5c43:ee7c:2959:да 68% 6
-   IPv4-адрес. . . . . . . . . . . : 169.254.218.104
-   Subnet Mask . . . . . . . . . . . : 255.255.0.0
-   Default Gateway . . . . . . . . .: fe80።1%6
-   
+   Connection-specific DNS Suffix..: 
+   Link-local IPv6 Address.........: FE80::230:A3FF:FE44:7A07
+   IPv6 Address....................: 2001:DB8:ACAD:1:230:A3FF:FE44:7A07
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+```
 Вопрос:<br>
-Откуда взялась ## Часть адреса с идентификатором хоста?<br>
+Откуда взялась 230:A3FF:FE44:7A07 часть адреса с идентификатором хоста?<br>
+Ответ<br>
+**На основе MAC-адреса по стандарту EUI-64 (Устаревший способ). Скорее всего система генерирует случайным образом 64-битное число.**
 
 ## Часть 3. Настройка и проверка сервера DHCPv6 на R1
 В части 3 выполняется настройка и проверка состояния DHCP-сервера на R1. Цель состоит в том, чтобы предоставить PC-A информацию о DNS-сервере и домене.
 
 ### Шаг 1. Более подробно изучите конфигурацию PC-A.
 #### a.	Выполните команду ipconfig /all на PC-A и посмотрите на результат.
+```
+C:\>ipconfig /all
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 0030.A344.7A07
+   Link-local IPv6 Address.........: FE80::230:A3FF:FE44:7A07
+   IPv6 Address....................: 2001:DB8:ACAD:1:230:A3FF:FE44:7A07
+   Autoconfiguration IP Address....: 169.254.122.7
+   Subnet Mask.....................: 255.255.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+   DHCP Servers....................: 192.168.1.1
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-90-38-55-3C-00-30-A3-44-7A-07
+   DNS Servers.....................: ::
+                                     0.0.0.0
+```
+```
 C:\Users\Student> ipconfig /all
 Windows IP Configuration
 
@@ -233,14 +256,19 @@ Ethernet adapter Ethernet0:
                                        fec0:0:0:ffff::2%1
                                        fec0:0:0:ffff::3%1
    NetBIOS over Tcpip. . . . . . . . : Enabled
+```
 #### b.	Обратите внимание, что основной DNS-суффикс отсутствует. Также обратите внимание, что предоставленные адреса DNS-сервера являются адресами «локального сайта anycast», а не одноадресные адреса, как ожидалось.
+Результат команды на PC-A в моей схеме отличается от приведенного в методичке. Адрес DNS сервера по нулям. Мне кажется часть с указанием Windows IP Configuration намекает на то, что это актуально на живом железе, а не в CPT. Не понял для чего в задании пункт "a".
 
 ### Шаг 2. Настройте R1 для предоставления DHCPv6 без состояния для PC-A.
 #### a.	Создайте пул DHCP IPv6 на R1 с именем R1-STATELESS. В составе этого пула назначьте адрес DNS-сервера как 2001:db8:acad: :1, а имя домена — как stateless.com.
 Откройте окно конфигурации
-R1(config)# ipv6 dhcp pool R1-STATELESS
-R1(config-dhcp)# dns-server 2001:db8:acad::254
-R1(config-dhcp)# domain-name STATELESS.com
+```
+R1(config)#ipv6 dhcp pool R1-STATELESS
+R1(config-dhcpv6)#dns-ser
+R1(config-dhcpv6)#dns-server 2001:DB8:ACAD::1
+R1(config-dhcpv6)#domain-name stateless.com
+```
 #### b.	Настройте интерфейс G0/0/1 на R1, чтобы предоставить флаг конфигурации OTHER для локальной сети R1 и укажите только что созданный пул DHCP в качестве ресурса DHCP для этого интерфейса.
 R1(config)# interface g0/0/1
 R1(config-if)# ipv6 nd other-config-flag 
