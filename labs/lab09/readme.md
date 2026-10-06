@@ -218,18 +218,39 @@ Port        Vlans in spanning tree forwarding state and not pruned
 Fa0/1       1,10,333,999
 ```
 #### c. Отключить согласование DTP F0/1 на S1 и S2. 
-
+На S2 настройка по аналогии
+```
+S1(config)#int f0/1
+S1(config-if)#switchport nonegotiate
+```
 #### d. Проверьте с помощью команды show interfaces.
-S1# show interfaces f0/1 switchport | include Negotiation
+S1
+```
+S1#sh int f0/1 switchport | include Negotiation
 Negotiation of Trunking: Off
-
-S1# show interfaces f0/1 switchport | include Negotiation
+```
+S2
+```
+S2#sh int f0/1 switchport | include Negotiation
 Negotiation of Trunking: Off
+```
 ## Шаг 2. Настройка портов доступа
 #### a. На S1 настройте F0/5 и F0/6 в качестве портов доступа и свяжите их с VLAN 10.
+```
+S1(config)#int range f0/5-6
+S1(config-if-range)#switchport mode access 
+S1(config-if-range)#switchport access vlan 10
+```
 #### b. На S2 настройте порт доступа Fa0/18 и свяжите его с VLAN 10.
+```
+S2(config)#int f0/18
+S2(config-if)#switchport mode access 
+S2(config-if)#switchport access vlan 10
+```
 ## Шаг 3. Безопасность неиспользуемых портов коммутатора
 #### a. На S1 и S2 переместите неиспользуемые порты из VLAN 1 в VLAN 999 и отключите неиспользуемые порты.
+
+
 #### b. Убедитесь, что неиспользуемые порты отключены и связаны с VLAN 999, введя команду  show.
 S1# show interfaces status
 
