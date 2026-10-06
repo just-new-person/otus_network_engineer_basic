@@ -330,21 +330,40 @@ Gig0/2                       disabled 999        auto    auto  10/100/1000BaseTX
 ## Шаг 4. Документирование и реализация функций безопасности порта.
 Интерфейсы F0/6 на S1 и F0/18 на S2 настроены как порты доступа. На этом ## Шаге вы также настроите безопасность портов на этих двух портах доступа.
 #### a. На S1, введите команду show port-security interface f0/6  для отображения настроек по умолчанию безопасности порта для интерфейса F0/6. Запишите свои ответы ниже.
-
+```
+S1#show port-security interface f0/6
+Port Security              : Disabled
+Port Status                : Secure-down
+Violation Mode             : Shutdown
+Aging Time                 : 0 mins
+Aging Type                 : Absolute
+SecureStatic Address Aging : Disabled
+Maximum MAC Addresses      : 1
+Total MAC Addresses        : 0
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 0
+Last Source Address:Vlan   : 0000.0000.0000:0
+Security Violation Count   : 0
+```
 Конфигурация безопасности порта по умолчанию
-Функция	Настройка по умолчанию
-Защита портов	
-Максимальное количество записей MAC-адресов	
-Режим проверки на нарушение безопасности	
-Aging Time	
-Aging Type	
-Secure Static Address Aging	
-Sticky MAC Address	
+|  Функция  |  Настройка по умолчанию  |
+|---|---|
+|	Защита портов	|	Disabled |
+|	Максимальное количество записей MAC-адресов	|	1	|
+|	Режим проверки на нарушение безопасности	|	Violation Mode - Shutdown	|
+|	Aging Time	|	0	|
+|	Aging Type  |	Absolute	|
+|	Secure Static Address Aging	|	Disabled	|
+|	Sticky MAC Address	|	0	|
+
 #### b. На S1 включите защиту порта на F0 / 6 со следующими настройками:
-o	Максимальное количество записей MAC-адресов: 3
-o	Режим безопасности: restrict
-o	Aging time: 60 мин.
-o	Aging type: неактивный
+o	Максимальное количество записей MAC-адресов:<br>
+o	Режим безопасности: restrict<br>
+o	Aging time: 60 мин.<br>
+o	Aging type: неактивный<br>
+```
+
+```
 #### c. Verify port security on S1 F0/6.
 S1# show port-security interface f0/6
 Port Security : Enabled
