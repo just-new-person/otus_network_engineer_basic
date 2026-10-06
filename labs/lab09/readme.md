@@ -1,7 +1,7 @@
 # Лабораторная работа - Конфигурация безопасности коммутатора
 
 ### Топология
-
+![](Топология_23.png)
 
 ### Таблица адресации
 |		Устройство		|		interface/vlan		|		IP-адрес		|	Маска подсети		|
@@ -41,47 +41,86 @@
 •	2 ПК (ОС Windows с программой эмуляции терминалов, такой как Tera Term)
 •	Консольные кабели для настройки устройств Cisco IOS через консольные порты.
 •	Кабели Ethernet, расположенные в соответствии с топологией
+
 Инструкции
+
 ## Часть 1. Настройка основного сетевого устройства
+
 ## Шаг 1. Создайте сеть.
 #### a. Создайте сеть согласно топологии.
+![](Топология_23_вып.png)
 #### b. Инициализация устройств
+
 ## Шаг 2. Настройте маршрутизатор R1.
 #### a. Загрузите следующий конфигурационный скрипт на R1.
-Откройте окно конфигурации
-enable
-configure terminal
-hostname R1
-no ip domain lookup
-ip dhcp excluded-address 192.168.10.1 192.168.10.9
-ip dhcp excluded-address 192.168.10.201 192.168.10.202
-ip dhcp relay information trust-all
-!
-ip dhcp pool Students
- network 192.168.10.0 255.255.255.0
- default-router 192.168.10.1
- domain-name CCNA2.Lab-11.6.1
-!
-interface Loopback0
- ip address 10.10.1.1 255.255.255.0
-!
-interface GigabitEthernet0/0/1
- description Link to S1
- ip address 192.168.10.1 255.255.255.0
- no shutdown
-!
-line con 0
- logging synchronous
- exec-timeout 0 0
+```
+Router>en
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#hostname R1
+R1(config)#no ip domain-lookup
+R1(config)#ip dhcp excluded-address 192.168.10.1 192.168.10.9
+R1(config)#ip dhcp excluded-address 192.168.10.201 192.168.10.202
+R1(config)#ip dhcp relay information trust-all
+R1(config)#ip dhcp pool Students
+R1(dhcp-config)#network 192.168.10.0 255.255.255.0
+R1(dhcp-config)#default-router 192.168.10.1
+R1(dhcp-config)#domain-name CCNA2.Lab-11.6.1
+R1(dhcp-config)#interface Loopback0
+
+R1(config-if)#
+%LINK-3-UPDOWN: Interface Loopback0, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback0, changed state to up
+
+R1(config-if)#ip address 10.10.1.1 255.255.255.0
+R1(config-if)#interface GigabitEthernet0/0/1
+R1(config-if)#description Link to S1
+R1(config-if)#ip address 192.168.10.1 255.255.255.0
+R1(config-if)#no shutdown
+
+R1(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/1, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1, changed state to up
+
+R1(config-if)#line console 0
+R1(config-line)#logging synchronous
+R1(config-line)#exec-timeout 0 0
+```
 #### b. Проверьте текущую конфигурацию на R1, используя следующую команду:
-R1# show ip interface brief
+```
+R1#sh ip int brief
+Interface              IP-Address      OK? Method Status                Protocol 
+GigabitEthernet0/0/0   unassigned      YES unset  administratively down down 
+GigabitEthernet0/0/1   192.168.10.1    YES manual up                    up 
+Loopback0              10.10.1.1       YES manual up                    up 
+Vlan1                  unassigned      YES unset  administratively down down
+```
 #### c. Убедитесь, что IP-адресация и интерфейсы находятся в состоянии up / up (при необходимости устраните неполадки).
-Закройте окно настройки.
+
 ## Шаг 3. Настройка и проверка основных параметров коммутатора
+На S2 настройка по аналогии
 #### a. Настройте имя хоста для коммутаторов S1 и S2.
-Откройте окно конфигурации
+```
+Switch>en
+Switch#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#hostn S1
+```
 #### b. Запретите нежелательный поиск в DNS.
+```
+S1(config)#no ip domain-lookup
+```
 #### c. Настройте описания интерфейса для портов, которые используются в S1 и S2.
+```
+S1(config)#int fa0/5
+S1(config-if)#description connection to R1 g0/0/1
+S1(config-if)#int fa0/1
+S1(config-if)#description connection to S2 fa0/1
+S1(config-if)#int fa0/6
+S1(config-if)#description connection to PC-A
+```
 #### d. Установите для шлюза по умолчанию для VLAN управления значение 192.168.10.1 на обоих коммутаторах.
 ## Часть 2. Настройка сетей VLAN на коммутаторах.
 ## Шаг 1. Сконфигруриуйте VLAN 10.
