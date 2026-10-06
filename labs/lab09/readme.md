@@ -113,6 +113,7 @@ Switch(config)#hostn S1
 S1(config)#no ip domain-lookup
 ```
 #### c. Настройте описания интерфейса для портов, которые используются в S1 и S2.
+S1
 ```
 S1(config)#int fa0/5
 S1(config-if)#description connection to R1 g0/0/1
@@ -121,13 +122,51 @@ S1(config-if)#description connection to S2 fa0/1
 S1(config-if)#int fa0/6
 S1(config-if)#description connection to PC-A
 ```
+S2
+```
+S2(config)#int fa0/1
+S2(config-if)#description connection to S1 fa0/1
+S2(config-if)#int fa0/18
+S2(config-if)#description connection to PC-B
+```
 #### d. Установите для шлюза по умолчанию для VLAN управления значение 192.168.10.1 на обоих коммутаторах.
+На S2 настройка по аналогии
+```
+S1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+S1(config)#ip def
+S1(config)#ip default-gateway 192.168.10.1
+```
+
 ## Часть 2. Настройка сетей VLAN на коммутаторах.
 ## Шаг 1. Сконфигруриуйте VLAN 10.
 Добавьте VLAN 10 на S1 и S2 и назовите VLAN - Management.
+```
+S1(config)#vlan 10
+S1(config-vlan)#name Management
+```
 ## Шаг 2. Сконфигруриуйте SVI для VLAN 10.
 Настройте IP-адрес в соответствии с таблицей адресации для SVI для VLAN 10 на S1 и S2. Включите интерфейсы SVI и предоставьте описание для интерфейса.
+S1
+```
+S1(config)#int vlan 10
+S1(config-if)#
+%LINK-5-CHANGED: Interface Vlan10, changed state to up
+S1(config-if)#ip address 192.168.10.201 255.255.255.0
+S1(config-if)#description it's vlan 10 on S1
+S1(config-if)#no shutdown
+```
+S2
+```
+S2(config)#int vlan 10
+S2(config-if)#
+%LINK-5-CHANGED: Interface Vlan10, changed state to up
+S2(config-if)#ip address 192.168.10.202 255.255.255.0
+S2(config-if)#no shutdown
+S2(config-if)#description it's vlan 10 on S2
+```
 ## Шаг 3. Настройте VLAN 333 с именем Native на S1 и S2.
+
 ## Шаг 4. Настройте VLAN 999 с именем ParkingLot на S1 и S2.
 ## Часть 3. Настройки безопасности коммутатора.
 ## Шаг 1. Релизация магистральных соединений 802.1Q.
