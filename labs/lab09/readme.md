@@ -355,40 +355,52 @@ Security Violation Count   : 0
 |	Aging Type  |	Absolute	|
 |	Secure Static Address Aging	|	Disabled	|
 |	Sticky MAC Address	|	0	|
-
 #### b. На S1 включите защиту порта на F0 / 6 со следующими настройками:
-o	Максимальное количество записей MAC-адресов:<br>
+o	Максимальное количество записей MAC-адресов: 3<br>
 o	Режим безопасности: restrict<br>
 o	Aging time: 60 мин.<br>
 o	Aging type: неактивный<br>
 ```
-
+S1(config)#int f0/6
+S1(config-if)#switchport port-security
+S1(config-if)#switchport port-security maximum 3
+S1(config-if)#switchport port-security violation restrict 
+S1(config-if)#switchport port-security aging time ?
+  <1-1440>  Aging time in minutes. Enter a value between 1 and 1440
+S1(config-if)#switchport port-security aging time 60
+S1(config-if)#switchport port-security aging ty
+S1(config-if)#switchport port-security aging ?
+  time  Port-security aging time
 ```
+Судя по отсутствию вариант на выбор задать aging type в CPT версии 9.0.0.0810 не получится.
 #### c. Verify port security on S1 F0/6.
-S1# show port-security interface f0/6
-Port Security : Enabled
-Port Status : Secure-up
-Violation Mode : Restrict
-Aging Time : 60 mins
-Aging Type : Inactivity
+```
+S1#sh port-security int f0/6
+Port Security              : Enabled
+Port Status                : Secure-up
+Violation Mode             : Restrict
+Aging Time                 : 60 mins
+Aging Type                 : Absolute
 SecureStatic Address Aging : Disabled
-Maximum MAC Addresses : 3
-Total MAC Addresses : 1
-Configured MAC Addresses : 0
-Sticky MAC Addresses : 0
-Last Source Address:Vlan : 0022.5646.3411:10
-Security Violation Count : 0
-
-S1# show port-security address
+Maximum MAC Addresses      : 3
+Total MAC Addresses        : 1
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 0
+Last Source Address:Vlan   : 00D0.BA74.E361:10
+Security Violation Count   : 0
+```
+```
+S1#sh port-security address
                Secure Mac Address Table
 -----------------------------------------------------------------------------
-Vlan Mac Address Type Ports Remaining Age
+Vlan    Mac Address       Type                          Ports   Remaining Age
                                                                    (mins)
----- ----------- ---- ----- -------------
-  10 0022.5646.3411 SecureDynamic Fa0/6 60 (I)
+----    -----------       ----                          -----   -------------
+10	00D0.BA74.E361	DynamicConfigured	FastEthernet0/6		-
 -----------------------------------------------------------------------------
-Total Addresses in System (excluding one mac per port) : 0
-Max Addresses limit in System (excluding one mac per port) : 8192
+Total Addresses in System (excluding one mac per port)     : 0
+Max Addresses limit in System (excluding one mac per port) : 1024
+```
 #### d. Включите безопасность порта для F0 / 18 на S2. Настройте каждый активный порт доступа таким образом, чтобы он автоматически добавлял адреса МАС, изученные на этом порту, в текущую конфигурацию.
 e.	Настройте следующие параметры безопасности порта на S2 F / 18:
 o	Максимальное количество записей MAC-адресов: 2
