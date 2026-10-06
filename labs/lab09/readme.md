@@ -608,8 +608,63 @@ Port 18 (FastEthernet0/18) of VLAN0010 is designated forwarding
 ```
 ## Шаг 7. Проверьте наличие сквозного ⁪подключения.
 Проверьте PING связь между всеми устройствами в таблице IP-адресации. В случае сбоя проверки связи может потребоваться отключить брандмауэр на хостах.
+Пример пинга с PC-A, всё работает по всем устройствам (PC-B, S1, S2, R1), **КРОМЕ пинга с S2 на loop-back 10.10.1.1.** Я не знаю почему, возможно глюк CPT.
 ```
+C:\>ping 192.168.10.1
 
+Pinging 192.168.10.1 with 32 bytes of data:
+
+Reply from 192.168.10.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.10.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.10.1: bytes=32 time<1ms TTL=255
+Reply from 192.168.10.1: bytes=32 time=1ms TTL=255
+
+Ping statistics for 192.168.10.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 1ms, Average = 0ms
+
+C:\>ping 10.10.1.1
+
+Pinging 10.10.1.1 with 32 bytes of data:
+
+Reply from 10.10.1.1: bytes=32 time<1ms TTL=255
+Reply from 10.10.1.1: bytes=32 time<1ms TTL=255
+Reply from 10.10.1.1: bytes=32 time<1ms TTL=255
+Reply from 10.10.1.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 10.10.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>ping 192.168.10.201
+
+Pinging 192.168.10.201 with 32 bytes of data:
+
+Request timed out.
+Reply from 192.168.10.201: bytes=32 time<1ms TTL=255
+Reply from 192.168.10.201: bytes=32 time<1ms TTL=255
+Reply from 192.168.10.201: bytes=32 time<1ms TTL=255
+
+Ping statistics for 192.168.10.201:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>ping 192.168.10.202
+
+Pinging 192.168.10.202 with 32 bytes of data:
+
+Request timed out.
+Reply from 192.168.10.202: bytes=32 time<1ms TTL=255
+Reply from 192.168.10.202: bytes=32 time<1ms TTL=255
+Reply from 192.168.10.202: bytes=32 time<1ms TTL=255
+
+Ping statistics for 192.168.10.202:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
 ```
 Закройте окно настройки.
 Вопросы для повторения
