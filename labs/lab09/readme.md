@@ -374,6 +374,7 @@ S1(config-if)#switchport port-security aging ?
 ```
 Судя по отсутствию вариант на выбор задать aging type в CPT версии 9.0.0.0810 не получится.
 #### c. Verify port security on S1 F0/6.
+Чтобы фокус сработал надо на PC-A включить на IPv4 DHCP (в методичке не сказано об этом). Иначе Total MAC Addresses будет 0 и Last Source Address:Vlan пустой (0000.0000.0000:0). Собственно они так и были, пока не включил DHCP.
 ```
 S1#sh port-security int f0/6
 Port Security              : Enabled
@@ -402,37 +403,53 @@ Total Addresses in System (excluding one mac per port)     : 0
 Max Addresses limit in System (excluding one mac per port) : 1024
 ```
 #### d. Включите безопасность порта для F0 / 18 на S2. Настройте каждый активный порт доступа таким образом, чтобы он автоматически добавлял адреса МАС, изученные на этом порту, в текущую конфигурацию.
-e.	Настройте следующие параметры безопасности порта на S2 F / 18:
-o	Максимальное количество записей MAC-адресов: 2
-o	Тип безопасности: Protect
-o	Aging time: 60 мин.
-f.	Проверка функции безопасности портов на S2 F0/18.
-S2# show port-security interface f0/18
-Port Security : Enabled
-Port Status : Secure-up
-Violation Mode : Protect
-Aging Time : 60 mins
-Aging Type : Absolute
+```
+S2(config)#int f0/18
+S2(config-if)#switchport port-security 
+S2(config-if)#switchport port-security mac-address sticky 
+```
+#### e.	Настройте следующие параметры безопасности порта на S2 F / 18:
+o	Максимальное количество записей MAC-адресов: 2<br>
+o	Тип безопасности: Protect<br>
+o	Aging time: 60 мин.<br>
+```
+S2(config-if)#switchport port-security maximum 2
+S2(config-if)#switchport port-security violation protect 
+S2(config-if)#switchport port-security aging time 60
+```
+#### f.	Проверка функции безопасности портов на S2 F0/18.
+Чтобы фокус сработал надо на PC-B включить на IPv4 DHCP (в методичке не сказано об этом). Иначе Total MAC Addresses будет 0 и Last Source Address:Vlan пустой (0000.0000.0000:0)
+```
+S2#sh port-security int f0/18
+Port Security              : Enabled
+Port Status                : Secure-up
+Violation Mode             : Protect
+Aging Time                 : 60 mins
+Aging Type                 : Absolute
 SecureStatic Address Aging : Disabled
-Maximum MAC Addresses : 2
-Total MAC Addresses : 1
-Configured MAC Addresses : 0
-Sticky MAC Addresses : 0
-Last Source Address:Vlan : 0022.5646.3413:10
-Security Violation Count : 0
-
-S2# show port-security address
+Maximum MAC Addresses      : 2
+Total MAC Addresses        : 1
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 1
+Last Source Address:Vlan   : 0002.4ACB.E20C:10
+Security Violation Count   : 0
+```
+```
+S2#sh port-security address
                Secure Mac Address Table
 -----------------------------------------------------------------------------
-Vlan Mac Address Type Ports Remaining Age
+Vlan    Mac Address       Type                          Ports   Remaining Age
                                                                    (mins)
----- ----------- ---- ----- -------------
-  10 0022.5646.3413 SecureSticky Fa0/18 -
+----    -----------       ----                          -----   -------------
+  10    0002.4ACB.E20C    SecureSticky                  Fa0/18       -
 -----------------------------------------------------------------------------
-Total Addresses in System (excluding one mac per port) : 0
-Max Addresses limit in System (excluding one mac per port) : 8192
+Total Addresses in System (excluding one mac per port)     : 0
+Max Addresses limit in System (excluding one mac per port) : 1024
+```
+
 ## Шаг 5. Реализовать безопасность DHCP snooping.
 #### a. На S2 включите DHCP snooping и настройте DHCP snooping во VLAN 10.
+
 #### b. Настройте магистральные порты на S2 как доверенные порты.
 #### c. Ограничьте ненадежный порт Fa0/18 на S2 пятью DHCP-пакетами в секунду.
 #### d. Проверка DHCP Snooping на S2.
@@ -457,15 +474,16 @@ FastEthernet0/1 yes yes unlimited
   Custom circuit-ids:
 FastEthernet0/18 no no 5
   Custom circuit-ids:
-e.	В командной строке на PC-B освободите, а затем обновите IP-адрес.
+#### e.	В командной строке на PC-B освободите, а затем обновите IP-адрес.
 C:\Users\Student> ipconfig /release
 C:\Users\Student> ipconfig /renew
-f.	Проверьте привязку отслеживания DHCP с помощью команды show ip dhcp snooping binding.
+#### f.	Проверьте привязку отслеживания DHCP с помощью команды show ip dhcp snooping binding.
 S2# show ip dhcp snooping binding 
 MacIp адресAddress Lease(sec) Type VLAN Interface
 ------------------ --------------- ---------- ------------- ---- --------------------
 00:50:56:90:D0:8E 192.168.10.11 86213 dhcp-snooping 10 FastEthernet0/18
 Total number of bindings: 1
+
 ## Шаг 6. Реализация PortFast и BPDU Guard
 #### a. Настройте PortFast на всех портах доступа, которые используются на обоих коммутаторах.
 #### b. Включите защиту BPDU на портах доступа VLAN 10 S1 и S2, подключенных к PC-A и PC-B.
@@ -479,6 +497,7 @@ S1# show spanning-tree interface f0/6 detail
    Link type is point-to-point by default
    Bpdu guard is enabled
    BPDU: sent 128, received 0
+
 ## Шаг 7. Проверьте наличие сквозного ⁪подключения.
 Проверьте PING свзяь между всеми устройствами в таблице IP-адресации. В случае сбоя проверки связи может потребоваться отключить брандмауэр на хостах.
 Закройте окно настройки.
