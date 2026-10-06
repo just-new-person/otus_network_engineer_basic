@@ -166,40 +166,59 @@ S2(config-if)#no shutdown
 S2(config-if)#description it's vlan 10 on S2
 ```
 ## Шаг 3. Настройте VLAN 333 с именем Native на S1 и S2.
-
+На S2 настройка по аналогии
+```
+S1(config)#vlan 333
+S1(config-vlan)#name Native
+```
 ## Шаг 4. Настройте VLAN 999 с именем ParkingLot на S1 и S2.
+На S2 настройка по аналогии
+```
+S1(config-vlan)#vlan 999
+S1(config-vlan)#name ParkingLot
+```
+
 ## Часть 3. Настройки безопасности коммутатора.
-## Шаг 1. Релизация магистральных соединений 802.1Q.
+## Шаг 1. Реализация магистральных соединений 802.1Q.
 #### a. Настройте все магистральные порты Fa0/1 на обоих коммутаторах для использования VLAN 333 в качестве native VLAN.
+```
+S1(config)#int f0/1
+S1(config-if)#switchport mode trunk
+S1(config-if)#switchport trunk native vlan 333
+```
 #### b. Убедитесь, что режим транкинга успешно настроен на всех коммутаторах.
-S1# show interface trunk
+S1
+```
+S1#sh int trunk
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      333
 
-Port Mode Encapsulation Status Native vlan
-Fa0/1 on 802.1q trunking 333
+Port        Vlans allowed on trunk
+Fa0/1       1-1005
 
-Port Vlans allowed on trunk
-Fa0/1 1-4094
+Port        Vlans allowed and active in management domain
+Fa0/1       1,10,333,999
 
-Port Vlans allowed and active in management domain
-Fa0/1 1,10,333,999
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       1,10,333,999
+```
+S2
+```
+S2#sh int trunk
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      333
 
-Port Vlans in spanning tree forwarding state and not pruned
-Fa0/1 1,10,333,999
+Port        Vlans allowed on trunk
+Fa0/1       1-1005
 
-S2# show interface trunk
+Port        Vlans allowed and active in management domain
+Fa0/1       1,10,333,999
 
-Port Mode Encapsulation Status Native vlan
-Fa0/1 on 802.1q trunking 333
-
-Port Vlans allowed on trunk
-Fa0/1 1-4094
-
-Port Vlans allowed and active in management domain
-Fa0/1 1,10,333,999
-
-Port Vlans in spanning tree forwarding state and not pruned
-Fa0/1 1,10,333,999
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       1,10,333,999
+```
 #### c. Отключить согласование DTP F0/1 на S1 и S2. 
+
 #### d. Проверьте с помощью команды show interfaces.
 S1# show interfaces f0/1 switchport | include Negotiation
 Negotiation of Trunking: Off
