@@ -466,7 +466,7 @@ S2(config)#int f0/18
 S2(config-if)#ip dhcp snooping limit rate 5
 ```
 #### d. Проверка DHCP Snooping на S2.
-Выведенные результаты команды show ip dhcp snooping по объему меньше, чем указано в методичке.
+Выведенные результаты команды show ip dhcp snooping отличаются от предполагаемого текста, указанного в методичке.
 ```
 S2#sh ip dhcp snooping
 Switch DHCP snooping is enabled
@@ -530,20 +530,87 @@ Total number of bindings: 1
 
 ## Шаг 6. Реализация PortFast и BPDU Guard
 #### a. Настройте PortFast на всех портах доступа, которые используются на обоих коммутаторах.
-#### b. Включите защиту BPDU на портах доступа VLAN 10 S1 и S2, подключенных к PC-A и PC-B.
-#### c. Убедитесь, что защита BPDU и PortFast включены на соответствующих портах.
-S1# show spanning-tree interface f0/6 detail
- Port 8 (FastEthernet0/6) of VLAN0010 is designated forwarding
-   Port path cost 19, Port priority 128, Port Identifier 128.6.
-   <output omitted for brevity>
-   Number of transitions to forwarding state: 1
-   The port is in the portfast mode
-   Link type is point-to-point by default
-   Bpdu guard is enabled
-   BPDU: sent 128, received 0
+S1
+```
+S1(config)#int range f0/5-6
+S1(config-if-range)#spanning-tree portfast 
+%Warning: portfast should only be enabled on ports connected to a single
+host. Connecting hubs, concentrators, switches, bridges, etc... to this
+interface  when portfast is enabled, can cause temporary bridging loops.
+Use with CAUTION
 
+%Portfast has been configured on FastEthernet0/5 but will only
+have effect when the interface is in a non-trunking mode.
+%Warning: portfast should only be enabled on ports connected to a single
+host. Connecting hubs, concentrators, switches, bridges, etc... to this
+interface  when portfast is enabled, can cause temporary bridging loops.
+Use with CAUTION
+
+%Portfast has been configured on FastEthernet0/6 but will only
+have effect when the interface is in a non-trunking mode.
+```
+S2
+```
+S2(config)#int f0/18
+S2(config-if)#spanning-tree portfast 
+%Warning: portfast should only be enabled on ports connected to a single
+host. Connecting hubs, concentrators, switches, bridges, etc... to this
+interface  when portfast is enabled, can cause temporary bridging loops.
+Use with CAUTION
+
+%Portfast has been configured on FastEthernet0/18 but will only
+have effect when the interface is in a non-trunking mode.
+```
+#### b. Включите защиту BPDU на портах доступа VLAN 10 S1 и S2, подключенных к PC-A и PC-B.
+S1
+```
+S1(config)#int f0/6
+S1(config-if)#spanning-tree bpduguard enable 
+```
+S2
+```
+S2(config)#int f0/18
+S2(config-if)#spanning-tree bpduguard enable 
+```
+#### c. Убедитесь, что защита BPDU и PortFast включены на соответствующих портах.
+Выведенные результаты команды show spanning-tree interface f0/6 detail отличаются от предполагаемого текста, указанного в методичке. Но видно, что порт в portfast режиме.<br>
+S1
+```
+S1#show spanning-tree int f0/6 detail
+
+
+
+Port 6 (FastEthernet0/6) of VLAN0010 is designated forwarding
+  Port path cost 19, Port priority 128, Port Identifier 128.6
+  Designated root has priority 32778, address 0060.2FB1.7D50
+  Designated bridge has priority 32778, address 0060.2FB1.7D50
+  Designated port id is 128.6, designated path cost 19
+  Timers: message age 16, forward delay 0, hold 0
+  Number of transitions to forwarding state: 1
+  The port is in the portfast mode
+  Link type is point-to-point by default
+```
+S2
+```
+S2#sh spanning-tree int f0/18 detail
+
+
+
+Port 18 (FastEthernet0/18) of VLAN0010 is designated forwarding
+  Port path cost 19, Port priority 128, Port Identifier 128.18
+  Designated root has priority 32778, address 0060.2FB1.7D50
+  Designated bridge has priority 32778, address 0090.21B5.8268
+  Designated port id is 128.18, designated path cost 19
+  Timers: message age 16, forward delay 0, hold 0
+  Number of transitions to forwarding state: 1
+  The port is in the portfast mode
+  Link type is point-to-point by default
+```
 ## Шаг 7. Проверьте наличие сквозного ⁪подключения.
-Проверьте PING свзяь между всеми устройствами в таблице IP-адресации. В случае сбоя проверки связи может потребоваться отключить брандмауэр на хостах.
+Проверьте PING связь между всеми устройствами в таблице IP-адресации. В случае сбоя проверки связи может потребоваться отключить брандмауэр на хостах.
+```
+
+```
 Закройте окно настройки.
 Вопросы для повторения
 1.	С точки зрения безопасности порта на S2, почему нет значения таймера для оставшегося возраста в минутах, когда было сконфигурировано динамическое обучение - sticky?
