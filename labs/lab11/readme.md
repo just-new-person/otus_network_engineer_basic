@@ -75,11 +75,55 @@
 
 ## Часть 2. Настройка сетей VLAN на коммутаторах.
 ### Шаг 1. Создайте сети VLAN на коммутаторах.
-Откройте окно конфигурации
 #### a.	Создайте необходимые VLAN и назовите их на каждом коммутаторе из приведенной выше таблицы.
-#### b.	Настройте интерфейс управления и шлюз по умолчанию на каждом коммутаторе, используя информацию об IP-адресе в таблице адресации. 
+Настройка S2 по аналогии
+```
+S1(config)#vlan 20
+S1(config-vlan)#name Management
+S1(config-vlan)#vlan 30
+S1(config-vlan)#name Operations
+S1(config-vlan)#vlan 40
+S1(config-vlan)#name Sales
+S1(config-vlan)#vlan 999
+S1(config-vlan)#name ParkingLot
+S1(config-vlan)#vlan 1000
+S1(config-vlan)#name Other
+S1(config-vlan)#
+```
+#### b.	Настройте интерфейс управления и шлюз по умолчанию на каждом коммутаторе, используя информацию об IP-адресе в таблице адресации.
+S1
+```
+S1(config)#int vlan 20
+S1(config-if)#
+%LINK-5-CHANGED: Interface Vlan20, changed state to up
+S1(config-if)#ip address 10.20.0.2 255.255.255.0
+S1(config-if)#ex
+S1(config)#ip default-gateway 10.20.0.1
+```
+S2
+```
+S2(config)#int vlan 20
+S2(config-if)#
+%LINK-5-CHANGED: Interface Vlan20, changed state to up
+S2(config-if)#ip address 10.20.0.3 255.255.255.0
+S2(config-if)#ex
+S2(config)#ip default-gateway 10.20.0.1
+```
 #### c.	Назначьте все неиспользуемые порты коммутатора VLAN Parking Lot, настройте их для статического режима доступа и административно деактивируйте их.
-Примечание. Команда interface range полезна для выполнения этой задачи с помощью необходимого количества команд. 
+S1
+```
+S1(config)#int range f0/2-4,f0/7-24,g0/1-2
+S1(config-if-range)#switchport mode access 
+S1(config-if-range)#switchport access vlan 999
+S1(config-if-range)#shutdown
+```
+S2
+```
+S2(config)#int range f0/2-4,f0/6-17,f0/19-24,g0/1-2
+S2(config-if-range)#switchport mode access 
+S2(config-if-range)#switchport access vlan 999
+S2(config-if-range)#shutdown
+```
 
 ### Шаг 2. Назначьте сети VLAN соответствующим интерфейсам коммутатора.
 #### a.	Назначьте используемые порты соответствующей VLAN (указанной в таблице VLAN выше) и настройте их для режима статического доступа.
