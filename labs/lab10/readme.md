@@ -123,11 +123,23 @@ R1
 ```
 R1(config)#int g0/0/1
 R1(config-if)#ip address 10.53.0.1 255.255.255.0
+R1(config)#int loopback 1
+%LINK-3-UPDOWN: Interface Loopback1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback1, changed state to up
+
+R1(config-if)#ip address 172.16.1.1 255.255.255.0
 ```
 R2
 ```
 R2(config)#int g0/0/1
 R2(config-if)#ip address 10.53.0.2 255.255.255.0
+R2(config)#int loopback 1
+%LINK-3-UPDOWN: Interface Loopback1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback1, changed state to up
+
+R2(config-if)#ip address 192.168.1.1 255.255.255.0
 ```
 #### b.	Перейдите в режим конфигурации маршрутизатора OSPF, используя идентификатор процесса 56.
 Настройка R2 по аналогии
@@ -177,15 +189,63 @@ Neighbor ID     Pri   State           Dead Time   Address         Interface
 ```
 Вопрос:
 Какой маршрутизатор является DR? Какой маршрутизатор является BDR? Каковы критерии отбора?
-
+**DR выбран R2. BDR стал R1. DR становится тот, у кого больше идентификатор или больше приоритет. Идентификатор 2.2.2.2 больше 1.1.1.1, а приоритеты R1 и R2 равны, т.к. мы их вручную не задавали.**
 #### g.	На R1 выполните команду show ip route ospf, чтобы убедиться, что сеть R2 Loopback1 присутствует в таблице маршрутизации. Обратите внимание, что поведение OSPF по умолчанию заключается в объявлении интерфейса обратной связи в качестве маршрута узла с использованием 32-битной маски.
+```
+R1#show ip route ospf
+     192.168.1.0/32 is subnetted, 1 subnets
+O       192.168.1.1 [110/2] via 10.53.0.2, 00:01:56, GigabitEthernet0/0/1
+```
 #### h.	Запустите Ping до  адреса интерфейса R2 Loopback 1 из R1. Выполнение команды ping должно быть успешным.
-Закройте окно настройки.
+```
+R1#ping 192.168.1.1
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/0 ms
+```
+
 ## Часть 3. Оптимизация и проверка конфигурации OSPFv2 для одной области
 ### Шаг 1. Реализация различных оптимизаций на каждом маршрутизаторе.
-Откройте окно конфигурации
 #### a.	На R1 настройте приоритет OSPF интерфейса G0/0/1 на 50, чтобы убедиться, что R1 является назначенным маршрутизатором.
+```
+R1(config)#int g0/0/1
+R1(config-if)#ip ospf pr
+R1(config-if)#ip ospf priority 50
+R1#clear ip ospf process 
+Reset ALL OSPF processes? [no]: y
+
+R1#
+00:48:16: %OSPF-5-ADJCHG: Process 56, Nbr 2.2.2.2 on GigabitEthernet0/0/1 from FULL to DOWN, Neighbor Down: Adjacency forced to reset
+
+00:48:16: %OSPF-5-ADJCHG: Process 56, Nbr 2.2.2.2 on GigabitEthernet0/0/1 from FULL to DOWN, Neighbor Down: Interface down or detached
+
+00:48:18: %OSPF-5-ADJCHG: Process 56, Nbr 2.2.2.2 on GigabitEthernet0/0/1 from LOADING to FULL, Loading Done
+
+R1#sh ip ospf int
+R1#sh ip ospf interface g0/0/1
+
+GigabitEthernet0/0/1 is up, line protocol is up
+  Internet address is 10.53.0.1/24, Area 0
+  Process ID 56, Router ID 1.1.1.1, Network Type BROADCAST, Cost: 1
+  Transmit Delay is 1 sec, State DR, Priority 50
+  Designated Router (ID) 1.1.1.1, Interface address 10.53.0.1
+  Backup Designated Router (ID) 2.2.2.2, Interface address 10.53.0.2
+  Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+    Hello due in 00:00:02
+  Index 1/1, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 1, maximum is 1
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 1, Adjacent neighbor count is 1
+    Adjacent with neighbor 2.2.2.2  (Backup Designated Router)
+  Suppress hello for 0 neighbor(s)
+```
 #### b.	Настройте таймеры OSPF на G0/0/1 каждого маршрутизатора для таймера приветствия, составляющего 30 секунд.
+```
+
+```
 #### c.	На R1 настройте статический маршрут по умолчанию, который использует интерфейс Loopback 1 в качестве интерфейса выхода. Затем распространите маршрут по умолчанию в OSPF. Обратите внимание на сообщение консоли после установки маршрута по умолчанию.
 #### d.	добавьте конфигурацию, необходимую для OSPF для обработки R2 Loopback 1 как сети точка-точка. Это приводит к тому, что OSPF объявляет Loopback 1 использует маску подсети интерфейса.
 #### e.	Только на R2 добавьте конфигурацию, необходимую для предотвращения отправки объявлений OSPF в сеть Loopback 1.
