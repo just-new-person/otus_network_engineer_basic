@@ -257,10 +257,48 @@ R1(config)#router ospf 56
 R1(config-router)#default-information originate 
 ```
 #### d.	добавьте конфигурацию, необходимую для OSPF для обработки R2 Loopback 1 как сети точка-точка. Это приводит к тому, что OSPF объявляет Loopback 1 использует маску подсети интерфейса.
+```
+R2(config)#int loopback 1
+R2(config-if)#ip ospf network point-to-point 
+```
 #### e.	Только на R2 добавьте конфигурацию, необходимую для предотвращения отправки объявлений OSPF в сеть Loopback 1.
+```
+R2(config)#router ospf 56
+R2(config-router)#passive-interface loopback 1
+```
 #### f.	Измените базовую пропускную способность для маршрутизаторов. После этой настройки перезапустите OSPF с помощью команды clear ip ospf process . Обратите внимание на сообщение консоли после установки новой опорной полосы пропускания.
+R1<br>
+Настройка R2 по аналогии<br>
+Сообщение оповещения после ввода команды напоминает установить reference bandwidth для всехз роутеров.
+```
+R1(config)#router ospf 56
+R1(config-router)#auto-cost reference-bandwidth 1000
+% OSPF: Reference bandwidth is changed.
+        Please ensure reference bandwidth is consistent across all routers.
+```
+
 ### Шаг 2. Убедитесь, что оптимизация OSPFv2 реализовалась.
 #### a.	Выполните команду show ip ospf interface g0/0/1 на R1 и убедитесь, что приоритет интерфейса установлен равным 50, а временные интервалы — Hello 30, Dead 120, а тип сети по умолчанию — Broadcast
+Приоритет - Priority 50, интервал приветствия - Hello 30, тип сети - Network Type BROADCAST, а вот интервал простоя (dead) не менялся - в методичке не было указания менять его.
+```
+R1#show ip ospf interface g0/0/1
+
+GigabitEthernet0/0/1 is up, line protocol is up
+  Internet address is 10.53.0.1/24, Area 0
+  Process ID 56, Router ID 1.1.1.1, Network Type BROADCAST, Cost: 10
+  Transmit Delay is 1 sec, State DR, Priority 50
+  Designated Router (ID) 1.1.1.1, Interface address 10.53.0.1
+  Backup Designated Router (ID) 2.2.2.2, Interface address 10.53.0.2
+  Timer intervals configured, Hello 30, Dead 40, Wait 40, Retransmit 5
+    Hello due in 00:00:04
+  Index 1/1, flood queue length 0
+  Next 0x0(0)/0x0(0)
+  Last flood scan length is 1, maximum is 1
+  Last flood scan time is 0 msec, maximum is 0 msec
+  Neighbor Count is 1, Adjacent neighbor count is 1
+    Adjacent with neighbor 2.2.2.2  (Backup Designated Router)
+  Suppress hello for 0 neighbor(s)
+```
 #### b.	На R1 выполните команду show ip route ospf, чтобы убедиться, что сеть R2 Loopback1 присутствует в таблице маршрутизации. Обратите внимание на разницу в метрике между этим выходным и предыдущим выходным. Также обратите внимание, что маска теперь составляет 24 бита, в отличие от 32 битов, ранее объявленных.
 #### c.	Введите команду show ip route ospf на маршрутизаторе R2. Единственная информация о маршруте OSPF должна быть распространяемый по умолчанию маршрут R1.
 #### d.	Запустите Ping до адреса интерфейса R1 Loopback 1 из R2. Выполнение команды ping должно быть успешным.
