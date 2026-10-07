@@ -52,27 +52,33 @@ R1(config)#no ip domain-lookup
 #### c.	Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.
 Настройка R2 по аналогии
 ```
-
+R1(config)#enable secret class
 ```
 #### d.	Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.
 Настройка R2 по аналогии
 ```
-
+R1(config)#line console 0
+R1(config-line)#password cisco
+R1(config-line)#login
 ```
 #### e.	Назначьте cisco в качестве пароля VTY и включите вход в систему по паролю.
 Настройка R2 по аналогии
 ```
-
+R1(config)#line vty 0 15
+R1(config-line)#password cisco
+R1(config-line)#login
 ```
 #### f.	Зашифруйте открытые пароли.
 Настройка R2 по аналогии
 ```
-
+R1(config)#service password-encryption
 ```
 #### g.	Создайте баннер с предупреждением о запрете несанкционированного доступа к устройству.
 Настройка R2 по аналогии
 ```
-
+R1(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+!!! GO AWAY !!!#
 ```
 #### h.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 
@@ -93,26 +99,32 @@ S1(config)#no ip domain-lookup
 #### c.	Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.
 Настройка S2 по аналогии
 ```
-
+S1(config)#enable secret class
 ```
 #### d.	Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.
 Настройка S2 по аналогии
 ```
-
+S1(config)#line console 0
+S1(config-line)#password cisco
+S1(config-line)#login
 ```
 #### e.	Назначьте cisco в качестве пароля VTY и включите вход в систему по паролю.Настройка S2 по аналогии
 ```
-
+S1(config)#line vty 0 15
+S1(config-line)#password cisco
+S1(config-line)#login
 ```
 #### f.	Зашифруйте открытые пароли.
 Настройка S2 по аналогии
 ```
-
+S1(config)#service password-encryption 
 ```
 #### g.	Создайте баннер с предупреждением о запрете несанкционированного доступа к устройству.
 Настройка S2 по аналогии
 ```
-
+S1(config)#banner motd #
+Enter TEXT message.  End with the character '#'.
+!!! GO AWAY !!!#
 ```
 #### h.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 
