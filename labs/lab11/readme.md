@@ -190,11 +190,70 @@ VLAN Name                             Status    Ports
 
 ## Часть 3. ·Настройте транки (магистральные каналы).
 ### Шаг 1. Вручную настройте магистральный интерфейс F0/1.
-Откройте окно конфигурации
 #### a.	Измените режим порта коммутатора на интерфейсе F0/1, чтобы принудительно создать магистральную связь. Не забудьте сделать это на обоих коммутаторах.
+S1
+```
+S1(config)#int f0/1
+S1(config-if)#switchport mode trunk 
+S1(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan20, changed state to up
+```
+S2
+```
+S2(config)#int f0/1
+S2(config-if)#switchport mode trunk 
+S2(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan20, changed state to up
+```
 #### b.	В рамках конфигурации транка установите для native vlan значение 1000 на обоих коммутаторах. При настройке двух интерфейсов для разных собственных VLAN сообщения об ошибках могут отображаться временно.
+Настройка S2 по аналогии
+```
+S1(config-if)#switchport trunk native vlan 1000
+```
 #### c.	В качестве другой части конфигурации транка укажите, что VLAN 20, 30, 40 и 1000 разрешены в транке.
+Настройка S2 по аналогии
+```
+S1(config-if)#switchport trunk allowed vlan 20,30,40,1000
+```
 #### d.	Выполните команду show interfaces trunk для проверки портов магистрали, собственной VLAN и разрешенных VLAN через магистраль.
+S1
+```
+S1#sh int trunk 
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      1000
+
+Port        Vlans allowed on trunk
+Fa0/1       20,30,40,1000
+
+Port        Vlans allowed and active in management domain
+Fa0/1       20,30,40,1000
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       20,30,40,1000
+```
+S2
+```
+S2#sh int tr
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      1000
+
+Port        Vlans allowed on trunk
+Fa0/1       20,30,40,1000
+
+Port        Vlans allowed and active in management domain
+Fa0/1       20,30,40,1000
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       20,30,40,1000
+```
 
 ### Шаг 2. Вручную настройте магистральный интерфейс F0/5 на коммутаторе S1.
 #### a.	Настройте интерфейс S1 F0/5 с теми же параметрами транка, что и F0/1. Это транк до маршрутизатора.
