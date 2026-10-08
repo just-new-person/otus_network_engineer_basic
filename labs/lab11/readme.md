@@ -257,28 +257,120 @@ Fa0/1       20,30,40,1000
 
 ### Шаг 2. Вручную настройте магистральный интерфейс F0/5 на коммутаторе S1.
 #### a.	Настройте интерфейс S1 F0/5 с теми же параметрами транка, что и F0/1. Это транк до маршрутизатора.
+```
+S1(config)#int f0/5
+S1(config-if)#switchport mode trunk 
+S1(config-if)#switchport trunk native vlan 1000
+S1(config-if)#switchport trunk allowe vlan 20,30,40,1000
+```
 #### b.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 #### c.	Используйте команду show interfaces trunk для проверки настроек транка.
+Без включения порта g0/0/1 на R1 команда ничего не показывает. Забегая вперед указаний методички включаем порт.
+```
+S1#sh int trunk 
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      1000
+Fa0/5       on           802.1q         trunking      1000
 
+Port        Vlans allowed on trunk
+Fa0/1       20,30,40,1000
+Fa0/5       20,30,40,1000
+
+Port        Vlans allowed and active in management domain
+Fa0/1       20,30,40,1000
+Fa0/5       20,30,40,1000
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       20,30,40,1000
+Fa0/5       none
+```
 
 ## Часть 4. Настройте маршрутизацию.
 ### Шаг 1. Настройка маршрутизации между сетями VLAN на R1.
-Откройте окно конфигурации
 #### a.	Активируйте интерфейс G0/0/1 на маршрутизаторе.
+```
+R1#conf t
+R1(config)#no ip domain-lookup 
+R1(config)#int g0/0/1
+R1(config-if)#no shutdown
+```
 #### b.	Настройте подинтерфейсы для каждой VLAN, как указано в таблице IP-адресации. Все подинтерфейсы используют инкапсуляцию 802.1Q. Убедитесь, что подинтерфейс для собственной VLAN не имеет назначенного IP-адреса. Включите описание для каждого подинтерфейса.
+```
+R1(config)#int g0/0/1.20
+%LINK-3-UPDOWN: Interface GigabitEthernet0/0/1.20, changed state to down
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1.20, changed state to up
+R1(config-subif)#description subint vlan20 to S1 f0/5
+R1(config-subif)#encapsulation dot1Q 20
+R1(config-subif)#ip address 10.20.0.1 255.255.255.0
+R1(config-subif)#int g0/0/1.30
+R1(config-subif)#description subint vlan30 to S1 f0/5
+R1(config-subif)#encapsulation dot1Q 30
+R1(config-subif)#ip address 10.30.0.1 255.255.255.0
+R1(config-subif)#int g0/0/1.40
+R1(config-subif)#description subint vlan40 to S1 f0/5
+R1(config-subif)#encapsulation dot1Q 40
+R1(config-subif)#ip address 10.40.0.1 255.255.255.0
+R1(config-subif)#int g0/0/1.1000
+R1(config-subif)#description subint vla1000 to S1 f0/5
+```
 #### c.	Настройте интерфейс Loopback 1 на R1 с адресацией из приведенной выше таблицы.
+```
+R1(config)#int loopback 1
+
+R1(config-if)#
+%LINK-3-UPDOWN: Interface Loopback1, changed state to down
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback1, changed state to up
+
+R1(config-if)#ip address 172.16.1.1 255.255.255.0
+```
 #### d.	С помощью команды show ip interface brief проверьте конфигурацию подынтерфейса.
+```
+R1#sh ip int br
+Interface              IP-Address      OK? Method Status                Protocol 
+GigabitEthernet0/0/0   unassigned      YES unset  administratively down down 
+GigabitEthernet0/0/1   unassigned      YES unset  up                    up 
+GigabitEthernet0/0/1.2010.20.0.1       YES manual up                    up 
+GigabitEthernet0/0/1.3010.30.0.1       YES manual up                    up 
+GigabitEthernet0/0/1.4010.40.0.1       YES manual up                    up 
+GigabitEthernet0/0/1.1000unassigned      YES unset  up                    up 
+GigabitEthernet0/0/2   unassigned      YES unset  administratively down down 
+Loopback1              172.16.1.1      YES manual up                    up 
+Vlan1                  unassigned      YES unset  administratively down down
+```
 
 ### Шаг 2. Настройка интерфейса R2 g0/0/1 с использованием адреса из таблицы и маршрута по умолчанию с адресом следующего перехода 10.20.0.1
-
+```
+R2#conf t
+R2(config)#int g0/0/1
+R2(config-if)#no shutdown
+R2(config-if)#ip address 10.20.0.4 255.255.255.0
+R2(config)#ip route 0.0.0.0 0.0.0.0 10.20.0.1
+```
 
 ## Часть 5. Настройте удаленный доступ
 ### Шаг 1. Настройте все сетевые устройства для базовой поддержки SSH.
-Откройте окно конфигурации
 #### a.	Создайте локального пользователя с именем пользователя SSHadmin и зашифрованным паролем $cisco123!
 #### b.	Используйте ccna-lab.com в качестве доменного имени.
 #### c.	Генерируйте криптоключи с помощью 1024 битного модуля.
 #### d.	Настройте первые пять линий VTY на каждом устройстве, чтобы поддерживать только SSH-соединения и с локальной аутентификацией.
+```
+R2(config)#ip domain name ccna-lab.com
+R2(config)#crypto key generate rsa
+The name for the keys will be: R2.ccna-lab.com
+Choose the size of the key modulus in the range of 360 to 4096 for your
+  General Purpose Keys. Choosing a key modulus greater than 512 may take
+  a few minutes.
+How many bits in the modulus [512]: 1024
+% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
+*Mar 1 1:22:59.615: %SSH-5-ENABLED: SSH 1.99 has been enabled
+R2(config)#username SSHadmin privilege 15 secret $cisco123!
+R2(config)#line vty 0 4
+R2(config-line)#login local
+R2(config-line)#transport input ssh
+R2(config-line)#exit
+R2(config)#ip ssh version 2
+```
 
 ### Шаг 2. Включите защищенные веб-службы с проверкой подлинности на R1.
 #### a.	Включите сервер HTTPS на R1.
