@@ -580,18 +580,6 @@ R1(config-subif)#
 |	PC-B	|	SSH	|	10.20.0.1	| Connection timed out; remote host not responding	|
 |	PC-B	|	SSH	|	172.16.1.1	| ок	|
 
-
-От	Протокол	Назначение	Результат
-PC-A	Ping.	10.40.0.10	Сбой
-PC-A	Ping.	10.20.0.1	Успех
-PC-B	Ping.	10.30.0.10	Сбой
-PC-B	Ping.	10.20.0.1	Сбой
-PC-B	Ping.	172.16.1.1	Успех
-PC-B	HTTPS	10.20.0.1	Сбой
-PC-B	HTTPS	172.16.1.1	Успех
-PC-B	SSH	10.20.0.4	Сбой
-PC-B	SSH	172.16.1.1	Успех
-
 PC-A (ping)
 ```
 C:\>ping 10.40.0.10
