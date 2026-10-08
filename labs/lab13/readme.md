@@ -36,7 +36,8 @@
 В первой части лабораторной работы вам предстоит создать топологию сети и настроить основные параметры для маршрутизатора и коммутаторов.
 
 ### Шаг 1. Создайте сеть согласно топологии.
-Подключите устройства, как показано в топологии, и подсоедините необходимые кабели.
+![](Топология_37_вып.png)
+
 ### Шаг 2. Настройте базовые параметры для маршрутизатора.
 Выполнено
 #### a.	Назначьте маршрутизатору имя устройства.
@@ -90,48 +91,76 @@ S2(config-if-range)#shutdown
 На устройствах Cisco протокол CDP включен по умолчанию. Воспользуйтесь CDP, чтобы обнаружить порты, к которым подключены кабели.
 Откройте окно конфигурации
 #### a.	На R1 используйте соответствующую команду show cdp, чтобы определить, сколько интерфейсов включено CDP, сколько из них включено и сколько отключено.
-
-
-Вопрос:
-Сколько интерфейсов участвует в объявлениях CDP? Какие из них активны?
-Введите ваш ответ здесь.
+```
+R1#sh cdp
+Global CDP information:
+    Sending CDP packets every 60 seconds
+    Sending a holdtime value of 180 seconds
+    Sending CDPv2 advertisements is enabled
+```
+после включения на R1 int g0/0/1
+```
+R1#sh cdp interface 
+Vlan1 is administratively down, line protocol is down
+  Sending CDP packets every 60 seconds
+  Holdtime is 180 seconds
+GigabitEthernet0/0/0 is administratively down, line protocol is down
+  Sending CDP packets every 60 seconds
+  Holdtime is 180 seconds
+GigabitEthernet0/0/1 is up, line protocol is up
+  Sending CDP packets every 60 seconds
+  Holdtime is 180 seconds
+```
+Вопрос:<br>
+Сколько интерфейсов участвует в объявлениях CDP? Какие из них активны?<br>
+**Ответ: на R1 участвует 3 интерфейса, но два из них не активны. Активен после включения только g0/0/1**
  
 #### b.	На R1 используйте соответствующую команду show cdp, чтобы определить версию IOS, используемую на S1.
-R1 # show cdp entry  S1
--------------------------
+```
+R1#sh cdp entry S1
+
 Device ID: S1
-Entry address(es):
-Platform: cisco WS-C2960+24LC-L, Capabilities: Switch IGMP 
+Entry address(es): 
+Platform: cisco 2960, Capabilities: Switch
 Interface: GigabitEthernet0/0/1, Port ID (outgoing port): FastEthernet0/5
-Holdtime : 125 sec
+Holdtime: 143
 
 Version :
-Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.2(4)E8, RELEASE SOFTWARE (fc3) 
+Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4, RELEASE SOFTWARE (fc1)
 Technical Support: http://www.cisco.com/techsupport
-Copyright (c) 1986-2019 by Cisco Systems, Inc.
-Compiled Fri 15-Mar-19 17:28 by prod_rel_team 
+Copyright (c) 1986-2013 by Cisco Systems, Inc.
+Compiled Wed 26-Jun-13 02:49 by mnguyen
 
 advertisement version: 2
-VTP Management Domain: ''
-Native VLAN: 1
 Duplex: full
-Вопрос:
-Какая версия IOS используется на  S1?
-Введите ваш ответ здесь.
+```
+Вопрос:<br>
+Какая версия IOS используется на  S1?<br>
+**Ответ: версия 15.0(2)SE4**
  
 #### c.	На S1 используйте соответствующую команду show cdp, чтобы определить, сколько пакетов CDP было выданных.
-S1# show cdp traffic
-CDP counters : 
-        Total packets output: 179, Input: 148 
-        Hdr syntax: 0, Chksum error: 0, Encaps failed: 0 
-        No memory: 0, Invalid packet: 0, 
-        CDP version 1 advertisements output: 0, Input: 0 
-        CDP version 2 advertisements output: 179, Input: 148
-Вопрос:
-Сколько пакетов имеет выход CDP с момента последнего сброса счетчика?
-Введите ваш ответ здесь.
+Команда show cdp traffic не доступна на коммутаторе 2960-24TT. Похоже вновь ограничение CPT.
+```
+S1#sh cdp tr
+S1#sh cdp ?
+  entry      Information for specific neighbor entry
+  interface  CDP interface status and configuration
+  neighbors  CDP neighbor entries
+  <cr>
+```
+S1# show cdp traffic<br>
+CDP counters : <br>
+        Total packets output: 179, Input: 148 <br>
+        Hdr syntax: 0, Chksum error: 0, Encaps failed: 0 <br>
+        No memory: 0, Invalid packet: 0, <br>
+        CDP version 1 advertisements output: 0, Input: 0 <br>
+        CDP version 2 advertisements output: 179, Input: 148<br>
+Вопрос:<br>
+Сколько пакетов имеет выход CDP с момента последнего сброса счетчика?<br>
+**Ответа нет из-за ограничений CPT...**
  
 #### d.	Настройте SVI для VLAN 1 на S1 и S2, используя IP-адреса, указанные в таблице адресации выше. Настройте шлюз по умолчанию для каждого коммутатора на основе таблицы адресов.
+
  
 #### e.	На R1 выполните команду show cdp entry S1 . 
 Вопрос:
