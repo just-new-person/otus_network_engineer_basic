@@ -522,17 +522,51 @@ C:\>
 ```
 
 ## Часть 7. Настройка и проверка списков контроля доступа (ACL)
-При проверке базового подключения компания требует реализации следующих политик безопасности:
-Политика1. Сеть Sales не может использовать SSH в сети Management (но в  другие сети SSH разрешен). 
-Политика 2. Сеть Sales не имеет доступа к IP-адресам в сети Management с помощью любого веб-протокола (HTTP/HTTPS). Сеть Sales также не имеет доступа к интерфейсам R1 с помощью любого веб-протокола. Разрешён весь другой веб-трафик (обратите внимание — Сеть Sales  может получить доступ к интерфейсу Loopback 1 на R1).
-Политика3. Сеть Sales не может отправлять эхо-запросы ICMP в сети Operations или Management. Разрешены эхо-запросы ICMP к другим адресатам. 
-Политика 4: Cеть Operations  не может отправлять ICMP эхозапросы в сеть Sales. Разрешены эхо-запросы ICMP к другим адресатам. 
+При проверке базового подключения компания требует реализации следующих политик безопасности:<br>
+*Политика 1*. Сеть Sales не может использовать SSH в сети Management (но в  другие сети SSH разрешен).<br>
+*Политика 2*. Сеть Sales не имеет доступа к IP-адресам в сети Management с помощью любого веб-протокола (HTTP/HTTPS). Сеть Sales также не имеет доступа к интерфейсам R1 с помощью любого веб-протокола. Разрешён весь другой веб-трафик (обратите внимание — Сеть Sales  может получить доступ к интерфейсу Loopback 1 на R1).<br>
+*Политика 3*. Сеть Sales не может отправлять эхо-запросы ICMP в сети Operations или Management. Разрешены эхо-запросы ICMP к другим адресатам.<br>
+*Политика 4*: Cеть Operations  не может отправлять ICMP эхозапросы в сеть Sales. Разрешены эхо-запросы ICMP к другим адресатам.<br>
 ### Шаг 1. Проанализируйте требования к сети и политике безопасности для планирования реализации ACL.
- 
+
 ### Шаг 2. Разработка и применение расширенных списков доступа, которые будут соответствовать требованиям политики безопасности.
-Откройте окно конфигурации
- 
-Закройте окно настройки.
+```
+R1#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+R1(config)#ip access-list extended SALES_ACL
+R1(config-ext-nacl)#remark policy 1_no SSH to Managment
+R1(config-ext-nacl)#deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 22
+R1(config-ext-nacl)#remark policy 2_no http(https) to Managment/R1 interface
+R1(config-ext-nacl)#deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq www
+R1(config-ext-nacl)#deny tcp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 eq 443
+R1(config-ext-nacl)#deny tcp 10.40.0.0 0.0.0.255 host 10.30.0.1 eq www
+R1(config-ext-nacl)#deny tcp 10.40.0.0 0.0.0.255 host 10.30.0.1 eq 443
+R1(config-ext-nacl)#deny tcp 10.40.0.0 0.0.0.255 host 10.40.0.1 eq www
+R1(config-ext-nacl)#deny tcp 10.40.0.0 0.0.0.255 host 10.40.0.1 eq 443
+R1(config-ext-nacl)#remark policy 3_no ping to Operationa/Managment
+R1(config-ext-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.20.0.0 0.0.0.255 echo
+R1(config-ext-nacl)#deny icmp 10.40.0.0 0.0.0.255 10.30.0.0 0.0.0.255 echo
+R1(config-ext-nacl)#permit ip any any
+R1(config-ext-nacl)#exit
+R1(config)#ip access-list extended OPERATIONS_ACL
+R1(config-ext-nacl)#remark policy 4_no ping to Sales
+R1(config-ext-nacl)#deny icmp 10.30.0.0 0.0.0.255 10.40.0.0 0.0.0.255 echo
+R1(config-ext-nacl)#permit ip any any
+R1(config-ext-nacl)#exit
+R1(config)#ibt f0/0/1.40
+            ^
+% Invalid input detected at '^' marker.
+	
+R1(config)#int f0/0/1.40
+%Invalid interface type and number
+R1(config)#int g0/0/1.40
+R1(config-subif)#ip ac
+R1(config-subif)#ip access-group SALES_ACL in
+R1(config-subif)#int g0/0/1.30
+R1(config-subif)#ip ac
+R1(config-subif)#ip access-group OPERATIONS_ACL in
+R1(config-subif)#
+```
 ### Шаг 3. Убедитесь, что политики безопасности применяются развернутыми списками доступа.
 Выполните следующие тесты. Ожидаемые результаты показаны в таблице:
 От	Протокол	Назначение	Результат
