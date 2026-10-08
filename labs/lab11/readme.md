@@ -354,6 +354,7 @@ R2(config)#ip route 0.0.0.0 0.0.0.0 10.20.0.1
 #### b.	Используйте ccna-lab.com в качестве доменного имени.
 #### c.	Генерируйте криптоключи с помощью 1024 битного модуля.
 #### d.	Настройте первые пять линий VTY на каждом устройстве, чтобы поддерживать только SSH-соединения и с локальной аутентификацией.
+Настройка на R1, S1, S2 аналогична
 ```
 R2(config)#ip domain name ccna-lab.com
 R2(config)#crypto key generate rsa
@@ -374,7 +375,38 @@ R2(config)#ip ssh version 2
 
 ### Шаг 2. Включите защищенные веб-службы с проверкой подлинности на R1.
 #### a.	Включите сервер HTTPS на R1.
-R1(config)# ip http secure-server 
+Команда ip http secure-server CPT не принимает.
+```
+R1(config)#ip http secure-server
+               ^
+% Invalid input detected at '^' marker.
+```
+Как минимум на Маршрутизаторе ISR4331 нет всей ветки http. Интернет говорит что модель 4331 сильно урезана и в ней нет "ip http"
+```
+R1(config)#ip ?
+  access-list       Named access-list
+  cef               Cisco Express Forwarding
+  default-gateway   Specify default gateway (if not routing IP)
+  default-network   Flags networks as candidates for default routes
+  dhcp              Configure DHCP server and relay parameters
+  domain            IP DNS Resolver
+  domain-lookup     Enable IP Domain Name System hostname translation
+  domain-name       Define the default domain name
+  flow-export       Specify host/port to send flow statistics
+  forward-protocol  Controls forwarding of physical and directed IP broadcasts
+  ftp               FTP configuration commands
+  host              Add an entry to the ip hostname table
+  inspect           Context-based Access Control Engine
+  ips               Intrusion Prevention System
+  local             Specify local options
+  name-server       Specify address of name server to use
+  nat               NAT configuration commands
+  route             Establish static routes
+  routing           Enable IP routing
+  scp               Scp commands
+  ssh               Configure ssh options
+  tcp               Global TCP parameters
+```
 #### b.	Настройте R1 для проверки подлинности пользователей, пытающихся подключиться к веб-серверу.
 R1(config)# ip http authentication local
 
@@ -386,15 +418,15 @@ R1(config)# ip http authentication local
 ### Шаг 2. Выполните следующие тесты. Эхозапрос должен пройти успешно.
 Примечание. Возможно, вам придется отключить брандмауэр ПК для работы ping
 От	Протокол	Назначение
-PC-A	Pin#### g.	10.40.0.10
-PC-A	Pin#### g.	10.20.0.1
-PC-B	Pin#### g.	10.30.0.10
-PC-B	Pin#### g.	10.20.0.1
-PC-B	Pin#### g.	172.16.1.1
+PC-A	Ping.	10.40.0.10
+PC-A	Ping.	10.20.0.1
+PC-B	Ping.	10.30.0.10
+PC-B	Ping.	10.20.0.1
+PC-B	Ping.	172.16.1.1
 PC-B	HTTPS	10.20.0.1
 PC-B	HTTPS	172.16.1.1
-PC-B	SS#### h	10.20.0.1
-PC-B	SS#### h	172.16.1.1
+PC-B	SSH	10.20.0.1
+PC-B	SSH	172.16.1.1
 
 ## Часть 7. Настройка и проверка списков контроля доступа (ACL)
 При проверке базового подключения компания требует реализации следующих политик безопасности:
