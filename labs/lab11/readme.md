@@ -416,7 +416,6 @@ R1(config)# ip http authentication local
 Адреса ПК можно посмотреть в таблице адресации.
 
 ### Шаг 2. Выполните следующие тесты. Эхозапрос должен пройти успешно.
-Примечание. Возможно, вам придется отключить брандмауэр ПК для работы ping
 |	От	|	Протокол	|	Назначение	| Результат	|
 |	---	|	---	|	---	| ---	|
 |	PC-A	|	Ping	|	10.40.0.10	| ок	|
@@ -569,6 +568,19 @@ R1(config-subif)#
 ```
 ### Шаг 3. Убедитесь, что политики безопасности применяются развернутыми списками доступа.
 Выполните следующие тесты. Ожидаемые результаты показаны в таблице:
+|	От	|	Протокол	|	Назначение	| Результат	|
+|	---	|	---	|	---	| ---	|
+|	PC-A	|	Ping	|	10.40.0.10	| Destination host unreachable	|
+|	PC-A	|	Ping	|	10.20.0.1	| ок	|
+|	PC-B	|	Ping	|	10.30.0.10	| Destination host unreachable	|
+|	PC-B	|	Ping	|	10.20.0.1	| Destination host unreachable	|
+|	PC-B	|	Ping	|	172.16.1.1	| ок	|
+|	PC-B	|	HTTPS	|	10.20.0.1	| не получилось	|
+|	PC-B	|	HTTPS	|	172.16.1.1	| не получилось	|
+|	PC-B	|	SSH	|	10.20.0.1	| Connection timed out; remote host not responding	|
+|	PC-B	|	SSH	|	172.16.1.1	| ок	|
+
+
 От	Протокол	Назначение	Результат
 PC-A	Ping.	10.40.0.10	Сбой
 PC-A	Ping.	10.20.0.1	Успех
@@ -579,4 +591,94 @@ PC-B	HTTPS	10.20.0.1	Сбой
 PC-B	HTTPS	172.16.1.1	Успех
 PC-B	SSH	10.20.0.4	Сбой
 PC-B	SSH	172.16.1.1	Успех
-Конец документа
+
+PC-A (ping)
+```
+C:\>ping 10.40.0.10
+
+Pinging 10.40.0.10 with 32 bytes of data:
+
+Reply from 10.30.0.1: Destination host unreachable.
+Reply from 10.30.0.1: Destination host unreachable.
+Reply from 10.30.0.1: Destination host unreachable.
+Reply from 10.30.0.1: Destination host unreachable.
+
+Ping statistics for 10.40.0.10:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>ping 10.20.0.1
+
+Pinging 10.20.0.1 with 32 bytes of data:
+
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 10.20.0.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>
+```
+PC-B (ping)
+```
+C:\>ping 10.30.0.10
+
+Pinging 10.30.0.10 with 32 bytes of data:
+
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+
+Ping statistics for 10.30.0.10:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>ping 10.20.0.1
+
+Pinging 10.20.0.1 with 32 bytes of data:
+
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+Reply from 10.40.0.1: Destination host unreachable.
+
+Ping statistics for 10.20.0.1:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>ping 172.16.1.1
+
+Pinging 172.16.1.1 with 32 bytes of data:
+
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 172.16.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>
+```
+**PC-B (https) не получилась настройка.**<br>
+
+PC-B (ssh)<br>
+```
+C:\>ssh -l SSHadmin 10.20.0.4
+
+% Connection timed out; remote host not responding
+C:\>ssh -l SSHadmin 172.16.1.1
+
+Password: 
+
+
+
+R1#exit
+
+[Connection to 172.16.1.1 closed by foreign host]
+C:\>
+```
