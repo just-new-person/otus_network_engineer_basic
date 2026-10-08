@@ -428,6 +428,98 @@ PC-B	HTTPS	172.16.1.1
 PC-B	SSH	10.20.0.1
 PC-B	SSH	172.16.1.1
 
+PC-A (ping)
+```
+C:\>ping 10.40.0.10
+
+Pinging 10.40.0.10 with 32 bytes of data:
+
+Request timed out.
+Reply from 10.40.0.10: bytes=32 time<1ms TTL=127
+Reply from 10.40.0.10: bytes=32 time=6ms TTL=127
+Reply from 10.40.0.10: bytes=32 time<1ms TTL=127
+
+Ping statistics for 10.40.0.10:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 6ms, Average = 2ms
+
+C:\>ping 10.20.0.1
+
+Pinging 10.20.0.1 with 32 bytes of data:
+
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 10.20.0.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+PC-B (ping)
+```
+C:\>ping 10.30.0.10
+
+Pinging 10.30.0.10 with 32 bytes of data:
+
+Reply from 10.30.0.10: bytes=32 time<1ms TTL=127
+Reply from 10.30.0.10: bytes=32 time=1ms TTL=127
+Reply from 10.30.0.10: bytes=32 time<1ms TTL=127
+Reply from 10.30.0.10: bytes=32 time<1ms TTL=127
+
+Ping statistics for 10.30.0.10:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 1ms, Average = 0ms
+
+C:\>ping 10.20.0.1
+
+Pinging 10.20.0.1 with 32 bytes of data:
+
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+Reply from 10.20.0.1: bytes=32 time=6ms TTL=255
+Reply from 10.20.0.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 10.20.0.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 6ms, Average = 1ms
+
+C:\>ping 172.16.1.1
+
+Pinging 172.16.1.1 with 32 bytes of data:
+
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+Reply from 172.16.1.1: bytes=32 time<1ms TTL=255
+
+Ping statistics for 172.16.1.1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+**PC-B (https) не получилась настройка.**<br>
+
+PC-B (ssh)
+```
+C:\>ssh 10.20.0.1
+Invalid Command.
+C:\>ssh -l SSHadmin 10.20.0.1
+Password: 
+R1#exit
+[Connection to 10.20.0.1 closed by foreign host]
+C:\>
+C:\>ssh -l SSHadmin 172.16.1.1
+Password: 
+R1#exit
+[Connection to 172.16.1.1 closed by foreign host]
+C:\>
+```
+
 ## Часть 7. Настройка и проверка списков контроля доступа (ACL)
 При проверке базового подключения компания требует реализации следующих политик безопасности:
 Политика1. Сеть Sales не может использовать SSH в сети Management (но в  другие сети SSH разрешен). 
