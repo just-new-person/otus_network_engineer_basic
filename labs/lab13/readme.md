@@ -311,19 +311,72 @@ R1(config-if)#end
 R1#
 %SYS-5-CONFIG_I: Configured from console by console
 R1#conf t
-R1(config)#ntp server 10.22.0.1
+R1(config)#ntp master 4
 ```
  
 ### Шаг 4. Настройте клиент NTP.
 #### a.	Выполните соответствующую команду на S1 и S2, чтобы просмотреть настроенное время. Запишите текущее время,  в следующей таблице.
-Дата	Время	Часовой пояс
-		
+По инерции выставлял время всем сразу. так что время уже настроено.
+S1
+```
+S1#sh clock detail 
+*0:24:2.903 UTC Sat Oct 10 2026
+Time source is hardware calendar
+```
+S2
+```
+S2#sh clock detail 
+*0:24:13.946 UTC Sat Oct 10 2026
+Time source is hardware calendar
+```
 #### b.	Настройте S1 и S2 в качестве клиентов NTP. Используйте соответствующие команды NTP для получения времени от интерфейса G0/0/1 R1, а также для периодического обновления календаря или аппаратных часов коммутатора.
+В CPT не доступна команда для настройки периодичности обновления каллендаря (ntp update-calendar).<br>
+Настройка S2 по аналогии.
+```
+S1(config)#ntp server 10.22.0.1
+S1(config)#ntp ?
+  authenticate        Authenticate time sources
+  authentication-key  Authentication key for trusted time sources
+  master              Act as NTP master clock
+  server              Configure NTP server
+  trusted-key         Key numbers for trusted time sources
+```
 
 ### Шаг 5. Проверьте настройку NTP.
 #### a.	Используйте соответствующую команду show , чтобы убедиться, что S1 и S2 синхронизированы с R1.
 Примечание. Синхронизация метки времени на маршрутизаторе R2 с меткой времени на маршрутизаторе R1 может занять несколько минут.
+S1
+```
+S1#show ntp associations
+
+address         ref clock       st   when     poll    reach  delay          offset            disp
+*~10.22.0.1     127.127.1.1     4    19       64      377    0.00           0.00              0.24
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+```
+S2
+```
+S2#show ntp associations
+
+address         ref clock       st   when     poll    reach  delay          offset            disp
+*~10.22.0.1     127.127.1.1     4    15       16      377    0.00           0.00              0.12
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+```
 #### b.	Выполните соответствующую команду на S1 и S2, чтобы просмотреть настроенное время и сравнить ранее записанное время.
-Откройте окно конфигурации
-Вопрос для повторения
-Для каких интерфейсов в пределах сети не следует использовать протоколы обнаружения сетевых ресурсов? Поясните ответ.
+Источник сменился с hardware calendar на NTP<br>
+
+S1
+```
+S1#sh clock detail 
+0:29:9.666 UTC Sat Oct 10 2026
+Time source is NTP
+```
+S2
+```
+S2#sh clo detail 
+0:29:10.368 UTC Sat Oct 10 2026
+Time source is NTP
+```
+
+Вопрос для повторения<br>
+Для каких интерфейсов в пределах сети не следует использовать протоколы обнаружения сетевых ресурсов? Поясните ответ.<br>
+**Ответ: для любых которые не на сетевом оборудовании (интеренет, ПК и прочие). По протколам обнаружения пересылается подробная информация об устройствах и злодей может перехватив информацию подобрать способ, чтобы влезть в сеть.**
