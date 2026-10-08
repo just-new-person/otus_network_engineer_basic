@@ -155,89 +155,129 @@ CDP counters : <br>
         No memory: 0, Invalid packet: 0, <br>
         CDP version 1 advertisements output: 0, Input: 0 <br>
         CDP version 2 advertisements output: 179, Input: 148<br>
+
 Вопрос:<br>
 Сколько пакетов имеет выход CDP с момента последнего сброса счетчика?<br>
 **Ответа нет из-за ограничений CPT...**
  
 #### d.	Настройте SVI для VLAN 1 на S1 и S2, используя IP-адреса, указанные в таблице адресации выше. Настройте шлюз по умолчанию для каждого коммутатора на основе таблицы адресов.
+Настройка S2 по аналогии
+```
+S1(config)#int vlan 1
+S1(config-if)#no sh
+S1(config-if)#
+%LINK-3-UPDOWN: Interface Vlan1, changed state to down
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan1, changed state to up
+S1(config-if)#ip ad
+S1(config-if)#ip address 10.22.0.2 255.255.255.0
+S1(config-if)#ex
+S1(config)#ip default-gateway 10.22.0.1
+```
+#### e.	На R1 выполните команду show cdp entry S1.
+```
+R1#show cdp entry S1
 
- 
-#### e.	На R1 выполните команду show cdp entry S1 . 
-Вопрос:
-Какие дополнительные сведения доступны теперь?
-Введите ваш ответ здесь.
- 
-R1 # show cdp entry  S1 
--------------------------
 Device ID: S1
-Entry address(es):
-  IP address: 10.22.0.2
-Platform: cisco WS-C2960+24LC-L, Capabilities: Switch IGMP 
+Entry address(es): 
+  IP address : 10.22.0.2
+Platform: cisco 2960, Capabilities: Switch
 Interface: GigabitEthernet0/0/1, Port ID (outgoing port): FastEthernet0/5
-Holdtime : 133 sec
+Holdtime: 128
 
 Version :
-Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.2(4)E8, RELEASE SOFTWARE (fc3) 
+Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4, RELEASE SOFTWARE (fc1)
 Technical Support: http://www.cisco.com/techsupport
-Copyright (c) 1986-2019 by Cisco Systems, Inc.
-Compiled Fri 15-Mar-19 17:28 by prod_rel_team 
+Copyright (c) 1986-2013 by Cisco Systems, Inc.
+Compiled Wed 26-Jun-13 02:49 by mnguyen
 
 advertisement version: 2
-VTP Management Domain: ''
-Native VLAN: 1
 Duplex: full
-Management address(es):
-  IP address: 10.22.0.2 
-#### f.	Отключить CDP глобально на всех устройствах. 
- 
-Закройте окно настройки.
+```
+
+Вопрос:<br>
+Какие дополнительные сведения доступны теперь?<br>
+**Ответ: теперь показывается IP адрес vlan1 на S1: 10.22.0.2**
+
+#### f.	Отключить CDP глобально на всех устройствах.
+Настройка S1,S2 по аналогии
+```
+R1(config)#no cdp run
+```
 
 ## Часть 3. Обнаружение сетевых ресурсов с помощью протокола LLDP
 На устройствах Cisco протокол LLDP может быть включен по умолчанию. Воспользуйтесь LLDP, чтобы обнаружить порты, к которым подключены кабели.
 Откройте окно конфигурации
 #### a.	Введите соответствующую команду lldp, чтобы включить LLDP на всех устройствах в топологии.
-#### b.	На S1 выполните соответствующую команду lldp, чтобы предоставить подробную информацию о S2. 
-S1# show lldp entry S2
+Настройка S1,S2 по аналогии
+```
+R1(config)#lldp run
+```
+#### b.	На S1 выполните соответствующую команду lldp, чтобы предоставить подробную информацию о S2.
+Команда show lldp entry недоступна из-за ограничений CPT. Интернет говорит есть альтернатива sh lldp neighbors detail.<br>
+Блок по S2 выглядит так
+```
+Chassis id: 0060.3EA4.E201
+Port id: Fa0/1
+Port Description: FastEthernet0/1
+System Name: S2
+System Description:
+Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4, RELEASE SOFTWARE (fc1)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2013 by Cisco Systems, Inc.
+Compiled Wed 26-Jun-13 02:49 by mnguyen
+Time remaining: 90 seconds
+System Capabilities: B
+Enabled Capabilities: B
+Management Addresses - not advertised
+Auto Negotiation - supported, enabled
+Physical media capabilities:
+    100baseT(FD)
+    100baseT(HD)
+    1000baseT(HD)
+Media Attachment Unit type: 10
+Vlan ID: 1
+```
 
+Вопрос:<br>
+Что такое chassis ID  для коммутатора S2?<br>
+**Ответ: это MAC-адрес S2.**
+
+#### c.	Соединитесь через консоль на всех устройствах и используйте команды LLDP, необходимые для отображения топологии физической сети только из выходных данных команды show.
+R1
+```
+R1#sh lldp neighbors 
 Capability codes:
     (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
     (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
-------------------------------------------------
-Local Intf: Fa0/1  
-Chassis id: c025.5cd7.ef00 
-Port id: Fa0/1 
-Port Description: FastEthernet0/1
-System Name: S2
-
-System Description:
-Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.2(4)E8, RELEASE SOFTWARE (fc3) 
-Technical Support: http://www.cisco.com/techsupport
-Copyright (c) 1986-2019 by Cisco Systems, Inc.
-Compiled Fri 15-Mar-19 17:28 by prod_rel_team 
-
-Time remaining: 109 seconds 
-System Capabilities: B
-Enabled Capabilities: B
-Management Addresses:
-    IP: 10.22.0.3 
-Auto Negotiation - supported, enabled
-Physical media capabilities:
-    100base-TX(FD)
-    100base-TX(HD)
-    10base-T(FD)
-    10base-T(HD)
-Media Attachment Unit type: 16
-Vlan ID: 1
-
+Device ID           Local Intf     Hold-time  Capability      Port ID
+S1                  Gig0/0/1       120        B               Fa0/5
 
 Total entries displayed: 1
-Вопрос:
-Что такое chassis ID  для коммутатора S2?
-Введите ваш ответ здесь.
- 
-Закройте окно настройки.
-#### c.	Соединитесь через консоль на всех устройствах и используйте команды LLDP, необходимые для отображения топологии физической сети только из выходных данных команды show.
- 
+```
+S1
+```
+S1#sh lldp neighbors 
+Capability codes:
+    (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+    (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+Device ID           Local Intf     Hold-time  Capability      Port ID
+S2                  Fa0/1          120        B               Fa0/1
+R1                  Fa0/5          120        R               Gig0/0/1
+
+Total entries displayed: 2
+```
+S2
+```
+S2#sh lldp neighbors 
+Capability codes:
+    (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+    (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+Device ID           Local Intf     Hold-time  Capability      Port ID
+S1                  Fa0/1          120        B               Fa0/1
+
+Total entries displayed: 1
+```
+
 ## Часть 4. Настройка NTP
 В части 4 необходимо настроить маршрутизатор R1 в качестве сервера NTP, а маршрутизатор R2 в качестве клиента NTP маршрутизатора R1. Необходимо выполнить синхронизацию времени для Syslog и отладочных функций. Если время не синхронизировано, сложно определить, какое сетевое событие стало причиной данного сообщения.
 
