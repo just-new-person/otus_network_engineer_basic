@@ -302,7 +302,16 @@ R1#clock set 23:57:00 oct 08 2026
 ### Шаг 3. Настройте главный сервер NTP.
 Настройте R1 в качестве хозяина NTP с уровнем слоя 4.
 ```
-
+R1(config)#int g0/0/1
+R1(config-if)#ip address 10.22.0.1 255.255.255.0
+R1(config-if)#ex
+R1(config)#int loopback 1
+R1(config-if)#ip address 172.16.1.1 255.255.255.0
+R1(config-if)#end
+R1#
+%SYS-5-CONFIG_I: Configured from console by console
+R1#conf t
+R1(config)#ntp server 10.22.0.1
 ```
  
 ### Шаг 4. Настройте клиент NTP.
