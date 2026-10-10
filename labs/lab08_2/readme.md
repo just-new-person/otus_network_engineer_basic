@@ -62,15 +62,12 @@
 #### i.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 
 ### Шаг 3. Произведите базовую настройку маршрутизаторов.
+Настройка R2 по аналогии
+
 #### a.	Назначьте маршрутизатору имя устройства.
 ```
 Router(config)#hostname R1
 R1(config)#
-```
-/
-```
-Router(config)#hostname R2
-R2(config)#
 ```
 #### b.	Отключите поиск DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать введенные команды таким образом, как будто они являются именами узлов.
 ```
@@ -169,15 +166,8 @@ Sending 5, 100-byte ICMP Echos to 2001:db8:acad:3::1, timeout is 2 seconds:
 Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/4 ms
 ```
 #### d.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
-R1
 ```
 R1#wr
-Building configuration...
-[OK]
-```
-R2
-```
-R2#wr
 Building configuration...
 [OK]
 ```
@@ -193,17 +183,17 @@ C:\>ipconfig
 FastEthernet0 Connection:(default port)
 
    Connection-specific DNS Suffix..: 
-   Link-local IPv6 Address.........: FE80::230:A3FF:FE44:7A07
-   IPv6 Address....................: 2001:DB8:ACAD:1:230:A3FF:FE44:7A07
+   Link-local IPv6 Address.........: FE80::201:97FF:FE09:BA21
+   IPv6 Address....................: 2001:DB8:ACAD:1:201:97FF:FE09:BA21
    IPv4 Address....................: 0.0.0.0
    Subnet Mask.....................: 0.0.0.0
    Default Gateway.................: FE80::1
                                      0.0.0.0
 ```
 Вопрос:<br>
-Откуда взялась 230:A3FF:FE44:7A07 часть адреса с идентификатором хоста?<br>
+Откуда взялась 201:97FF:FE09:BA21 часть адреса с идентификатором хоста?<br>
 Ответ<br>
-**На основе MAC-адреса по стандарту EUI-64 (Устаревший способ). Скорее всего система генерирует случайным образом 64-битное число.**
+**На основе MAC-адреса по стандарту EUI-64. Mac-адрес PC-A - 0001.9709.BA21. Так алгоритм со вставкой FF:FE в середине.**
 
 ## Часть 3. Настройка и проверка сервера DHCPv6 на R1
 В части 3 выполняется настройка и проверка состояния DHCP-сервера на R1. Цель состоит в том, чтобы предоставить PC-A информацию о DNS-сервере и домене.
@@ -216,46 +206,18 @@ C:\>ipconfig /all
 FastEthernet0 Connection:(default port)
 
    Connection-specific DNS Suffix..: 
-   Physical Address................: 0030.A344.7A07
-   Link-local IPv6 Address.........: FE80::230:A3FF:FE44:7A07
-   IPv6 Address....................: 2001:DB8:ACAD:1:230:A3FF:FE44:7A07
-   Autoconfiguration IP Address....: 169.254.122.7
-   Subnet Mask.....................: 255.255.0.0
+   Physical Address................: 0001.9709.BA21
+   Link-local IPv6 Address.........: FE80::201:97FF:FE09:BA21
+   IPv6 Address....................: 2001:DB8:ACAD:1:201:97FF:FE09:BA21
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
    Default Gateway.................: FE80::1
                                      0.0.0.0
-   DHCP Servers....................: 192.168.1.1
+   DHCP Servers....................: 0.0.0.0
    DHCPv6 IAID.....................: 
-   DHCPv6 Client DUID..............: 00-01-00-01-90-38-55-3C-00-30-A3-44-7A-07
+   DHCPv6 Client DUID..............: 00-01-00-01-16-9D-16-4A-00-01-97-09-BA-21
    DNS Servers.....................: ::
                                      0.0.0.0
-```
-```
-C:\Users\Student> ipconfig /all
-Windows IP Configuration
-
-   Host Name . . . . . . . . . . . . : НАСТОЛЬНАЯ 3FR7RKA
-   Primary Dns Suffix . . . . . . . : 
-   Node Type . . . . . . . . . . . . : Hybrid
-   IP Routing Enabled. . . . . . . . : No
-   WINS Proxy Enabled. . . . . . . . : No
-
-Ethernet adapter Ethernet0:
-
-   Connection-specific DNS Suffix . : 
-   Description . . . . . . . . . . . : Intel(R) 852574L Gigabit Network Connection 
-   Physical Address. . . . . . . . . : 00-50-56-83-63-6D
-   IPv6 Address. . . . . . . . . . . : 2001:db8:acad:1:5c43:ee7c:2959:da68(Preferred)
-   Temporary IPv6 Address. . . . . . : 2001:db8:acad:1:3c64:e4f9:46e1:1f23(Preferred)
-   Link-local IPv6-адрес. . . . . : fe80::5c43:ee7c:2959:da68%6(Preferred)
-   IPv4 Address. . . . . . . . . . . : 169.254.218.104(Preferred)
-   Subnet Mask . . . . . . . . . . . : 255.255.0.0
-   Шлюз по умолчанию . . . . . . . . .: fe80።1%6
-   DHCPv6 IAID . . . . . . . . . . . : 50334761
-   DHCPv6 Client DUID.  . . . . . . . : 00-01-00-01-24-F5-CE-A2-00-50-56-B3-63-6D
-   DNS-серверы . . . . . . . . . . . : fec0:0:0:ffff::1%1
-                                       fec0:0:0:ffff::2%1
-                                       fec0:0:0:ffff::3%1
-   NetBIOS over Tcpip. . . . . . . . : Enabled
 ```
 #### b.	Обратите внимание, что основной DNS-суффикс отсутствует. Также обратите внимание, что предоставленные адреса DNS-сервера являются адресами «локального сайта anycast», а не одноадресные адреса, как ожидалось.
 Результат команды на PC-A в моей схеме отличается от приведенного в методичке. Адрес DNS сервера по нулям. Мне кажется часть с указанием Windows IP Configuration намекает на то, что это актуально на живом железе, а не в CPT. Не понял для чего в задании пункт "a".
@@ -265,47 +227,53 @@ Ethernet adapter Ethernet0:
 Откройте окно конфигурации
 ```
 R1(config)#ipv6 dhcp pool R1-STATELESS
-R1(config-dhcpv6)#dns-ser
-R1(config-dhcpv6)#dns-server 2001:DB8:ACAD::1
+R1(config-dhcpv6)#dns-server 2001:db8:acad::254
 R1(config-dhcpv6)#domain-name stateless.com
 ```
 #### b.	Настройте интерфейс G0/0/1 на R1, чтобы предоставить флаг конфигурации OTHER для локальной сети R1 и укажите только что созданный пул DHCP в качестве ресурса DHCP для этого интерфейса.
-R1(config)# interface g0/0/1
-R1(config-if)# ipv6 nd other-config-flag 
-R1(config-if)# ipv6 dhcp server R1-STATELESS
+```
+R1(config)#int g0/0/1
+R1(config-if)#ipv6 nd  other-config-flag 
+R1(config-if)#ipv6 dhcp server R1-STATELESS
+```
 #### c.	Сохраните текущую конфигурацию в файл загрузочной конфигурации.
 #### d.	Перезапустите PC-A.
 #### e.	Проверьте вывод ipconfig /all и обратите внимание на изменения.
-C:\Users\Student> ipconfig /all
-Windows IP Configuration 
+```
+C:\>ipconfig /all
 
-   Host Name . . . . . . . . . . . . : DESKTOP-3FR7RKA
-   Primary Dns Suffix . . . . . . . : 
-   Node Type . . . . . . . . . . . . : Hybrid
-   IP Routing Enabled. . . . . . . . : No
-   WINS Proxy Enabled. . . . . . . . : No
-   DNS Suffix Search List. . . . . . : STATELESS.com
+FastEthernet0 Connection:(default port)
 
-Ethernet adapter Ethernet0:
-
-   Connection-specific DNS Suffix . : STATELESS.com
-   Описание . . . . . . . . . . . : Intel(R) 82574L Gigabit Network Connection
-   Physical Address. . . . . . . . . : 00-50-56-83-63-6D
-   DHCP Enabled. . . . . . . . . . . : Yes
-   Autoconfiguration Enabled . . . . : Yes
-   IPv6 Address. . . . . . . . . . . : 2001:db8:acad:1:5c43:ee7c:2959:da68(Preferred)
-   Temporary IPv6 Address. . . . . . : 2001:db8:acad:1:3c64:e4f9:46e1:1f23(Preferred)
-   Link-local IPv6-адрес. . . . . : fe80::5c43:ee7c:2959:da68%6(Preferred)
-   IPv4 Address. . . . . . . . . . . : 169.254.218.104(Preferred)
-   Subnet Mask . . . . . . . . . . . : 255.255.0.0
-   Default Gateway . . . . . . . . .: fe80።1%6
-   DHCPv6 IAID . . . . . . . . . . . : 50334761
-   DHCPv6 Client DUID. . . . . . . . : 00-01-00-01-24-F5-CE-A2-00-50-56-B3-63-6D
-   DNS Servers . . . . . . . . . . . : 2001:db8:acad። 254
-   NetBIOS over Tcpip. . . . . . . . : Enabled
-   Список поиска DNS-суффиксов подключения: 
-                                       STATELESS.com
+   Connection-specific DNS Suffix..: stateless.com 
+   Physical Address................: 0001.9709.BA21
+   Link-local IPv6 Address.........: FE80::201:97FF:FE09:BA21
+   IPv6 Address....................: 2001:DB8:ACAD:1:201:97FF:FE09:BA21
+   Autoconfiguration IP Address....: 169.254.186.35
+   Subnet Mask.....................: 255.255.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 204382808
+   DHCPv6 Client DUID..............: 00-01-00-01-16-9D-16-4A-00-01-97-09-BA-21
+   DNS Servers.....................: 2001:DB8:ACAD::254
+                                     0.0.0.0
+```
 #### f.	Тестирование подключения с помощью пинга IP-адреса интерфейса G0/1 R2.
+```
+C:\>ping 2001:db8:acad:3::1
+
+Pinging 2001:db8:acad:3::1 with 32 bytes of data:
+
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time<1ms TTL=254
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time=5ms TTL=254
+Reply from 2001:DB8:ACAD:3::1: bytes=32 time=7ms TTL=254
+
+Ping statistics for 2001:DB8:ACAD:3::1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 7ms, Average = 3ms
+```
 
 ## Часть 4. Настройка сервера DHCPv6 с сохранением состояния на R1
 В части 4 настраивается R1 для ответа на запросы DHCPv6 от локальной сети на R2.
