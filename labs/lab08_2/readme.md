@@ -258,7 +258,7 @@ FastEthernet0 Connection:(default port)
    DNS Servers.....................: 2001:DB8:ACAD::254
                                      0.0.0.0
 ```
-#### f.	Тестирование подключения с помощью пинга IP-адреса интерфейса G0/1 R2.
+#### f.	Тестирование подключения с помощью пинга IP-адреса интерфейса G0/0/1 R2.
 ```
 C:\>ping 2001:db8:acad:3::1
 
@@ -276,90 +276,82 @@ Approximate round trip times in milli-seconds:
 ```
 
 ## Часть 4. Настройка сервера DHCPv6 с сохранением состояния на R1
-В части 4 настраивается R1 для ответа на запросы DHCPv6 от локальной сети на R2.
+В части 4 настраивается R1 для ответа на запросы DHCPv6 от локальной сети на R2.<br>
+Пропускает часть 4, т.к. relay не работает. Переходим к части 5.
 #### a.	Создайте пул DHCPv6 на R1 для сети 2001:db8:acad:3:aaa::/80. Это предоставит адреса локальной сети, подключенной к интерфейсу G0/0/1 на R2. В составе пула задайте DNS-сервер 2001:db8:acad: :254 и задайте доменное имя STATEFUL.com.
-Откройте окно конфигурации
-R1(config)# ipv6 dhcp pool R2-STATEFUL
-R1(config-dhcp)# address prefix 2001:db8:acad:3:aaa::/80
-R1(config-dhcp)# dns-server 2001:db8:acad::254
-R1(config-dhcp)# domain-name STATEFUL.com
 #### b.	Назначьте только что созданный пул DHCPv6 интерфейсу g0/0/0 на R1.
-R1(config)# interface g0/0/0
-R1(config-if)# ipv6 dhcp server R2-STATEFUL
 
 ## Часть 5. Настройка и проверка ретрансляции DHCPv6 на R2.
 В части 5 необходимо настроить и проверить ретрансляцию DHCPv6 на R2, позволяя PC-B получать адрес IPv6.
 ### Шаг 1. Включите PC-B и проверьте адрес SLAAC, который он генерирует.
-C:\Users\Student> ipconfig /all
-Windows IP Configuration
+```
+C:\>ipconfig /all
 
-   Host Name . . . . . . . . . . . . : DESKTOP-3FR7RKA
-   Primary Dns Suffix . . . . . . . : 
-   Node Type . . . . . . . . . . . . : Hybrid
-   IP Routing Enabled. . . . . . . . : No
-   WINS Proxy Enabled. . . . . . . . : No
+FastEthernet0 Connection:(default port)
 
-Ethernet adapter Ethernet0:
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 0060.5C9B.DB8E
+   Link-local IPv6 Address.........: FE80::260:5CFF:FE9B:DB8E
+   IPv6 Address....................: 2001:DB8:ACAD:3:260:5CFF:FE9B:DB8E
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-8E-17-72-C5-00-60-5C-9B-DB-8E
+   DNS Servers.....................: ::
+                                     0.0.0.0
+```
+Обратите внимание на вывод, что используется префикс 2001:db8:acad:3:: (генерация по SLAAC).
 
-   Connection-specific DNS Suffix . : 
-   Description . . . . . . . . . . . : Intel(R) 82574L Gigabit Network Connection
-   Physical Address. . . . . . . . . : 00-50-56-B3-7B-06
-   DHCP Enabled. . . . . . . . . . . : Yes
-   Autoconfiguration Enabled . . . . : Yes
-   IPv6 Address. . . . . . . . . . . : 2001:db8:acad:3:a0f3:3d39:f9fb:a020(Preferred) 
-   Temporary IPv6 Address. . . . . . : 2001:db8:acad:3:d4f3:7b16:eeee:b2b5(Preferred) 
-   Link-local IPv6 address. . . . . : fe80::a0f3:3d39:f9fb:a020%6(Preferred) 
-   IPv4 Address. . . . . . . . . . . : 169.254.160.32(Preferred) 
-   Subnet Mask . . . . . . . . . . . : 255.255.0.0
-   Default Gateway . . . . . . . . .: fe80።1%6
-   DHCPv6 IAID . . . . . . . . . . . : 50334761
-   DHCPv6 Client DUID. . . . . . . . : 00-01-00-01-24-F2-08-38-00-50-56-B3-7B-06
-   DNS Servers . . . . . . . . . . . : fec0:0:0:ffff::1%1
-                                       fec0:0:0:ffff::2%1
-                                       fec0:0:0:ffff::3%1
-   NetBIOS over Tcpip. . . . . . . . : Enabled
-Обратите внимание на вывод, что используется префикс 2001:db8:acad:3::
+### Шаг 2. Настройте R2 для предоставления DHCPv6 с сохранением состояния для PC-B
 
-### Шаг 2. Настройте R2 в качестве агента DHCP-ретрансляции для локальной сети на G0/0/1.
-#### a.	Настройте команду ipv6 dhcp relay на интерфейсе R2 G0/0/1, указав адрес назначения интерфейса G0/0/0 на R1. Также настройте команду managed-config-flag .
-Откройте окно конфигурации
-R2 (конфигурация) # интерфейс g0/0/1
-R2(config-if)# ipv6 nd managed-config-flag
-R2(config-if)# ipv6 dhcp relay destination 2001:db8:acad:2::1 g0/0/0
-#### b.	Сохраните конфигурацию.
-Закройте окно настройки.
-
+```
+R2(config)#ipv6 dhcp pool R2-STATEFUL
+R2(config-dhcpv6)#address prefix 2001:db8:acad:3::/64
+R2(config-dhcpv6)#dns-server 2001:db8:acad::254
+R2(config-dhcpv6)#domain-name STATEFUL.com
+R2(config-dhcpv6)#ex
+R2(config)#int g0/0/1
+R2(config-if)#ipv6 nd managed-config-flag
+R2(config-if)#ipv6 dhcp server R2-STATEFUL
+```
 ### Шаг 3. Попытка получить адрес IPv6 из DHCPv6 на PC-B.
 #### a.	Перезапустите PC-B.
 #### b.	Откройте командную строку на PC-B и выполните команду ipconfig /all и проверьте выходные данные, чтобы увидеть результаты операции ретрансляции DHCPv6.
-C:\Users\Student> ipconfig /all
-Windows IP Configuration
+```
+C:\>ipconfig /all
 
-   Host Name . . . . . . . . . . . . : DESKTOP-3FR7RKA
-   Primary Dns Suffix . . . . . . . : 
-   Node Type . . . . . . . . . . . . : Hybrid
-   IP Routing Enabled. . . . . . . . : No
-   WINS Proxy Enabled. . . . . . . . : No
-   DNS Suffix Search List. . . . . . : STATEFUL.com
+FastEthernet0 Connection:(default port)
 
-Ethernet adapter Ethernet0:
+   Connection-specific DNS Suffix..: STATEFUL.com 
+   Physical Address................: 0060.5C9B.DB8E
+   Link-local IPv6 Address.........: FE80::260:5CFF:FE9B:DB8E
+   IPv6 Address....................: 2001:DB8:ACAD:3:A5D9:6D71:2628:AF4
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 1887338030
+   DHCPv6 Client DUID..............: 00-01-00-01-8E-17-72-C5-00-60-5C-9B-DB-8E
+   DNS Servers.....................: 2001:DB8:ACAD::254
+                                     0.0.0.0
+```
+#### c.	Проверьте подключение с помощью пинга IP-адреса интерфейса R1 G0/0/1.
+```
+C:\>ping 2001:db8:acad:1::1
 
-   Connection-specific DNS Suffix . : STATEFUL.com
-   Description . . . . . . . . . . . : Intel(R) 852574L Gigabit Network Connection
-   Physical Address. . . . . . . . . : 00-50-56-B3-7B-06
-   DHCP Enabled. . . . . . . . . . . : Yes
-   Autoconfiguration Enabled . . . . : Yes
-   IPv6 Address. . . . . . . . . . . : 2001:db8:acad3:aaaa:7104:8b7d:5402(Preferred)
-   Lease Obtained. . . . . . . . . . : Sunday, October 6, 2019 3:27:13 PM
-   Lease Expires . . . . . . . . . . Tuesday, October 8, 2019 3:27:13 PM
-   Link-local IPv6-адрес. . . . . : fe80::a0f3:3d39:f9fb:a020%6(Preferred)
-   IPv4 Address. . . . . . . . . . . : 169.254.160.32(Preferred)
-   Subnet Mask . . . . . . . . . . . : 255.255.0.0
-   Default Gateway . . . . . . . . .: fe80። 2% 6
-   DHCPv6 IAID . . . . . . . . . . . : 50334761
-   DHCPv6 Client DUID. . . . . . . . : 00-01-00-01-24-F2-08-38-00-50-56-B3-7B-06
-   DNS Servers . . . . . . . . . . . : 2001:db8:acad። 254
-   NetBIOS over Tcpip. . . . . . . . : Включен
-   Список поиска DNS-суффиксов подключения:
-                                       STATEFUL.com
-#### c.	Проверьте подключение с помощью пинга IP-адреса интерфейса R0 G0/0/1.
+Pinging 2001:db8:acad:1::1 with 32 bytes of data:
+
+Request timed out.
+Reply from 2001:DB8:ACAD:1::1: bytes=32 time<1ms TTL=254
+Reply from 2001:DB8:ACAD:1::1: bytes=32 time<1ms TTL=254
+Reply from 2001:DB8:ACAD:1::1: bytes=32 time=2ms TTL=254
+
+Ping statistics for 2001:DB8:ACAD:1::1:
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 2ms, Average = 0ms
+```
